@@ -25,12 +25,21 @@ module.exports = {
     'react-refresh'
   ],
   rules: {
+    // React
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
-
     'react/prop-types': 'off',
     'react/display-name': 'off',
-
+    // MaterialUI
+    'no-restricted-imports': [
+      'error',
+      {
+        'patterns': [{
+          'regex': '^@mui/[^/]+$'
+        }]
+      }
+    ],
+    // Common
     'no-console': 'warn',
     'no-lonely-if': 'warn',
     'no-unused-vars': 'warn',
@@ -48,6 +57,7 @@ module.exports = {
     'keyword-spacing': 'warn',
     'comma-dangle': 'warn',
     'comma-spacing': 'warn',
-    'arrow-spacing': 'warn'
+    'arrow-spacing': 'warn',
+    
   }
 }
