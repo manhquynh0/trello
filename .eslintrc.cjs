@@ -34,12 +34,12 @@ module.exports = {
     'no-restricted-imports': [
       'error',
       {
-        'patterns': [{
-          'regex': '^@mui/[^/]+$'
+        paths: [{
+          name: '@mui/material',
+          message: 'Import trực tiếp từ @mui/material/Button'
         }]
       }
     ],
-    // Common
     'no-console': 'warn',
     'no-lonely-if': 'warn',
     'no-unused-vars': 'warn',
@@ -58,6 +58,6 @@ module.exports = {
     'comma-dangle': 'warn',
     'comma-spacing': 'warn',
     'arrow-spacing': 'warn',
-    
+
   }
 }
