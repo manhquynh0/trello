@@ -5,7 +5,7 @@ function BoardConetent() {
     <div>
       <Typography variant="body2" sx={{ color: 'pink' }}>ManhQuynhDev - 1 lap trinh vien </Typography>
     </div>
-  );
+  )
 }
 
-export default BoardConetent()
+export default BoardConetent

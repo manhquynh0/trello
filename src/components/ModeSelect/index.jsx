@@ -6,7 +6,6 @@ import IconButton from '@mui/material/IconButton'
 import LightModeIcon from '@mui/icons-material/LightMode'
 import NightsStayRoundedIcon from '@mui/icons-material/NightsStayRounded'
 
-
 function ThemeSwitcher() {
   const { mode, setMode } = useColorScheme()
   const handleToggleTheme = () => {

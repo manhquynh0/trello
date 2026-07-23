@@ -8,6 +8,9 @@ const theme = extendTheme({
       palette: {
         primary: {
           main: '#0F172A'
+        },
+        text: {
+          primary: '#F8FAFC'
         }
       }
     },
