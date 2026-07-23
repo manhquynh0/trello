@@ -31,7 +31,6 @@ function Recent() {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
         endIcon={<KeyboardArrowDownRoundedIcon/>}
-        sx ={{ color : 'black' }}
       >
         Recents
       </Button>

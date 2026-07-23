@@ -62,10 +62,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function AppBar() {
   return (
     <Box sx={{
-      with: '100%',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between'
+      justifyContent: 'space-between',
+      backgroundColor: 'header.nav',
+      padding: '10px'
     }}>
       <Box sx={{
         display: 'flex',
@@ -73,7 +74,7 @@ function AppBar() {
         justifyContent: 'center',
         gap: 2
       }} >
-        <AppsOutlinedIcon sx={{}} />
+        <AppsOutlinedIcon sx={{ color: 'text.primary' }} />
         <Box sx={{
           display: 'flex',
           alignItems: 'center',
@@ -81,7 +82,7 @@ function AppBar() {
           gap: 0.5,
           color: 'text.primary'
         }}>
-          <SvgIcon component={trello} inheritViewBox />
+          <SvgIcon component={trello} sx={{ color: 'text.primary' }} inheritViewBox />
           <Typography variant='span' sx={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'text.primary' }}>QLLO</Typography>
         </Box>
         <WorkSpace />
@@ -109,21 +110,28 @@ function AppBar() {
             inputProps={{ 'aria-label': 'search' }}
           />
         </Search>
-        <ThemeSwitcher />
+        <Box sx ={{ mx : 2 }}>
+          <ThemeSwitcher />
+        </Box>
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 1.5
+        }}>
+          <Tooltip title="Noti" placement="top">
+            <Badge badgeContent={4} color="primary" sx={{ cursor: 'pointer' }}>
 
-        <Tooltip title="Noti" placement="top">
-          <Badge badgeContent={4} color="primary" sx={{ cursor: 'pointer' }}>
-
-            <NotificationsNoneIcon color="action" />
-          </Badge>
-        </Tooltip>
-        <Tooltip title="Noti" placement="top">
-          <Badge badgeContent={4} color="primary" sx={{ cursor: 'pointer' }}>
-            <HelpOutlineIcon color="action" />
-          </Badge>
-        </Tooltip>
-        <Profiles />
-
+              <NotificationsNoneIcon />
+            </Badge>
+          </Tooltip>
+          <Tooltip title="Noti" placement="top">
+            <Badge badgeContent={4} color="primary" sx={{ cursor: 'pointer' }}>
+              <HelpOutlineIcon />
+            </Badge>
+          </Tooltip>
+          <Profiles />
+        </Box>
       </Box>
     </Box>
   )

@@ -48,6 +48,7 @@ export default function AccountMenu() {
             overflow: 'visible',
             filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
             mt: 1.5,
+            background : 'blue',
             '& .MuiAvatar-root': {
               width: 32,
               height: 32,

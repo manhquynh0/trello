@@ -31,7 +31,6 @@ function Starred() {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
         endIcon={<KeyboardArrowDownRoundedIcon/>}
-        sx ={{color : 'black'}}
       >
         Starreds
       </Button>

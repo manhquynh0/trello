@@ -12,7 +12,7 @@ import ContentPaste from '@mui/icons-material/ContentPaste'
 import Cloud from '@mui/icons-material/Cloud'
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded'
 import Box from '@mui/material/Box'
-function WorkSpace() {
+function WorkSpace({ sx }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -30,8 +30,7 @@ function WorkSpace() {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
-        endIcon={<KeyboardArrowDownRoundedIcon/>}
-        sx ={{color : 'black'}}
+        endIcon={<KeyboardArrowDownRoundedIcon />}
       >
         WorkSpaces
       </Button>
