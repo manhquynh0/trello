@@ -113,8 +113,32 @@ const theme = extendTheme({
           }
         })
       }
+    },
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          '*::-webkit-scrollbar': {
+            width: '10px',
+            height: '10px'
+          },
+          /* Track */
+          '*::-webkit-scrollbar-track': {
+            background: '#1E293B'
+          },
+          /* Handle */
+          '*::-webkit-scrollbar-thumb': {
+            background: '#0F172A',
+            borderRadius : '8px'
+          },
+          /* Handle on hover */
+          '*::-webkit-scrollbar-thumb:hover': {
+            background: '#555'
+          }
+        }
+      }
     }
   }
+
   // ...other properties
 })
 export default theme

@@ -65,8 +65,9 @@ function AppBar() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      backgroundColor: 'header.nav',
-      padding: '10px'
+      backgroundColor: 'background.paper',
+      padding: '10px',
+      overflowX: 'auto'
     }}>
       <Box sx={{
         display: 'flex',
@@ -83,36 +84,44 @@ function AppBar() {
           color: 'text.primary'
         }}>
           <SvgIcon component={trello} sx={{ color: 'text.primary' }} inheritViewBox />
-          <Typography variant='span' sx={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'text.primary' }}>QLLO</Typography>
+          <Typography variant='span' sx={{ display: { xs: 'none', sm: 'block' }, fontSize: '1.2rem', fontWeight: 'bold', color: 'text.primary' }}>QLLO</Typography>
         </Box>
-        <WorkSpace />
-        <Rencent />
-        <Starred />
-        <Template />
-        <Button variant="contained" color="success">
-          Create
-        </Button>
+        <Box sx={{
+          display: { xs: 'none', sm: 'flex' },
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 1,
+          xs: 'none'
+        }}>
+          <WorkSpace />
+          <Rencent />
+          <Starred />
+          <Template />
+          <Button variant="contained" color="success">
+            Create
+          </Button>
+        </Box>
+
       </Box>
-      <Box>ManhQuynhDev</Box>
+
+      <Search sx={{ width: { xs: '120px', sm :'auto' }, ml: 2 }}>
+        <SearchIconWrapper>
+          <SearchIcon sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' } }} />
+        </SearchIconWrapper>
+        <StyledInputBase
+          placeholder="Search…"
+          inputProps={{ 'aria-label': 'search' }}
+        />
+      </Search>
       <Box sx={{
+        mx: 2,
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
-        gap: 0.5,
-        color: 'text.primary'
+        alignItems: 'center',
+        gap: 1.5
       }}>
-        <Search>
-          <SearchIconWrapper>
-            <SearchIcon />
-          </SearchIconWrapper>
-          <StyledInputBase
-            placeholder="Search…"
-            inputProps={{ 'aria-label': 'search' }}
-          />
-        </Search>
-        <Box sx ={{ mx : 2 }}>
-          <ThemeSwitcher />
-        </Box>
+        <ThemeSwitcher />
+
         <Box sx={{
           display: 'flex',
           justifyContent: 'center',
