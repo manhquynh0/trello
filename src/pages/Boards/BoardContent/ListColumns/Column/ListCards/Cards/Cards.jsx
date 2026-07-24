@@ -26,15 +26,54 @@ const ExpandMore = styled((props) => {
     duration: theme.transitions.duration.shortest
   })
 }))
-function RecipeReviewCard() {
+function Cards({ temporaryHideMedia }) {
   const [expanded, setExpanded] = React.useState(false)
-
   const handleExpandClick = () => {
     setExpanded(!expanded)
   }
+  if (temporaryHideMedia) {
+    return (
+      < Card sx={{
+        overflow: 'unset',
+        bgcolor: '#1A2540',
+        border: '1px solid #2A3655',
+        borderRadius: 2,
+        transition: 'all 0.2s ease-in-out',
+        cursor: 'pointer',
+        '&:hover': {
+          bgcolor: '#22304F',
+          borderColor: '#3A4A72',
+          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.45)'
+        }
+      }}>
+        <CardContent>
+          <Typography variant="body2" color="text.primary">
+            ManhQuynhDev - A person Developer
+          </Typography>
+        </CardContent>
+      </Card>
+
+    )
+  }
 
   return (
-    <Card sx={{ overflow : 'unset' }}>
+    <Card
+      sx={{
+        overflow: 'unset',
+        bgcolor: '#1A2540',
+        border: '1px solid #2A3655',
+        borderRadius: 2,
+        transition: 'all 0.2s ease-in-out',
+        cursor: 'pointer',
+        '&:hover': {
+          bgcolor: '#22304F',
+          borderColor: '#3A4A72',
+          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.45)'
+        }
+      }}
+    >
       <CardHeader
         avatar={
           <Avatar src="https://i.pinimg.com/originals/67/5d/d8/675dd8842204ac6abf1a596e2dd43208.png" sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -55,7 +94,7 @@ function RecipeReviewCard() {
         image="https://i.pinimg.com/originals/67/5d/d8/675dd8842204ac6abf1a596e2dd43208.png"
         alt="Paella dish"
       />
-      <CardContent>
+      <CardContent >
         <Typography variant="body2" color="text.primary">
           ManhQuynhDev - A person Developer
         </Typography>
@@ -67,7 +106,7 @@ function RecipeReviewCard() {
         <Button size='small' startIcon={<ChatOutlinedIcon />} aria-label="add to favorites">
           36
         </Button>
-        <Button size='small' startIcon={<AttachmentOutlinedIcon/>} aria-label="add to favorites">
+        <Button size='small' startIcon={<AttachmentOutlinedIcon />} aria-label="add to favorites">
           18
         </Button>
         <ExpandMore
@@ -101,7 +140,7 @@ function RecipeReviewCard() {
             15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and
             mussels, tucking them down into the rice, and cook again without
             stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don&apost open.)
+            minutes more. (Discard any mussels that don&apos;t open.)
           </Typography>
           <Typography>
             Set aside off of the heat to let rest for 10 minutes, and then serve.
@@ -111,4 +150,4 @@ function RecipeReviewCard() {
     </Card>
   )
 }
-export default RecipeReviewCard
+export default Cards

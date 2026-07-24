@@ -136,6 +136,15 @@ const theme = extendTheme({
         })
       }
     },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          '&:last-child': {
+            paddingBottom: '12px'
+          }
+        }
+      }
+    },
     MuiCssBaseline: {
       styleOverrides: {
         body: {
