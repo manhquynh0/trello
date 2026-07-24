@@ -53,8 +53,8 @@ const theme = extendTheme({
           color: theme.palette.text.primary,
           fontSize: '1rem',
           '&:hover': {
-            color: theme.palette.text.secondary,
-            backgroundColor: 'rgba(255,255,255,.08)'
+            // color: theme.palette.text.secondary,
+            // backgroundColor: 'rgba(255,255,255,.08)'
           }
         })
       }
@@ -87,7 +87,7 @@ const theme = extendTheme({
         root: ({
           theme
         }) => ({
-          color: theme.palette.text.secondary,
+          color: theme.palette.text.primary,
           fontSize: '1.6rem',
 
           '&:hover': {

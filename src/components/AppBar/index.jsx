@@ -97,22 +97,17 @@ function AppBar() {
           <Rencent />
           <Starred />
           <Template />
-          <Button variant="contained" color="success">
+          <Button variant="contained" color="success" sx={{
+            backgroundColor: '#16A34A', // màu mặc định khi chưa hover
+            '&:hover': {
+              backgroundColor: '#22C55E'// sáng hơn khi hover
+            }
+          }}>
             Create
           </Button>
         </Box>
 
       </Box>
-
-      <Search sx={{ width: { xs: '120px', sm :'auto' }, ml: 2 }}>
-        <SearchIconWrapper>
-          <SearchIcon sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' } }} />
-        </SearchIconWrapper>
-        <StyledInputBase
-          placeholder="Search…"
-          inputProps={{ 'aria-label': 'search' }}
-        />
-      </Search>
       <Box sx={{
         mx: 2,
         display: 'flex',
@@ -120,26 +115,43 @@ function AppBar() {
         alignItems: 'center',
         gap: 1.5
       }}>
-        <ThemeSwitcher />
-
+        <Search sx={{ width: { xs: '120px', sm: 'auto' }, ml: 2 }}>
+          <SearchIconWrapper>
+            <SearchIcon sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' } }} />
+          </SearchIconWrapper>
+          <StyledInputBase
+            placeholder="Search…"
+            inputProps={{ 'aria-label': 'search' }}
+          />
+        </Search>
         <Box sx={{
+          mx: 2,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           gap: 1.5
         }}>
-          <Tooltip title="Noti" placement="top">
-            <Badge badgeContent={4} color="primary" sx={{ cursor: 'pointer' }}>
+          <ThemeSwitcher />
 
-              <NotificationsNoneIcon />
-            </Badge>
-          </Tooltip>
-          <Tooltip title="Noti" placement="top">
-            <Badge badgeContent={4} color="primary" sx={{ cursor: 'pointer' }}>
-              <HelpOutlineIcon />
-            </Badge>
-          </Tooltip>
-          <Profiles />
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 1.5
+          }}>
+            <Tooltip title="Noti" placement="top">
+              <Badge badgeContent={4} color="primary" sx={{ cursor: 'pointer' }}>
+
+                <NotificationsNoneIcon />
+              </Badge>
+            </Tooltip>
+            <Tooltip title="Noti" placement="top">
+              <Badge badgeContent={4} color="primary" sx={{ cursor: 'pointer' }}>
+                <HelpOutlineIcon />
+              </Badge>
+            </Tooltip>
+            <Profiles />
+          </Box>
         </Box>
       </Box>
     </Box>
