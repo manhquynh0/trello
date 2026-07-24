@@ -14,7 +14,7 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
 const MENU_STYLES = {
   padding: '6px'
 }
-function BoardBar() {
+function BoardBar({ board }) {
   return (
     <Box sx={{
       display: 'flex',
@@ -38,7 +38,7 @@ function BoardBar() {
         }} >
           <Chip
             icon={<GridViewRoundedIcon />}
-            label="ManhQuynhDev"
+            label={board?.title}
             clickable
             sx={MENU_STYLES}
           />

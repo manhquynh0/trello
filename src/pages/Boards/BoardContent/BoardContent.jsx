@@ -2,7 +2,8 @@
 
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
-function BoardConetent() {
+
+function BoardContent() {
 
   return (
     <Box sx={{
@@ -17,4 +18,4 @@ function BoardConetent() {
   )
 }
 
-export default BoardConetent
+export default BoardContent

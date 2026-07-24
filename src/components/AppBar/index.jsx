@@ -2,7 +2,7 @@
 import Box from '@mui/material/Box'
 import ThemeSwitcher from '~/components/ModeSelect'
 import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined'
-import { ReactComponent as trello } from '~/assets/trello.svg'
+import trello from '~/assets/trello.svg?react'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
 import WorkSpace from './Menu/WorkSpace'
