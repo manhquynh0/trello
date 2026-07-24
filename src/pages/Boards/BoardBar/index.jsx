@@ -20,7 +20,7 @@ function BoardBar() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      backgroundColor: 'rgba(144, 202, 249, 0.16)',
+      bgcolor: '#0F1626',
       padding: '10px',
       overflowX: 'auto',
       gap: 2

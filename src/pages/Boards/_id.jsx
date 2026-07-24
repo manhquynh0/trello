@@ -6,7 +6,7 @@ import AppBar from '~/components/AppBar'
 import BoardContent from './BoardContent'
 function Board() {
   return (
-    <Container disableGutters maxWidth={false} sx={{ height: '100vh', backgroundColor: 'primary.main' }}>
+    <Container disableGutters maxWidth={false} sx={{ height: '100vh', backgroundColor: 'background.default' }}>
       <AppBar />
       <BoardBar />
       <BoardContent />

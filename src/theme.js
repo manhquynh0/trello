@@ -2,7 +2,15 @@ import {
   experimental_extendTheme as extendTheme
 } from '@mui/material/styles'
 // Create a theme instance.
+const APP_BAR_HEIGHT = '60px'
+const BOARD_BAR_HEIGHT = '65px'
+const BOARD_CONTENT_HEIGHT = `calc(100vh - ${APP_BAR_HEIGHT} - ${BOARD_BAR_HEIGHT})`
 const theme = extendTheme({
+  trello: {
+    appBarHeight: APP_BAR_HEIGHT,
+    boardBarHeight: BOARD_BAR_HEIGHT,
+    boardContentHeight: BOARD_CONTENT_HEIGHT
+  },
   colorSchemes: {
     light: {
       palette: {
@@ -14,30 +22,35 @@ const theme = extendTheme({
     dark: {
       palette: {
         background: {
-          default: '#0F172A',
-          paper: '#1E293B'
+          default: '#0F172A', // nền chính
+          paper: '#1A2540' // card, sidebar, menu
         },
+
         text: {
-          primary: '#F1F5F9',
-          secondary: '#94A3B8',
-          disabled: '#475569'
+          primary: '#F8FAFC',
+          secondary: '#CBD5E1',
+          disabled: '#64748B'
         },
+
         primary: {
-          main: '#0F172A',
-          light: '#BBDEFB',
-          dark: '#42A5F5',
-          contrastText: '#0F172A'
+          main: '#3B82F6', // xanh dương nổi bật
+          light: '#60A5FA',
+          dark: '#2563EB',
+          contrastText: '#FFFFFF'
         },
+
         secondary: {
-          main: '#F472B6',
-          contrastText: '#0F172A'
+          main: '#EC4899', // hồng
+          contrastText: '#FFFFFF'
         },
-        divider: 'rgba(248, 250, 252, 0.12)',
+
+        divider: 'rgba(255,255,255,0.08)',
+
         action: {
-          hover: 'rgba(144, 202, 249, 0.08)',
-          selected: 'rgba(144, 202, 249, 0.16)',
-          disabled: 'rgba(148, 163, 184, 0.3)',
-          disabledBackground: 'rgba(148, 163, 184, 0.12)'
+          hover: 'rgba(59,130,246,0.12)',
+          selected: 'rgba(59,130,246,0.20)',
+          disabled: 'rgba(148,163,184,0.30)',
+          disabledBackground: 'rgba(148,163,184,0.12)'
         }
       }
     }
@@ -79,6 +92,15 @@ const theme = extendTheme({
         badge: {
           backgroundColor: '#F59E0B',
           color: '#fff'
+        }
+      }
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          '&.MuiTypography-body2': {
+            fontSize: '0.875rem'
+          }
         }
       }
     },
@@ -128,7 +150,7 @@ const theme = extendTheme({
           /* Handle */
           '*::-webkit-scrollbar-thumb': {
             background: '#0F172A',
-            borderRadius : '8px'
+            borderRadius: '8px'
           },
           /* Handle on hover */
           '*::-webkit-scrollbar-thumb:hover': {
