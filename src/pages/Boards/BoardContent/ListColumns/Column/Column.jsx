@@ -15,10 +15,13 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import AddCardIcon from '@mui/icons-material/AddCard'
 import Button from '@mui/material/Button'
-import PanToolIcon from '@mui/icons-material/PanTool'
 import ListCards from './ListCards/ListCards'
 const COLUMN_HEADER_HEIGHT = '50px'
 const COLUMN_FOOTER_HEIGHT = '60px'
+import { mapOrder } from '~/utils/sort'
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
 function Column({ column }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
@@ -28,130 +31,148 @@ function Column({ column }) {
   const handleClose = () => {
     setAnchorEl(null)
   }
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: column._id,
+    data: { ...column }
+  });
+  const dndKitColumnStyles = {
+
+    // touchAction : 'none',
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity : isDragging ? 0.5 : undefined
+  };
+  const orderedCards = mapOrder(column?.cards, column?.carOrderIds, '_id')
   return (
-    <Box sx={{
-      minWidth: '300px',
-      maxWidth: '300px',
-      ml: 2,
-      borderRadius: '6px',
-      bgcolor: 'background.paper',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%',
-      maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)})`
-    }} >
-      {/* Header */}
+    <div ref={setNodeRef}
+      style={dndKitColumnStyles}
+      {...attributes}
+    >
       <Box
+        {...listeners}
         sx={{
-          p: 2,
-          height: COLUMN_HEADER_HEIGHT + 24 // tăng chiều cao nếu cần
-        }}
-      >
-        <Typography
-          variant="caption"
-          color="text.secondary"
-          sx={{ mb: 1 }}
-        >
-          {new Date().toLocaleDateString('vi-VN')}
-        </Typography>
+          minWidth: '300px',
+          maxWidth: '300px',
+          ml: 2,
+          borderRadius: '6px',
+          bgcolor: 'background.paper',
+          display: 'flex',
+          flexDirection: 'column',
+          height: 'fit-content',
+          maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)})`
+        }} >
+        {/* Header */}
         <Box
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
+            p: 2,
+            height: COLUMN_HEADER_HEIGHT + 24 // tăng chiều cao nếu cần
           }}
         >
-          <Typography variant='h6' sx={{
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}>
-            {column.title}
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ mb: 1 }}
+          >
+            {new Date().toLocaleDateString('vi-VN')}
           </Typography>
-          <Box>
-            <Tooltip title="More" placement="top">
-              <KeyboardArrowDownRoundedIcon id="basic-button-workspaces"
-                sx={{ color: 'text.primary', cursor: 'pointer' }}
-                aria-controls={open ? 'basic-menu-workspaces' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick} />
-            </Tooltip>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
+            <Typography variant='h6' sx={{
+              fontWeight: 'bold',
+              cursor: 'pointer'
+            }}>
+              {column.title}
+            </Typography>
+            <Box>
+              <Tooltip title="More" placement="top">
+                <KeyboardArrowDownRoundedIcon id="basic-button-workspaces"
+                  sx={{ color: 'text.primary', cursor: 'pointer' }}
+                  aria-controls={open ? 'basic-menu-workspaces' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                  onClick={handleClick} />
+              </Tooltip>
 
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button-workspaces'
-              }}
-            >
-              <MenuItem>
-                <ListItemIcon>
-                  <AddCardIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>ADD CARD</ListItemText>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button-workspaces'
+                }}
+              >
+                <MenuItem>
+                  <ListItemIcon>
+                    <AddCardIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>ADD CARD</ListItemText>
 
-              </MenuItem>
-              <MenuItem>
-                <ListItemIcon>
-                  <ContentCut fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Cut</ListItemText>
+                </MenuItem>
+                <MenuItem>
+                  <ListItemIcon>
+                    <ContentCut fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Cut</ListItemText>
 
-              </MenuItem>
-              <MenuItem>
-                <ListItemIcon>
-                  <ContentCopy fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Copy</ListItemText>
+                </MenuItem>
+                <MenuItem>
+                  <ListItemIcon>
+                    <ContentCopy fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Copy</ListItemText>
 
-              </MenuItem>
-              <MenuItem>
-                <ListItemIcon>
-                  <ContentPaste fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Paste</ListItemText>
+                </MenuItem>
+                <MenuItem>
+                  <ListItemIcon>
+                    <ContentPaste fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Paste</ListItemText>
 
-              </MenuItem>
-              <Divider />
-              <MenuItem>
-                <ListItemIcon>
-                  <Cloud fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Web Clipboard</ListItemText>
-              </MenuItem>
-              <MenuItem>
-                <ListItemIcon>
-                  <DeleteRoundedIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Remove Column</ListItemText>
-              </MenuItem>
-            </Menu>
+                </MenuItem>
+                <Divider />
+                <MenuItem>
+                  <ListItemIcon>
+                    <Cloud fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Web Clipboard</ListItemText>
+                </MenuItem>
+                <MenuItem>
+                  <ListItemIcon>
+                    <DeleteRoundedIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Remove Column</ListItemText>
+                </MenuItem>
+              </Menu>
+            </Box>
           </Box>
         </Box>
-      </Box>
 
-      {/* End Header */}
+        {/* End Header */}
 
-      {/* Main */}
-      <ListCards cards={column.cards} />
-      {/* End Main */}
+        {/* Main */}
+        <ListCards cards={column.cards} />
+        {/* End Main */}
 
-      {/* Footer */}
-      <Box sx={{
-        p: 2,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: COLUMN_FOOTER_HEIGHT
-      }}>
-        <Button startIcon={<AddCardIcon />}>Add New Card </Button>
-      </Box>
-      {/* End Footer */}
+        {/* Footer */}
+        <Box sx={{
+          p: 2,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: COLUMN_FOOTER_HEIGHT
+        }}>
+          <Button startIcon={<AddCardIcon />}>Add New Card </Button>
+        </Box>
+        {/* End Footer */}
 
-    </Box >
-
+      </Box >
+    </div>
 
   )
 
