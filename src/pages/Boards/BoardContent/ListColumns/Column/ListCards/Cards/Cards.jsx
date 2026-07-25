@@ -1,21 +1,19 @@
 import * as React from 'react'
 import { styled } from '@mui/material/styles'
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import Collapse from '@mui/material/Collapse'
-import Avatar from '@mui/material/Avatar'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import { red } from '@mui/material/colors'
 import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
 import Button from '@mui/material/Button'
 import AttachmentOutlinedIcon from '@mui/icons-material/AttachmentOutlined'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props
   return <IconButton {...other} />
@@ -26,16 +24,34 @@ const ExpandMore = styled((props) => {
     duration: theme.transitions.duration.shortest
   })
 }))
+
 function Cards({ card }) {
   const [expanded, setExpanded] = React.useState(false)
   const handleExpandClick = () => {
     setExpanded(!expanded)
   }
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: card?._id,
+    data: { ...card }
+  });
+
+  const dndKitColumnStyles = {
+    // touchAction : 'none',
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined
+  }
+
   const ShouldShowCardActions = () => {
-    return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length || !!card?.description?.lenght
+    return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length || !!card?.description?.length
   }
   return (
     <Card
+      ref={setNodeRef}
+      style={dndKitColumnStyles}
+      {...attributes}
+      {...listeners}
       sx={{
         overflow: 'unset',
         bgcolor: '#1A2540',
