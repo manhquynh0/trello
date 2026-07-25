@@ -3,7 +3,7 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 
-function BoardContent() {
+function BoardContent({board}) {
 
   return (
     <Box sx={{
@@ -13,7 +13,7 @@ function BoardContent() {
       // backgroundColor: 'rgba(144, 202, 249, 0.16)',
       p: '10px 0'
     }}>
-      <ListColumns/>
+    <ListColumns columns = {board?.columns} />
     </Box>
   )
 }

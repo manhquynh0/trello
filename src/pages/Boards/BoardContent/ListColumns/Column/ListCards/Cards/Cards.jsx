@@ -26,37 +26,14 @@ const ExpandMore = styled((props) => {
     duration: theme.transitions.duration.shortest
   })
 }))
-function Cards({ temporaryHideMedia }) {
+function Cards({ card }) {
   const [expanded, setExpanded] = React.useState(false)
   const handleExpandClick = () => {
     setExpanded(!expanded)
   }
-  if (temporaryHideMedia) {
-    return (
-      < Card sx={{
-        overflow: 'unset',
-        bgcolor: '#1A2540',
-        border: '1px solid #2A3655',
-        borderRadius: 2,
-        transition: 'all 0.2s ease-in-out',
-        cursor: 'pointer',
-        '&:hover': {
-          bgcolor: '#22304F',
-          borderColor: '#3A4A72',
-          transform: 'translateY(-4px)',
-          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.45)'
-        }
-      }}>
-        <CardContent>
-          <Typography variant="body2" color="text.primary">
-            ManhQuynhDev - A person Developer
-          </Typography>
-        </CardContent>
-      </Card>
-
-    )
+  const ShouldShowCardActions = () => {
+    return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length || !!card?.description?.lenght
   }
-
   return (
     <Card
       sx={{
@@ -64,6 +41,7 @@ function Cards({ temporaryHideMedia }) {
         bgcolor: '#1A2540',
         border: '1px solid #2A3655',
         borderRadius: 2,
+        width: '100%',
         transition: 'all 0.2s ease-in-out',
         cursor: 'pointer',
         '&:hover': {
@@ -74,50 +52,45 @@ function Cards({ temporaryHideMedia }) {
         }
       }}
     >
-      <CardHeader
-        avatar={
-          <Avatar src="https://i.pinimg.com/originals/67/5d/d8/675dd8842204ac6abf1a596e2dd43208.png" sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title="Huan Hoa Hong"
-        subheader="September 14, 2026"
-      />
-      <CardMedia
-        component="img"
-        height="194"
-        image="https://i.pinimg.com/originals/67/5d/d8/675dd8842204ac6abf1a596e2dd43208.png"
-        alt="Paella dish"
-      />
+      {card?.cover && (
+        <CardMedia
+          component="img"
+          image={card.cover}
+          alt={card.title}
+          sx={{
+            height: 160,
+            objectFit: 'cover',
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8
+          }}
+        />
+      )}
+
       <CardContent >
         <Typography variant="body2" color="text.primary">
-          ManhQuynhDev - A person Developer
+          {card?.title}
         </Typography>
       </CardContent>
-      <CardActions disableSpacing>
-        <Button size='small' startIcon={<PeopleOutlineIcon />} aria-label="add to favorites">
-          20
-        </Button>
-        <Button size='small' startIcon={<ChatOutlinedIcon />} aria-label="add to favorites">
-          36
-        </Button>
-        <Button size='small' startIcon={<AttachmentOutlinedIcon />} aria-label="add to favorites">
-          18
-        </Button>
-        <ExpandMore
+      {ShouldShowCardActions() && <CardActions disableSpacing>
+        {!!card?.memberIds?.length && <Button size='small' startIcon={<PeopleOutlineIcon />} aria-label="add to favorites">
+          {card?.memberIds?.length}
+        </Button>}
+        {!!card?.comments?.length && <Button size='small' startIcon={<ChatOutlinedIcon />} aria-label="add to favorites">
+          {card?.comments?.length}
+        </Button>}
+        {!!card?.attachments?.length && <Button size='small' startIcon={<AttachmentOutlinedIcon />} aria-label="add to favorites">
+          {card?.attachments?.length}
+        </Button>}
+        {!!card?.description?.length && <ExpandMore
           expand={expanded}
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show more"
         >
           <ExpandMoreIcon />
-        </ExpandMore>
-      </CardActions>
+        </ExpandMore>}
+
+      </CardActions>}
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>Method:</Typography>

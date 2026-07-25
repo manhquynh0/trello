@@ -19,7 +19,7 @@ import PanToolIcon from '@mui/icons-material/PanTool'
 import ListCards from './ListCards/ListCards'
 const COLUMN_HEADER_HEIGHT = '50px'
 const COLUMN_FOOTER_HEIGHT = '60px'
-function Column() {
+function Column({ column }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
@@ -30,95 +30,112 @@ function Column() {
   }
   return (
     <Box sx={{
+      minWidth: '300px',
       maxWidth: '300px',
       ml: 2,
       borderRadius: '6px',
       bgcolor: 'background.paper',
-      height: 'fit-content',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
       maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)})`
     }} >
       {/* Header */}
-      < Box sx={{
-        p: 2,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: COLUMN_HEADER_HEIGHT
-
-      }}>
-        <Typography variant='h6' sx={{
-          fontWeight: 'bold',
-          cursor: 'pointer'
-        }}>
-          Column Title
+      <Box
+        sx={{
+          p: 2,
+          height: COLUMN_HEADER_HEIGHT + 24 // tăng chiều cao nếu cần
+        }}
+      >
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ mb: 1 }}
+        >
+          {new Date().toLocaleDateString('vi-VN')}
         </Typography>
-        <Box>
-          <Tooltip title="More" placement="top">
-            <KeyboardArrowDownRoundedIcon id="basic-button-workspaces"
-              sx={{ color: 'text.primary', cursor: 'pointer' }}
-              aria-controls={open ? 'basic-menu-workspaces' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              onClick={handleClick} />
-          </Tooltip>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Typography variant='h6' sx={{
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}>
+            {column.title}
+          </Typography>
+          <Box>
+            <Tooltip title="More" placement="top">
+              <KeyboardArrowDownRoundedIcon id="basic-button-workspaces"
+                sx={{ color: 'text.primary', cursor: 'pointer' }}
+                aria-controls={open ? 'basic-menu-workspaces' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick} />
+            </Tooltip>
 
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              'aria-labelledby': 'basic-button-workspaces'
-            }}
-          >
-            <MenuItem>
-              <ListItemIcon>
-                <AddCardIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>ADD CARD</ListItemText>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button-workspaces'
+              }}
+            >
+              <MenuItem>
+                <ListItemIcon>
+                  <AddCardIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>ADD CARD</ListItemText>
 
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <ContentCut fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Cut</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon>
+                  <ContentCut fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Cut</ListItemText>
 
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <ContentCopy fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Copy</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon>
+                  <ContentCopy fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Copy</ListItemText>
 
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <ContentPaste fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Paste</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon>
+                  <ContentPaste fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Paste</ListItemText>
 
-            </MenuItem>
-            <Divider />
-            <MenuItem>
-              <ListItemIcon>
-                <Cloud fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Web Clipboard</ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <DeleteRoundedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Remove Column</ListItemText>
-            </MenuItem>
-          </Menu>
+              </MenuItem>
+              <Divider />
+              <MenuItem>
+                <ListItemIcon>
+                  <Cloud fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Web Clipboard</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon>
+                  <DeleteRoundedIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Remove Column</ListItemText>
+              </MenuItem>
+            </Menu>
+          </Box>
         </Box>
       </Box>
+
       {/* End Header */}
 
       {/* Main */}
-      <ListCards />
+      <ListCards cards={column.cards} />
       {/* End Main */}
 
       {/* Footer */}
@@ -130,9 +147,6 @@ function Column() {
         height: COLUMN_FOOTER_HEIGHT
       }}>
         <Button startIcon={<AddCardIcon />}>Add New Card </Button>
-        <Tooltip title="Drag to Move" placement="top">
-          <PanToolIcon />
-        </Tooltip>
       </Box>
       {/* End Footer */}
 

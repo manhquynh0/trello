@@ -11,8 +11,9 @@ import AvatarGroup from '@mui/material/AvatarGroup'
 import Tooltip from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
+import { UpperCaseFirstLetter } from '~/utils/UpperCaseFirstLetter'
 const MENU_STYLES = {
-  padding: '6px'
+  padding: 1
 }
 function BoardBar({ board }) {
   return (
@@ -34,7 +35,7 @@ function BoardBar({ board }) {
         <Box sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }} >
           <Chip
             icon={<GridViewRoundedIcon />}
@@ -50,7 +51,7 @@ function BoardBar({ board }) {
         }} >
           <Chip
             icon={<VpnLockIcon />}
-            label="Public/Private WorkSpcae"
+            label= {UpperCaseFirstLetter(board?.type)}
             clickable
             sx={MENU_STYLES}
           />
