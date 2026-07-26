@@ -47,9 +47,10 @@ function BoardContent({ board }) {
   const [orderedColumns, setOrderedColumnState] = useState([])
 
   // 1 thoi diem chi co 1 phan tu dc keo
-  const [activeDragItemId, setactiveDragItemId] = useState([])
-  const [activeDragItemTye, setactiveDragItemType] = useState([])
-  const [activeDragItemData, setactiveDragItemData] = useState([])
+  const [activeDragItemId, setactiveDragItemId] = useState(null)
+  const [activeDragItemTye, setactiveDragItemType] = useState(null)
+  const [activeDragItemData, setactiveDragItemData] = useState(null)
+  const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState(null)
 
   useEffect(() => {
     setOrderedColumnState(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
@@ -63,6 +64,11 @@ function BoardContent({ board }) {
     setactiveDragItemId(event?.active?.id)
     setactiveDragItemType(event?.active?.data?.current?.columnId ? ACTIVE_DRAG_ITEM_TYPE.CARD : ACTIVE_DRAG_ITEM_TYPE.COLUMN)
     setactiveDragItemData(event?.active?.data?.current)
+
+    if (event?.active?.data?.current?.columnId) {
+      setOldColumnWhenDraggingCard(findColumnByCardId(event?.active?.id))
+
+    }
   }
   const handleDragOver = (event) => {
     // No action when drag the cloumn
@@ -127,26 +133,64 @@ function BoardContent({ board }) {
 
   }
   const handleDragEnd = (event) => {
-    // if (activeDragItemTye === ACTIVE_DRAG_ITEM_TYPE.CARD) {
-    //   console.log('Hanh dong keo tha tam thoi khong lam gi ca')
-    // }
     const { active, over } = event
     // không tồn tại activce or over thì không làm gì ( khi kéo ra khỏi container để tránh crash trang)
     if (!active || !over) return
+    // Xu ly keo tha card
+    if (activeDragItemTye === ACTIVE_DRAG_ITEM_TYPE.CARD) {
 
-    if (active.id !== over.id) {
+      // activeDraggingCardId : Là Card đang được kéo
+      const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
+      // OverCard : Là Card đang được tương tác trên hoặc dưới so với card được kéo ở trên
+      const { id: overCardId } = over
 
-      const oldIndex = orderedColumns.findIndex(c => c._id === active.id)
-      const newIndex = orderedColumns.findIndex(c => c._id === over.id)
+      // Tìm 2 cái columns theo CardId
+      const activeColumn = findColumnByCardId(activeDraggingCardId)
+      const overColumn = findColumnByCardId(overCardId)
+      // console.log(activeColumn)
+      // console.log(overColumn)
+      // Neu khong ton tai thi khong lam gi hett
+      if (!activeColumn || !overColumn) return
 
-      const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
-      setOrderedColumnState(dndOrderedColumns)
+      if (oldColumnWhenDraggingCard._id !== overColumn._id) {
+        console.log('Hanh dong keo tha card giua 2 column khac nhau')
+      }
+      else {
+        const oldIndex = oldColumnWhenDraggingCard?.cards?.findIndex(c => c._id === activeDragItemId)
+        const newIndex = overColumn?.cards?.findIndex(c => c._id === overCardId)
+        const dndOrderedCards = arrayMove(oldColumnWhenDraggingCard?.cards, oldIndex, newIndex)
+        setOrderedColumnState(preColumns => {
+          const nextColumns = cloneDeep(preColumns)
+          // Tim toi column ma chung ta dang tha
+          const targetColumn = nextColumns.find(column => column._id === overColumn._id)
+
+          //cap nhat 2 gia tri moi la card va cardorederIds trong targetColumn
+          targetColumn.cards = dndOrderedCards
+          targetColumn.cardOrderIds = dndOrderedCards.map(card => card._id)
+          return nextColumns
+        })
+      }
+      // Xu ly keo tha column
+      if (activeDragItemTye === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+        if (active.id !== over.id) {
+
+          const oldIndex = orderedColumns.findIndex(c => c._id === active.id)
+          const newIndex = orderedColumns.findIndex(c => c._id === over.id)
+
+          const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
+          setOrderedColumnState(dndOrderedColumns)
+        }
+      }
+
+
+      setactiveDragItemId(null)
+      setactiveDragItemType(null)
+      setactiveDragItemData(null)
+      setOldColumnWhenDraggingCard(null)
+
     }
-    setactiveDragItemId(null)
-    setactiveDragItemType(null)
-    setactiveDragItemData(null)
-
   }
+
   const customdropAnimations = {
     sideEffects: defaultDropAnimationSideEffects({ style: { active: { opacity: '0.5' } } })
   }
