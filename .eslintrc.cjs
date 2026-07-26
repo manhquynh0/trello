@@ -30,7 +30,8 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'warn',
     'react/prop-types': 'off',
     'react/display-name': 'off',
-    // MaterialUI
+
+    // Material UI
     'no-restricted-imports': [
       'error',
       {
@@ -40,24 +41,47 @@ module.exports = {
         }]
       }
     ],
+
+    // General
     'no-console': 'warn',
     'no-lonely-if': 'warn',
     'no-unused-vars': 'warn',
     'no-trailing-spaces': 'warn',
     'no-multi-spaces': 'warn',
     'no-multiple-empty-lines': 'warn',
+
     'space-before-blocks': ['error', 'always'],
     'object-curly-spacing': ['warn', 'always'],
-    'indent': ['warn', 2],
-    'semi': ['warn', 'never'],
-    'quotes': ['error', 'single'],
-    'array-bracket-spacing': 'warn',
-    'linebreak-style': 'off',
-    'no-unexpected-multiline': 'warn',
-    'keyword-spacing': 'warn',
-    'comma-dangle': 'warn',
-    'comma-spacing': 'warn',
-    'arrow-spacing': 'warn',
+    'array-bracket-spacing': ['warn', 'never'],
 
+    'indent': ['warn', 2],
+    'quotes': ['error', 'single'],
+
+    // Không cho phép dấu ;
+    'semi': ['warn', 'never'],
+
+    // Không cho phép dấu , cuối object/array/function...
+    'comma-dangle': ['warn', 'never'],
+
+    // Dấu , phải có khoảng trắng phía sau
+    'comma-spacing': [
+      'warn',
+      {
+        before: false,
+        after: true
+      }
+    ],
+
+    'keyword-spacing': ['warn', {
+      before: true,
+      after: true
+    }],
+    'arrow-spacing': ['warn', {
+      before: true,
+      after: true
+    }],
+
+    'linebreak-style': 'off',
+    'no-unexpected-multiline': 'warn'
   }
 }
