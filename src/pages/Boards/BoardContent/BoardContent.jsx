@@ -2,7 +2,16 @@
 import { mapOrder } from '~/utils/sort'
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
-import { DndContext, PointerSensor, MouseSensor, TouchSensor, useSensor, useSensors, DragOverlay, defaultDropAnimationSideEffects } from '@dnd-kit/core'
+import {
+  DndContext,
+  PointerSensor,
+  MouseSensor,
+  TouchSensor,
+  useSensor, useSensors,
+  DragOverlay,
+  defaultDropAnimationSideEffects,
+  closestCorners
+} from '@dnd-kit/core'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import {
@@ -144,6 +153,7 @@ function BoardContent({ board }) {
   return (
     <DndContext
       sensors={mySensors}
+      collisionDetection={closestCorners}
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
       onDragStart={handleDragStart}>
