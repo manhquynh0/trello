@@ -33,15 +33,16 @@ function Cards({ card }) {
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card?._id,
-    data: { ...card }
-  });
+    data: { ...card },
+    disabled: !!card?.FE_PlaceholderCard
+  })
 
   const dndKitColumnStyles = {
     // touchAction : 'none',
     transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : undefined,
-    border : isDragging ? '1px solid #0F172A ' : undefined
+    border: isDragging ? '1px solid #0F172A ' : undefined
   }
 
   const ShouldShowCardActions = () => {
@@ -54,6 +55,7 @@ function Cards({ card }) {
       {...attributes}
       {...listeners}
       sx={{
+        opacity: card?.FE_PlaceholderCard ? 0 : 1,
         overflow: 'unset',
         bgcolor: '#1A2540',
         border: '1px solid #2A3655',
