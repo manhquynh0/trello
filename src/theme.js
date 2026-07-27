@@ -109,7 +109,7 @@ const theme = extendTheme({
         root: ({
           theme
         }) => ({
-          color: theme.palette.text.primary,
+
           fontSize: '1.6rem',
 
           '&:hover': {

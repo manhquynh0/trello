@@ -14,6 +14,10 @@ import Button from '@mui/material/Button'
 import AttachmentOutlinedIcon from '@mui/icons-material/AttachmentOutlined'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import Checkbox from '@mui/material/Checkbox'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import Box from '@mui/material/Box'
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props
   return <IconButton {...other} />
@@ -86,9 +90,24 @@ function Cards({ card }) {
       )}
 
       <CardContent >
-        <Typography variant="body2" color="text.primary">
-          {card?.title}
-        </Typography>
+        <Box sx={{
+          display: 'flex',
+          // justifyContent: 'space-evenly',
+          alignItems: 'center'
+        }}>
+          <Checkbox
+            icon={<RadioButtonUncheckedIcon />}
+            checkedIcon={<CheckCircleIcon />}
+            sx={{
+              '&.Mui-checked': {
+                color: 'success.main'
+              }
+            }}
+          />
+          <Typography variant="body2" color="text.primary">
+            {card?.title}
+          </Typography>
+        </Box>
       </CardContent>
       {ShouldShowCardActions() && <CardActions disableSpacing>
         {!!card?.memberIds?.length && <Button size='small' startIcon={<PeopleOutlineIcon />} aria-label="add to favorites">

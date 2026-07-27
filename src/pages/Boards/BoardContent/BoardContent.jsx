@@ -269,7 +269,7 @@ function BoardContent({ board }) {
 
 
   }
-// ...trong component
+  // ...trong component
   const lastOverId = useRef(null)
 
   const collisionDetectionStrategy = useCallback((args) => {
