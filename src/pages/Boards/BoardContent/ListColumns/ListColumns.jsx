@@ -19,7 +19,8 @@ function ListColumns({ columns }) {
         gap: 2,
         '&::-webkit-scrollbar-track': {
           m: 2
-        }
+        },
+        m : 2
       }}>
         {columns?.map(column => <Column key={column._id} column={column} />)}
 
