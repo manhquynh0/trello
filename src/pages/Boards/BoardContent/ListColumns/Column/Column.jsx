@@ -23,6 +23,10 @@ import { CSS } from '@dnd-kit/utilities'
 import { styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import TextField from '@mui/material/TextField'
+import CloseIcon from '@mui/icons-material/Close'
+import InputAdornment from '@mui/material/InputAdornment'
+import QueueIcon from '@mui/icons-material/Queue'
 const ExpandMore = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== 'expand'
 })(({ theme, expand }) => ({
@@ -33,7 +37,18 @@ const ExpandMore = styled(IconButton, {
 }))
 function Column({ column }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
-
+  const [openNewCardForm, setOpenNewCardFormmset] = React.useState(false)
+  const toggleOpenNewCardForm = () => {
+    setOpenNewCardFormmset(!openNewCardForm)
+  }
+  const [newCardTitle, setNewCardTitle] = React.useState('')
+  const addNewCard = () => {
+    if (!newCardTitle) {
+      return
+    }
+    toggleOpenNewCardForm()
+    setNewCardTitle('')
+  }
   const open = Boolean(anchorEl)
 
   const handleClick = (event) => {
@@ -48,12 +63,11 @@ function Column({ column }) {
     data: { ...column }
   })
   const dndKitColumnStyles = {
-
     // touchAction : 'none',
     transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : undefined
-  };
+  }
   const orderedCards = mapOrder(column?.cards, column?.carOrderIds, '_id')
   return (
     <div ref={setNodeRef}
@@ -178,9 +192,80 @@ function Column({ column }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          height: COLUMN_FOOTER_HEIGHT
+          minHeight: COLUMN_FOOTER_HEIGHT
         }}>
-          <Button startIcon={<AddCardIcon />}>Add New Card </Button>
+          {!openNewCardForm
+            ?
+            <Button
+              onClick={toggleOpenNewCardForm}
+              startIcon={<QueueIcon sx={{ color: 'inherit' }} />}
+              variant="contained"
+              sx={{
+                backgroundColor: '#16A34A', // màu mặc định khi chưa hover
+                '&:hover': {
+                  backgroundColor: '#22C55E'// sáng hơn khi hover
+                }
+              }}
+            >
+              ADD NEW CARD
+            </Button>
+
+            :
+            <Box sx={{
+              overflow: 'unset',
+              borderRadius: 2,
+              width: '100%',
+              transition: 'all 0.2s ease-in-out',
+              cursor: 'pointer'
+
+
+            }}>
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                mb: 1,
+                width: '100%',
+                gap: 1
+              }}>
+                <TextField
+                  size="small"
+                  id="outlined-basic"
+                  label="Enter Card Title"
+                  variant="outlined"
+                  autoFocus
+                  fullWidth
+                  value={newCardTitle}
+                  onChange={(e) => setNewCardTitle(e.target.value)}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <CloseIcon
+                          fontSize="small"
+                          sx={{ cursor: 'pointer' }}
+                          onClick={toggleOpenNewCardForm}
+                        />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+                <Button
+                  size="small"
+                  onClick={addNewCard}
+                  startIcon={<QueueIcon sx={{ color: 'inherit' }} />}
+                  variant="contained"
+                  sx={{
+                    flexShrink: 0,
+                    backgroundColor: '#16A34A',
+                    '&:hover': { backgroundColor: '#22C55E' }
+                  }}
+                >
+                  ADD
+                </Button>
+              </Box>
+
+
+            </Box>}
+
         </Box>
         {/* End Footer */}
 

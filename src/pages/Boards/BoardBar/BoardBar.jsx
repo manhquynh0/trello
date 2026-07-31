@@ -35,38 +35,44 @@ function BoardBar({ board }) {
         <Box sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'center'
         }} >
-          <Chip
-            icon={<GridViewRoundedIcon />}
-            label={board?.title}
-            clickable
-            sx={MENU_STYLES}
-          />
+          <Tooltip title={board?.description} placement="top">
+            <Chip
+              icon={<GridViewRoundedIcon />}
+              label={board?.title}
+              clickable
+              sx={MENU_STYLES}
+            />
+          </Tooltip>
         </Box>
         <Box sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }} >
-          <Chip
-            icon={<VpnLockIcon />}
-            label= {UpperCaseFirstLetter(board?.type)}
-            clickable
-            sx={MENU_STYLES}
-          />
+          <Tooltip title={board?.title} placement="top">
+            <Chip
+              icon={<VpnLockIcon />}
+              label={UpperCaseFirstLetter(board?.type)}
+              clickable
+              sx={MENU_STYLES}
+            />
+          </Tooltip>
         </Box>
         <Box sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
         }} >
-          <Chip
-            icon={<FlashOnIcon />}
-            label="Automation"
-            clickable
-            sx={MENU_STYLES}
-          />
+          <Tooltip title={board?.title} placement="top">
+            <Chip
+              icon={<FlashOnIcon />}
+              label="Automation"
+              clickable
+              sx={MENU_STYLES}
+            />
+          </Tooltip>
         </Box>
         <Box sx={{
           display: 'flex',
@@ -86,13 +92,16 @@ function BoardBar({ board }) {
           alignItems: 'center',
           justifyContent: 'center'
         }} >
-          <Chip
-            icon={<FilterAltRoundedIcon />}
-            label="Filter"
-            clickable
-            sx={MENU_STYLES}
-          />
+          <Tooltip title={board?.title} placement="top">
+            <Chip
+              icon={<FilterAltRoundedIcon />}
+              label="Filter"
+              clickable
+              sx={MENU_STYLES}
+            />
+          </Tooltip>
         </Box>
+
       </Box>
       <Box sx={{
         display: 'flex',

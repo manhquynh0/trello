@@ -18,6 +18,7 @@ import Checkbox from '@mui/material/Checkbox'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import Box from '@mui/material/Box'
+import { useState } from 'react'
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props
   return <IconButton {...other} />
@@ -34,7 +35,7 @@ function Cards({ card }) {
   const handleExpandClick = () => {
     setExpanded(!expanded)
   }
-
+  const [isChecked, setIsChecked] = useState(false)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card?._id,
     data: { ...card },
@@ -89,22 +90,38 @@ function Cards({ card }) {
         />
       )}
 
-      <CardContent >
-        <Box sx={{
-          display: 'flex',
-          // justifyContent: 'space-evenly',
-          alignItems: 'center'
-        }}>
+      <CardContent sx={{ p: 1, '&:last-child': { pb: 1.5 } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            '&:hover .checkbox-card': { opacity: 1 }
+          }}
+        >
           <Checkbox
+            className="checkbox-card"
+            checked={isChecked}
+            onChange={(e) => setIsChecked(e.target.checked)}
             icon={<RadioButtonUncheckedIcon />}
             checkedIcon={<CheckCircleIcon />}
             sx={{
+              opacity: 0,
+              transition: 'opacity 0.2s ease-in-out, transform 0.2s ease-in-out',
               '&.Mui-checked': {
-                color: 'success.main'
+                opacity: 1,
+                color: 'success.main',
+                transform: 'scale(1.1)'
               }
             }}
           />
-          <Typography variant="body2" color="text.primary">
+          <Typography
+            variant="body2"
+            sx={{
+              color: isChecked ? 'text.disabled' : 'text.primary',
+              textDecoration: isChecked ? 'line-through' : 'none',
+              transition: 'color 0.2s ease-in-out'
+            }}
+          >
             {card?.title}
           </Typography>
         </Box>
