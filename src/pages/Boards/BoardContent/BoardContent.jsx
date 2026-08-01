@@ -27,7 +27,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns }) {
+function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns, moveCards }) {
 
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: {
@@ -58,15 +58,20 @@ function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns }) 
 
   useEffect(() => {
     if (!board) return
+
     const orderedColumnsData = mapOrder(board.columns, board.columnOrderIds, '_id')
-    board.columns?.forEach(column => {
-      if (isEmpty(column.cards)) {
-        column.cards = [generatePlaceholderCard(column)]
-        column.cardOrderIds = [generatePlaceholderCard(column)._id]
+    const sortedColumnsData = orderedColumnsData.map(column => {
+      if (!column) return column
+      const orderedCards = mapOrder(column.cards, column.cardOrderIds, '_id')
+      if (isEmpty(orderedCards)) {
+        const placeholderCard = generatePlaceholderCard(column)
+        return { ...column, cards: [placeholderCard], cardOrderIds: [placeholderCard._id] }
       }
+      return { ...column, cards: orderedCards }
     })
 
-    setOrderedColumnState(orderedColumnsData)
+
+    setOrderedColumnState(sortedColumnsData)
   }, [board])
   // Find column by cardid
   const findColumnByCardId = (cardId) => {
@@ -245,6 +250,7 @@ function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns }) 
           targetColumn.cardOrderIds = dndOrderedCards.map(card => card._id)
           return nextColumns
         })
+        moveCards(overColumn._id, dndOrderedCards)
       }
     }
     // Xu ly keo tha column
@@ -270,13 +276,35 @@ function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns }) 
 
 
   }
-  // ...trong component
   const lastOverId = useRef(null)
 
   const collisionDetectionStrategy = useCallback((args) => {
     // Nếu đang kéo Column, dùng closestCorners cho đơn giản
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
-      return closestCorners({ ...args })
+      const { droppableContainers, collisionRect } = args
+      const activeCenterX = collisionRect.left + collisionRect.width / 2
+
+      // Lấy danh sách ID của column hợp lệ
+      const columnIds = orderedColumns.map(column => column._id)
+
+      let closestId = null
+      let minDistance = Infinity
+
+      droppableContainers.forEach(container => {
+        if (!columnIds.includes(container.id)) return
+
+        const rect = container.rect.current
+        if (!rect) return
+
+        const containerCenterX = rect.left + rect.width / 2
+        const distance = Math.abs(activeCenterX - containerCenterX)
+        if (distance < minDistance) {
+          minDistance = distance
+          closestId = container.id
+        }
+      })
+
+      return closestId ? [{ id: closestId }] : []
     }
 
     // Ưu tiên tìm va chạm bằng con trỏ chuột (chính xác nhất)
@@ -314,12 +342,12 @@ function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns }) 
       collisionDetection={collisionDetectionStrategy}
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
-      onDragStart={handleDragStart}>
+      onDragStart={handleDragStart}
+    >
       <Box sx={{
         display: 'flex',
         width: '100%',
-        height: '100vh',
-        // height: (theme) => theme.boardContentHeight,
+        height: (theme) => theme.trello.boardContentHeight,
         p: '10px 0'
       }}>
         <ListColumns columns={orderedColumns} createdNewColumn={createdNewColumn} createdNewCard={createdNewCard} />

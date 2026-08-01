@@ -4,8 +4,7 @@ import Container from '@mui/material/Container'
 import BoardBar from './BoardBar/BoardBar'
 import AppBar from '~/components/AppBar'
 import BoardContent from './BoardContent/BoardContent'
-import { fetchBoardDetaislApi, createdNewColumnAPI, createdNewCardAPI, updateBoardDetaislApi } from '~/apis'
-import { mockData } from '~/apis/mock-data'
+import { fetchBoardDetaislApi, createdNewColumnAPI, createdNewCardAPI, updateBoardDetaislApi, updateCardDetaislApi } from '~/apis'
 import React from 'react'
 function Board() {
   const [board, setBoard] = React.useState(null)
@@ -13,7 +12,6 @@ function Board() {
     const boardId = '6a6db6b04a357c43f9e82a9f'
     fetchBoardDetaislApi(boardId).then(board => {
       setBoard(board)
-
     })
   }, [])
   const createdNewColumn = async (newColumn) => {
@@ -43,15 +41,28 @@ function Board() {
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnsIds
     setBoard(newBoard)
-    await updateBoardDetaislApi(newBoard._id, { columnOrderIds : dndOrderedColumnsIds })
+    await updateBoardDetaislApi(newBoard._id, { columnOrderIds: dndOrderedColumnsIds })
 
   }
-
+  const moveCards = async (columnId, dndOrderedCards) => {
+    const dndOrderedCardsIds = dndOrderedCards.map(c => c._id)
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.map(column => {
+      if (column._id !== columnId) return column
+      return {
+        ...column,
+        cards: dndOrderedCards,
+        cardOrderIds: dndOrderedCardsIds
+      }
+    })
+    setBoard(newBoard)
+    await updateCardDetaislApi(columnId, { cardOrderIds: dndOrderedCardsIds })
+  }
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh', backgroundColor: 'background.default' }}>
       <AppBar />
       <BoardBar board={board} />
-      <BoardContent board={board} createdNewColumn={createdNewColumn} createdNewCard={createdNewCard} moveColumns={moveColumns} />
+      <BoardContent board={board} createdNewColumn={createdNewColumn} createdNewCard={createdNewCard} moveColumns={moveColumns} moveCards={moveCards} />
     </Container >
   )
 }
