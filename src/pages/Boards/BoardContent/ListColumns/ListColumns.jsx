@@ -8,15 +8,23 @@ import { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import InputAdornment from '@mui/material/InputAdornment'
-function ListColumns({ columns }) {
+import { toast } from 'react-toastify'
+function ListColumns({ columns, createdNewColumn, createdNewCard }) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
   const [newColumnTitle, setNewColumnTitle] = useState('')
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
+      toast.error('Title is Not Empty', {
+        theme: 'colored'
+      })
       return
     }
-    // toggleOpenNewColumnForm()
+    const newColumn = {
+      title: newColumnTitle
+    }
+    await createdNewColumn(newColumn)
+    toggleOpenNewColumnForm()
     setNewColumnTitle('')
   }
   return (
@@ -34,14 +42,15 @@ function ListColumns({ columns }) {
         },
         m: 2
       }}>
-        {columns?.map(column => <Column key={column._id} column={column} />)}
+        {columns?.map(column => <Column key={column._id} column={column} createdNewCard={createdNewCard} />)}
         {!openNewColumnForm ?
           <Box onClick={toggleOpenNewColumnForm} sx={{
             maxWidth: '250px',
             bgcolor: 'background.paper',
             height: 'fit-content',
             borderRadius: '8px',
-            p: '5px'
+            p: '5px',
+            flexShrink: 0
           }}>
             <Button
               onClick={addNewColumn}
@@ -65,7 +74,8 @@ function ListColumns({ columns }) {
             bgcolor: 'background.paper',
             height: 'fit-content',
             borderRadius: '8px',
-            p: '10px'
+            p: '10px',
+            flexShrink: 0
           }}>
             <Box sx={{
               display: 'flex',

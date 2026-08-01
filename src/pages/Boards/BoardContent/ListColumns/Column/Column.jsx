@@ -27,6 +27,7 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import InputAdornment from '@mui/material/InputAdornment'
 import QueueIcon from '@mui/icons-material/Queue'
+import { toast } from 'react-toastify'
 const ExpandMore = styled(IconButton, {
   shouldForwardProp: (prop) => prop !== 'expand'
 })(({ theme, expand }) => ({
@@ -35,17 +36,25 @@ const ExpandMore = styled(IconButton, {
     duration: theme.transitions.duration.shortest
   })
 }))
-function Column({ column }) {
+function Column({ column, createdNewCard }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [openNewCardForm, setOpenNewCardFormmset] = React.useState(false)
   const toggleOpenNewCardForm = () => {
     setOpenNewCardFormmset(!openNewCardForm)
   }
   const [newCardTitle, setNewCardTitle] = React.useState('')
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
+      toast.error('Title is Not Empty', {
+        theme: 'colored'
+      })
       return
     }
+    const newCard = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+    await createdNewCard(newCard)
     toggleOpenNewCardForm()
     setNewCardTitle('')
   }
@@ -228,6 +237,7 @@ function Column({ column }) {
                 gap: 1
               }}>
                 <TextField
+                  data-no-dnd="true"
                   size="small"
                   id="outlined-basic"
                   label="Enter Card Title"

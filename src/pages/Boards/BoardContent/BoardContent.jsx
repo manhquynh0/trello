@@ -25,31 +25,33 @@ import Column from './ListColumns/Column/Column'
 import Card from './ListColumns/Column/ListCards/Cards/Cards'
 import { cloneDeep, isEmpty } from 'lodash'
 import { generatePlaceholderCard } from '~/utils/PlaceHolderCard'
+import { MouseSensorCustom, TouchSensorCustom } from '~/customLibs/DndKitSensors'
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
-function BoardContent({ board }) {
 
-  const pointerSensor = useSensor(PointerSensor, {
-    activationConstraint: {
-      distance: 10
-    }
-  })
+function BoardContent({ board, createdNewColumn, createdNewCard }) {
+
+  // const pointerSensor = useSensor(PointerSensor, {
+  //   activationConstraint: {
+  //     distance: 10
+  //   }
+  // })
   // Press delay of 250ms, with tolerance of 5px of movement
-  const touchSensor = useSensor(TouchSensor, {
+  const touchSensor = useSensor(TouchSensorCustom, {
     activationConstraint: {
       delay: 250,
       tolerance: 5
     }
   })
   // Require the mouse to move by 10 pixels before activating
-  const mouseSensor = useSensor(MouseSensor, {
+  const mouseSensor = useSensor(MouseSensorCustom, {
     activationConstraint: {
       distance: 10
     }
   })
-  const mySensors = useSensors(touchSensor, mouseSensor, pointerSensor)
+  const mySensors = useSensors(touchSensor, mouseSensor)
   const [orderedColumns, setOrderedColumnState] = useState([])
 
   // 1 thoi diem chi co 1 phan tu dc keo
@@ -61,7 +63,7 @@ function BoardContent({ board }) {
   useEffect(() => {
     const orderedColumnsData = mapOrder(board?.columns, board?.columnOrderIds, '_id')
 
-    orderedColumnsData.forEach(column => {
+    board?.columns.forEach(column => {
       if (isEmpty(column.cards)) {
         column.cards = [generatePlaceholderCard(column)]
         column.cardOrderIds = [generatePlaceholderCard(column)._id]
@@ -75,9 +77,9 @@ function BoardContent({ board }) {
     return orderedColumns.find(column => column?.cards?.map(card => card._id).includes(cardId))
   }
   //Function chung xử lý việc cập nhật lại state trong trường hợp di chuyển card giữa các column khác nhau
-  const moveCardBetweenDifferentColumns = () => {
+  // const moveCardBetweenDifferentColumns = () => {
 
-  }
+  // }
   const handleDragStart = (event) => {
     // console.log(event)
     setactiveDragItemId(event?.active?.id)
@@ -317,11 +319,11 @@ function BoardContent({ board }) {
       <Box sx={{
         display: 'flex',
         width: '100%',
-        height: (theme) => theme.boardContentHeight,
-        // backgroundColor: 'rgba(144, 202, 249, 0.16)',
+        height: '100vh',
+        // height: (theme) => theme.boardContentHeight,
         p: '10px 0'
       }}>
-        <ListColumns columns={orderedColumns} />
+        <ListColumns columns={orderedColumns} createdNewColumn={createdNewColumn} createdNewCard={createdNewCard} />
         <DragOverlay dropAnimation={customdropAnimations}>
           {(!activeDragItemType) && null}
           {(activeDragItemId && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragItemData} />}

@@ -59,7 +59,9 @@ function Cards({ card }) {
       style={dndKitColumnStyles}
       {...attributes}
       {...listeners}
+
       sx={{
+        userSelect: 'none',
         opacity: card?.FE_PlaceholderCard ? 0 : 1,
         overflow: 'unset',
         bgcolor: '#1A2540',
@@ -90,10 +92,11 @@ function Cards({ card }) {
         />
       )}
 
-      <CardContent sx={{ p: 1, '&:last-child': { pb: 1.5 } }}>
+      <CardContent sx={{ p: 0.5, '&:last-child': { pb: 1.5 } }}>
         <Box
           sx={{
             display: 'flex',
+            gap : 1,
             alignItems: 'center',
             '&:hover .checkbox-card': { opacity: 1 }
           }}
@@ -105,6 +108,7 @@ function Cards({ card }) {
             icon={<RadioButtonUncheckedIcon />}
             checkedIcon={<CheckCircleIcon />}
             sx={{
+                p: 0.5,
               opacity: 0,
               transition: 'opacity 0.2s ease-in-out, transform 0.2s ease-in-out',
               '&.Mui-checked': {
@@ -116,6 +120,7 @@ function Cards({ card }) {
           />
           <Typography
             variant="body2"
+            data-no-dnd="true"
             sx={{
               color: isChecked ? 'text.disabled' : 'text.primary',
               textDecoration: isChecked ? 'line-through' : 'none',
