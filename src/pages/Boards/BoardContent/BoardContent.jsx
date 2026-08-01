@@ -4,15 +4,11 @@ import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 import {
   DndContext,
-  PointerSensor,
-  MouseSensor,
-  TouchSensor,
   useSensor, useSensors,
   DragOverlay,
   defaultDropAnimationSideEffects,
   closestCorners,
   pointerWithin,
-  rectIntersection,
   getFirstCollision
 } from '@dnd-kit/core'
 import { useCallback, useRef } from 'react'
@@ -31,7 +27,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createdNewColumn, createdNewCard }) {
+function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns }) {
 
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: {
@@ -61,9 +57,9 @@ function BoardContent({ board, createdNewColumn, createdNewCard }) {
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState(null)
 
   useEffect(() => {
-    const orderedColumnsData = mapOrder(board?.columns, board?.columnOrderIds, '_id')
-
-    board?.columns.forEach(column => {
+    if (!board) return
+    const orderedColumnsData = mapOrder(board.columns, board.columnOrderIds, '_id')
+    board.columns?.forEach(column => {
       if (isEmpty(column.cards)) {
         column.cards = [generatePlaceholderCard(column)]
         column.cardOrderIds = [generatePlaceholderCard(column)._id]
@@ -259,6 +255,9 @@ function BoardContent({ board, createdNewColumn, createdNewCard }) {
         const newIndex = orderedColumns.findIndex(c => c._id === over.id)
 
         const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
+        moveColumns(dndOrderedColumns)
+
+
         setOrderedColumnState(dndOrderedColumns)
       }
     }

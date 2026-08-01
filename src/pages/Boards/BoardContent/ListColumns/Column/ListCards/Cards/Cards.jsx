@@ -92,13 +92,16 @@ function Cards({ card }) {
         />
       )}
 
-      <CardContent sx={{ p: 0.5, '&:last-child': { pb: 1.5 } }}>
+      <CardContent sx={{ gap: 1, p: 0.5, '&:last-child': { pb: 1.5 } }}>
         <Box
           sx={{
             display: 'flex',
-            gap : 1,
             alignItems: 'center',
-            '&:hover .checkbox-card': { opacity: 1 }
+            '&:hover .checkbox-card': {
+              opacity: 1,
+              width: '28px',
+              marginRight: '5px'
+            }
           }}
         >
           <Checkbox
@@ -107,14 +110,20 @@ function Cards({ card }) {
             onChange={(e) => setIsChecked(e.target.checked)}
             icon={<RadioButtonUncheckedIcon />}
             checkedIcon={<CheckCircleIcon />}
+            size="small"
             sx={{
-                p: 0.5,
+              p: 0.5,
               opacity: 0,
-              transition: 'opacity 0.2s ease-in-out, transform 0.2s ease-in-out',
+              width: 0,
+              marginRight: 0,
+              overflow: 'hidden',
+              transition: 'opacity 0.2s ease-in-out, width 0.2s ease-in-out, margin-right 0.2s ease-in-out, transform 0.2s ease-in-out',
               '&.Mui-checked': {
                 opacity: 1,
                 color: 'success.main',
-                transform: 'scale(1.1)'
+                transform: 'scale(1.1)',
+                width: '28px',
+                marginRight: '2px'
               }
             }}
           />

@@ -77,7 +77,7 @@ function Column({ column, createdNewCard }) {
     transition,
     opacity: isDragging ? 0.5 : undefined
   }
-  const orderedCards = mapOrder(column?.cards, column?.carOrderIds, '_id')
+  // const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
   return (
     <div ref={setNodeRef}
       style={dndKitColumnStyles}
@@ -86,8 +86,8 @@ function Column({ column, createdNewCard }) {
       <Box
         {...listeners}
         sx={{
-          minWidth: '300px',
-          maxWidth: '300px',
+          minWidth: '250px',
+          maxWidth: '250px',
           ml: 2,
           borderRadius: '6px',
           bgcolor: 'background.paper',
