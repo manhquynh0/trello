@@ -4,7 +4,7 @@ import Container from '@mui/material/Container'
 import BoardBar from './BoardBar/BoardBar'
 import AppBar from '~/components/AppBar'
 import BoardContent from './BoardContent/BoardContent'
-import { fetchBoardDetaislApi, createdNewColumnAPI, createdNewCardAPI, updateBoardDetaislApi, updateCardDetaislApi, moveCardtoDifferentColumnApi } from '~/apis'
+import { fetchBoardDetaislApi, createdNewColumnAPI, createdNewCardAPI, updateBoardDetaislApi, updateCardDetaislApi, moveCardtoDifferentColumnApi, deleteColumnApi } from '~/apis'
 import React from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
@@ -111,9 +111,19 @@ function Board() {
         .find(c => c._id === nextColumnId)
         ?.cardOrderIds.filter(id => !id.includes('-placeholder-card'))
     })
-
-
   }
+  const deleteColumn = async (columnId) => {
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.filter(column =>
+      column._id !== columnId
+    )
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(id =>
+      id !== columnId
+    )
+    setBoard(newBoard)
+    await deleteColumnApi(columnId)
+  }
+
   if (!board) {
     return (
       <Box sx={{
@@ -124,7 +134,7 @@ function Board() {
         height: '100vh'
       }}>
         <CircularProgress />
-        <Typography sx={{ marginLeft: '20px' }}>Chờ một xíu nhé~</Typography>
+        <Typography sx={{ marginLeft: '20px' }}>Chờ một xíu nhé ~</Typography>
       </Box>
     )
   }
@@ -138,6 +148,7 @@ function Board() {
         moveColumns={moveColumns}
         moveCards={moveCards}
         moveCardBetweenDifferentColumns={moveCardBetweenDifferentColumns}
+        deleteColumn={deleteColumn}
       />
     </Container >
   )

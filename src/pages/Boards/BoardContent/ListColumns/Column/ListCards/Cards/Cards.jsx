@@ -18,7 +18,9 @@ import Checkbox from '@mui/material/Checkbox'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import Box from '@mui/material/Box'
+import Tooltip from '@mui/material/Tooltip'
 import { useState } from 'react'
+import DriveFileRenameOutlineRoundedIcon from '@mui/icons-material/DriveFileRenameOutlineRounded'
 const ExpandMore = styled((props) => {
   const { expand: _expand, ...other } = props
   return <IconButton {...other} />
@@ -62,7 +64,7 @@ function Cards({ card }) {
 
       sx={{
         userSelect: 'none',
-        opacity: card?.FE_PlaceholderCard ? 0 : 1,
+        display: card?.FE_PlaceholderCard ? 'none' : 'block',
         overflow: 'unset',
         bgcolor: '#1A2540',
         border: '1px solid #2A3655',
@@ -136,10 +138,15 @@ function Cards({ card }) {
               textDecoration: isChecked ? 'line-through' : 'none',
               transition: 'color 0.2s ease-in-out'
             }}
+
           >
             {card?.title}
           </Typography>
+          <Tooltip title="More" placement="top">
+          </Tooltip>
+
         </Box>
+
       </CardContent>
       {ShouldShowCardActions() && <CardActions disableSpacing>
         {!!card?.memberIds?.length && <Button size='small' startIcon={<PeopleOutlineIcon />} aria-label="add to favorites">

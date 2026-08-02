@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import InputAdornment from '@mui/material/InputAdornment'
 import { toast } from 'react-toastify'
-function ListColumns({ columns, createdNewColumn, createdNewCard }) {
+function ListColumns({ columns, createdNewColumn, createdNewCard, deleteColumn }) {
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
   const [newColumnTitle, setNewColumnTitle] = useState('')
@@ -23,6 +23,16 @@ function ListColumns({ columns, createdNewColumn, createdNewCard }) {
     const newColumn = {
       title: newColumnTitle
     }
+    toast.success('Created Successfully', {
+      style: {
+        borderRadius: '12px',
+        background: '#16A34A',
+        color: '#fff'
+      },
+      icon: () => (
+        <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
+      )
+    })
     await createdNewColumn(newColumn)
     toggleOpenNewColumnForm()
     setNewColumnTitle('')
@@ -42,7 +52,7 @@ function ListColumns({ columns, createdNewColumn, createdNewCard }) {
         },
         m: 2
       }}>
-        {columns?.map(column => <Column key={column._id} column={column} createdNewCard={createdNewCard} />)}
+        {columns?.map(column => <Column key={column._id} column={column} createdNewCard={createdNewCard} deleteColumn={deleteColumn} />)}
         {!openNewColumnForm ?
           <Box onClick={toggleOpenNewColumnForm} sx={{
             maxWidth: '250px',
@@ -53,7 +63,6 @@ function ListColumns({ columns, createdNewColumn, createdNewCard }) {
             flexShrink: 0
           }}>
             <Button
-              onClick={addNewColumn}
               startIcon={<QueueIcon sx={{ color: 'inherit' }} />}
               variant="contained"
               sx={{

@@ -6,36 +6,25 @@ import MenuItem from '@mui/material/MenuItem'
 import Divider from '@mui/material/Divider'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
-import ContentCut from '@mui/icons-material/ContentCut'
 import ContentCopy from '@mui/icons-material/ContentCopy'
 import ContentPaste from '@mui/icons-material/ContentPaste'
-import Cloud from '@mui/icons-material/Cloud'
 import Tooltip from '@mui/material/Tooltip'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
-import AddCardIcon from '@mui/icons-material/AddCard'
 import Button from '@mui/material/Button'
 import ListCards from './ListCards/ListCards'
 const COLUMN_HEADER_HEIGHT = '50px'
 const COLUMN_FOOTER_HEIGHT = '60px'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { styled } from '@mui/material/styles'
-import IconButton from '@mui/material/IconButton'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import InputAdornment from '@mui/material/InputAdornment'
 import QueueIcon from '@mui/icons-material/Queue'
 import { toast } from 'react-toastify'
-const ExpandMore = styled(IconButton, {
-  shouldForwardProp: (prop) => prop !== 'expand'
-})(({ theme, expand }) => ({
-  transform: expand ? 'rotate(180deg)' : 'rotate(0deg)',
-  transition: theme.transitions.create('transform', {
-    duration: theme.transitions.duration.shortest
-  })
-}))
-function Column({ column, createdNewCard }) {
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import { confirmDelete } from '~/utils/ConfirmDialog'
+function Column({ column, createdNewCard, deleteColumn }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [openNewCardForm, setOpenNewCardFormmset] = React.useState(false)
   const toggleOpenNewCardForm = () => {
@@ -54,6 +43,16 @@ function Column({ column, createdNewCard }) {
       columnId: column._id
     }
     await createdNewCard(newCard)
+    toast.success('Created Successfully', {
+      style: {
+        borderRadius: '12px',
+        background: '#16A34A',
+        color: '#fff'
+      },
+      icon: () => (
+        <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
+      )
+    })
     toggleOpenNewCardForm()
     setNewCardTitle('')
   }
@@ -76,6 +75,28 @@ function Column({ column, createdNewCard }) {
     transition,
     opacity: isDragging ? 0.5 : undefined
   }
+  const deleteItem = async () => {
+    handleClose()
+    const result = await confirmDelete(
+      'Are you sure you want to delete this column??'
+    )
+
+    if (result.isConfirmed) {
+      await deleteColumn(column._id)
+      toast.success('Deleted Successfully', {
+        style: {
+          borderRadius: '12px',
+          background: '#16A34A',
+          color: '#fff'
+        },
+        icon: () => (
+          <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
+        )
+      })
+    }
+
+  }
+
   return (
     <div ref={setNodeRef}
       style={dndKitColumnStyles}
@@ -122,13 +143,23 @@ function Column({ column, createdNewCard }) {
             </Typography>
             <Box>
               <Tooltip title="More" placement="top">
-                <ExpandMore
-                  expand={open}
+                <MoreHorizIcon
                   onClick={handleClick}
                   aria-label="show more"
+                  sx={{
+                    cursor: 'pointer',
+                    borderRadius: '50%',
+                    transition: 'all 0.2s ease',
+
+                    '&:hover': {
+                      backgroundColor: 'rgba(0,0,0,0.08)',
+                      color: 'primary.main',
+                      transform: 'scale(1.1)'
+                    }
+                  }}
                 >
                   <ExpandMoreIcon />
-                </ExpandMore>
+                </MoreHorizIcon>
               </Tooltip>
 
               <Menu
@@ -140,20 +171,7 @@ function Column({ column, createdNewCard }) {
                   'aria-labelledby': 'basic-button-workspaces'
                 }}
               >
-                <MenuItem>
-                  <ListItemIcon>
-                    <AddCardIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>ADD CARD</ListItemText>
 
-                </MenuItem>
-                <MenuItem>
-                  <ListItemIcon>
-                    <ContentCut fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>Cut</ListItemText>
-
-                </MenuItem>
                 <MenuItem>
                   <ListItemIcon>
                     <ContentCopy fontSize="small" />
@@ -169,17 +187,28 @@ function Column({ column, createdNewCard }) {
 
                 </MenuItem>
                 <Divider />
-                <MenuItem>
+
+                <MenuItem onClick={deleteItem} sx={{
+                  transition: 'all 0.2s',
+
+                  '&:hover': {
+                    color: 'error.main',
+                    fontWeight: 700,
+                    bgcolor: 'error.lighter',
+
+                    '& .delete-item-icon': {
+                      color: 'error.main'
+                    },
+                    '& .MuiListItemText-primary': {
+                      fontWeight: 700
+                    }
+                  }
+                }}
+                >
                   <ListItemIcon>
-                    <Cloud fontSize="small" />
+                    <DeleteRoundedIcon className='delete-item-icon' fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText>Web Clipboard</ListItemText>
-                </MenuItem>
-                <MenuItem>
-                  <ListItemIcon>
-                    <DeleteRoundedIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>Remove Column</ListItemText>
+                  <ListItemText>Delete Column</ListItemText>
                 </MenuItem>
               </Menu>
             </Box>
