@@ -1,5 +1,4 @@
 
-import { mapOrder } from '~/utils/sort'
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 import {
@@ -9,7 +8,8 @@ import {
   defaultDropAnimationSideEffects,
   closestCorners,
   pointerWithin,
-  getFirstCollision
+  getFirstCollision,
+  closestCenter
 } from '@dnd-kit/core'
 import { useCallback, useRef } from 'react'
 import { useEffect } from 'react'
@@ -27,7 +27,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns, moveCards }) {
+function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns, moveCards, moveCardBetweenDifferentColumns }) {
 
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: {
@@ -58,20 +58,7 @@ function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns, mo
 
   useEffect(() => {
     if (!board) return
-
-    const orderedColumnsData = mapOrder(board.columns, board.columnOrderIds, '_id')
-    const sortedColumnsData = orderedColumnsData.map(column => {
-      if (!column) return column
-      const orderedCards = mapOrder(column.cards, column.cardOrderIds, '_id')
-      if (isEmpty(orderedCards)) {
-        const placeholderCard = generatePlaceholderCard(column)
-        return { ...column, cards: [placeholderCard], cardOrderIds: [placeholderCard._id] }
-      }
-      return { ...column, cards: orderedCards }
-    })
-
-
-    setOrderedColumnState(sortedColumnsData)
+    setOrderedColumnState(board.columns)
   }, [board])
   // Find column by cardid
   const findColumnByCardId = (cardId) => {
@@ -175,7 +162,7 @@ function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns, mo
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
 
       // activeDraggingCardId : Là Card đang được kéo
-      const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
+      const { id: activeDraggingCardId } = active
       // OverCard : Là Card đang được tương tác trên hoặc dưới so với card được kéo ở trên
       const { id: overCardId } = over
 
@@ -188,53 +175,7 @@ function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns, mo
       if (!activeColumn || !overColumn) return
 
       if (oldColumnWhenDraggingCard._id !== overColumn._id) {
-        setOrderedColumnState(preColumns => {
-          // Tìm vị trí của overcard trong column đích
-          const overCardIndex = overColumn?.cards?.findIndex(card => card._id === overCardId)
-          // console.log('overCardIndex', overCardIndex)
-          // Logic tinh newCardIndex
-          let newCardIndex
-
-          const isBelowOverItem =
-            over &&
-            active.rect.current.translated &&
-            active.rect.current.translated.top >
-            over.rect.top + over.rect.height
-          const modifier = isBelowOverItem ? 1 : 0
-          newCardIndex = overCardIndex >= 0 ? overCardIndex + modifier : overColumn?.cards?.length + 1
-          //Clone mang OrderedColumns cũ ra một cái mới để xử lý data rồi return _ cập nhât lại orderedColumnsState mới
-          const nextColumns = cloneDeep(preColumns)
-          const nextActiveColumn = nextColumns.find(column => column._id === activeColumn._id)
-          const nextOverColumn = nextColumns.find(column => column._id === overColumn._id)
-          if (nextActiveColumn) {
-            // Xóa card ở column cũ
-            nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDraggingCardId)
-            if (isEmpty(nextActiveColumn.cards)) {
-              nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)]
-            }
-            // Cập nhật lại mảng cardOrderIds
-            nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
-          }
-          if (nextOverColumn) {
-            // Kiểm tra xem card đang kéo có tồn tại over column chưa, chưa thì cần xóa nó trước
-            nextOverColumn.cards = nextOverColumn.cards.filter(card => card._id !== activeDraggingCardId)
-            // Đối với DragEnd thì phải cập nhật lại chuẩn dữ liệu columnID trong card sau khi kéo card giữa 2 column khác nhau
-            //Phải cập nhật lại chuẩn dữ liệu columnID card sau khi kéo card giữa 2 column khác nhau
-            const rebuild_activeDraggingCardData = {
-              ...activeDraggingCardData,
-              columnId: nextOverColumn._id
-            }
-            // Thêm card đang có vào overcloumn
-            nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, rebuild_activeDraggingCardData)
-            nextOverColumn.cards = nextOverColumn.cards.filter(card => !card.FE_PlaceholderCard)
-            // Cập nhật lại mảng cardOrderIds
-            nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
-
-          }
-          return nextColumns
-        }
-
-        )
+        moveCardBetweenDifferentColumns(oldColumnWhenDraggingCard._id, overColumn._id, activeDraggingCardId, orderedColumns)
       }
       else {
         const oldIndex = oldColumnWhenDraggingCard?.cards?.findIndex(c => c._id === activeDragItemId)
@@ -281,31 +222,19 @@ function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns, mo
   const collisionDetectionStrategy = useCallback((args) => {
     // Nếu đang kéo Column, dùng closestCorners cho đơn giản
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
-      const { droppableContainers, collisionRect } = args
-      const activeCenterX = collisionRect.left + collisionRect.width / 2
-
-      // Lấy danh sách ID của column hợp lệ
+      // Chỉ giữ lại các droppableContainers là Column, loại bỏ hoàn toàn Card
       const columnIds = orderedColumns.map(column => column._id)
 
-      let closestId = null
-      let minDistance = Infinity
+      const filteredArgs = {
+        ...args,
+        droppableContainers: args.droppableContainers.filter(container =>
+          columnIds.includes(container.id)
+        )
+      }
 
-      droppableContainers.forEach(container => {
-        if (!columnIds.includes(container.id)) return
-
-        const rect = container.rect.current
-        if (!rect) return
-
-        const containerCenterX = rect.left + rect.width / 2
-        const distance = Math.abs(activeCenterX - containerCenterX)
-        if (distance < minDistance) {
-          minDistance = distance
-          closestId = container.id
-        }
-      })
-
-      return closestId ? [{ id: closestId }] : []
+      return closestCenter(filteredArgs)
     }
+
 
     // Ưu tiên tìm va chạm bằng con trỏ chuột (chính xác nhất)
     const pointerIntersections = pointerWithin(args)

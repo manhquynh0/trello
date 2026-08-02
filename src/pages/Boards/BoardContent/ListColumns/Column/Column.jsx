@@ -17,7 +17,6 @@ import Button from '@mui/material/Button'
 import ListCards from './ListCards/ListCards'
 const COLUMN_HEADER_HEIGHT = '50px'
 const COLUMN_FOOTER_HEIGHT = '60px'
-import { mapOrder } from '~/utils/sort'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { styled } from '@mui/material/styles'
@@ -77,14 +76,12 @@ function Column({ column, createdNewCard }) {
     transition,
     opacity: isDragging ? 0.5 : undefined
   }
-  // const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
   return (
     <div ref={setNodeRef}
       style={dndKitColumnStyles}
       {...attributes}
     >
       <Box
-        {...listeners}
         sx={{
           minWidth: '250px',
           maxWidth: '250px',
@@ -97,7 +94,7 @@ function Column({ column, createdNewCard }) {
           maxHeight: (theme) => `calc(${theme.trello.boardContentHeight} - ${theme.spacing(5)})`
         }} >
         {/* Header */}
-        <Box
+        <Box {...listeners}
           sx={{
             p: 2,
             height: COLUMN_HEADER_HEIGHT + 24 // tăng chiều cao nếu cần

@@ -20,7 +20,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import Box from '@mui/material/Box'
 import { useState } from 'react'
 const ExpandMore = styled((props) => {
-  const { expand, ...other } = props
+  const { expand: _expand, ...other } = props
   return <IconButton {...other} />
 })(({ theme, expand }) => ({
   transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
@@ -43,8 +43,8 @@ function Cards({ card }) {
   })
 
   const dndKitColumnStyles = {
-    // touchAction : 'none',
-    transform: CSS.Translate.toString(transform),
+    touchAction: 'none',
+    transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : undefined,
     border: isDragging ? '1px solid #0F172A ' : undefined
@@ -68,9 +68,9 @@ function Cards({ card }) {
         border: '1px solid #2A3655',
         borderRadius: 2,
         width: '100%',
-        transition: 'all 0.2s ease-in-out',
+        transition: isDragging ? 'none' : 'all 0.2s ease-in-out',
         cursor: 'pointer',
-        '&:hover': {
+        '&:hover': isDragging ? {} : {
           bgcolor: '#22304F',
           borderColor: '#3A4A72',
           transform: 'translateY(-4px)',
@@ -116,14 +116,15 @@ function Cards({ card }) {
               opacity: 0,
               width: 0,
               marginRight: 0,
+              transform: 'scale(0.8)',
               overflow: 'hidden',
               transition: 'opacity 0.2s ease-in-out, width 0.2s ease-in-out, margin-right 0.2s ease-in-out, transform 0.2s ease-in-out',
               '&.Mui-checked': {
                 opacity: 1,
                 color: 'success.main',
-                transform: 'scale(1.1)',
+                transform: 'scale(1)',
                 width: '28px',
-                marginRight: '2px'
+                marginRight: '6px'
               }
             }}
           />
