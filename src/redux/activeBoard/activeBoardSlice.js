@@ -24,8 +24,6 @@ export const fetchBoardDetailsAPI = createAsyncThunk('activeBoard/fetchBoardDeta
   async (boardId) => {
     const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`)
     return response.data
-
-
   }
 )
 //Khoi tao 1 Silce trong kho luu tru - Redux store
@@ -34,7 +32,7 @@ export const activeBoardSlice = createSlice({
   initialState,
   // Noi xy ly du lieu dong bo
   reducers: {
-    updateCurrentActive: (state, action) => {
+    updateCurrentActiveBoard: (state, action) => {
       // action.payload la chuan dat ten nhan du lieu vao reducer, o day chung ta gan no ra 1 bien co nghia hon
       const board = action.payload
 
@@ -74,7 +72,7 @@ export const activeBoardSlice = createSlice({
 // ation la noi dành cho các components bên dưới gọi bằng dispatch() tới nơi cập nhật lại dữ liệu thông qua reducer( chạy đồng bô)
 // actions được tạo tự động
 export const {
-  updateCurrentActive
+  updateCurrentActiveBoard
 } = activeBoardSlice.actions
 
 export const selectCurrentActiveBoard = (state) => {

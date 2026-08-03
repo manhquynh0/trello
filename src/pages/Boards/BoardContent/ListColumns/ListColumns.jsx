@@ -9,7 +9,19 @@ import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 import InputAdornment from '@mui/material/InputAdornment'
 import { toast } from 'react-toastify'
-function ListColumns({ columns, createdNewColumn, createdNewCard, deleteColumn }) {
+import { isEmpty, cloneDeep } from 'lodash'
+import { createdNewColumnAPI } from '~/apis'
+import {
+  generatePlaceholderCard
+} from '~/utils/PlaceHolderCard'
+import {
+  updateCurrentActiveBoard,
+  selectCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
+import { useDispatch, useSelector } from 'react-redux'
+function ListColumns({ columns }) {
+  const board = useSelector(selectCurrentActiveBoard)
+  const dispatch = useDispatch()
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
   const [newColumnTitle, setNewColumnTitle] = useState('')
@@ -20,22 +32,64 @@ function ListColumns({ columns, createdNewColumn, createdNewCard, deleteColumn }
       })
       return
     }
-    const newColumn = {
-      title: newColumnTitle
+    try {
+      const newColumn = {
+        title: newColumnTitle
+      }
+      const createdColumn = await createdNewColumnAPI({
+        ...newColumn,
+        boardId: board._id
+      })
+
+      if (isEmpty(createdColumn.cards)) {
+        const placeholderCard = generatePlaceholderCard(createdColumn)
+
+        createdColumn.cards = [placeholderCard]
+        createdColumn.cardOrderIds = [placeholderCard._id]
+      }
+
+      // Immutability
+      // Nhưng khi chuyển sang Redux, board lấy từ useSelector() là state của Redux. State này được Redux Toolkit (thông qua Immer) bảo vệ trong môi trường phát triển, nên không nên sửa trực tiếp. Vì vậy nếu chỉ shallow copy object ngoài cùng rồi push vào mảng cũ, bạn sẽ gặp lỗi.
+      const newBoard = cloneDeep(board)
+      newBoard.columns.push(createdColumn)
+      newBoard.columnOrderIds.push(createdColumn._id)
+
+      // cách 2 :
+      // const newBoard = { ...board }
+      // newBoard.columns = newBoard.columns.concat([createdColumn])
+      // newBoard.columnOrderIds = newBoard.columnOrderIds.concat([createdColumn._id])
+
+      toast.success('Created Successfully', {
+        style: {
+          borderRadius: '12px',
+          background: '#16A34A',
+          color: '#fff'
+        },
+        icon: () => (
+          <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
+        )
+      })
+      // setBoard(newBoard)
+      dispatch(updateCurrentActiveBoard(newBoard))
+      toggleOpenNewColumnForm()
+      setNewColumnTitle('')
     }
-    toast.success('Created Successfully', {
-      style: {
-        borderRadius: '12px',
-        background: '#16A34A',
-        color: '#fff'
-      },
-      icon: () => (
-        <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
+    catch (error) {
+      toast.error(
+        error.response?.data?.message || 'Create card failed!',
+        {
+          style: {
+            borderRadius: '12px',
+            background: '#DC2626',
+            color: '#fff',
+            fontWeight: 'bold'
+          },
+          icon: () => (
+            <span style={{ color: '#fff', fontSize: '20px' }}>✕</span>
+          )
+        }
       )
-    })
-    await createdNewColumn(newColumn)
-    toggleOpenNewColumnForm()
-    setNewColumnTitle('')
+    }
   }
   return (
     <SortableContext items={columns?.map(c => c._id)} strategy={horizontalListSortingStrategy}>
@@ -52,7 +106,7 @@ function ListColumns({ columns, createdNewColumn, createdNewCard, deleteColumn }
         },
         m: 2
       }}>
-        {columns?.map(column => <Column key={column._id} column={column} createdNewCard={createdNewCard} deleteColumn={deleteColumn} />)}
+        {columns?.map(column => <Column key={column._id} column={column} />)}
         {!openNewColumnForm ?
           <Box onClick={toggleOpenNewColumnForm} sx={{
             maxWidth: '250px',

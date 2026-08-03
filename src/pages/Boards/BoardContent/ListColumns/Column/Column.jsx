@@ -24,7 +24,16 @@ import QueueIcon from '@mui/icons-material/Queue'
 import { toast } from 'react-toastify'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import { confirmDelete } from '~/utils/ConfirmDialog'
-function Column({ column, createdNewCard, deleteColumn }) {
+import { cloneDeep } from 'lodash'
+import { createdNewCardAPI, deleteColumnApi } from '~/apis'
+import {
+  updateCurrentActiveBoard,
+  selectCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
+import { useDispatch, useSelector } from 'react-redux'
+function Column({ column }) {
+  const board = useSelector(selectCurrentActiveBoard)
+  const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [openNewCardForm, setOpenNewCardFormmset] = React.useState(false)
   const toggleOpenNewCardForm = () => {
@@ -38,24 +47,87 @@ function Column({ column, createdNewCard, deleteColumn }) {
       })
       return
     }
-    const newCard = {
-      title: newCardTitle,
-      columnId: column._id
+    try {
+      const newBoard = cloneDeep(board)
+      const newCard = {
+        title: newCardTitle,
+        columnId: column._id
+      }
+      const createdCard = await createdNewCardAPI({
+        ...newCard,
+        boardId: board?._id
+      })
+      const targetColumn = newBoard.columns.find(c => c._id === createdCard.columnId)
+      if (
+        targetColumn.cards.length === 1 &&
+        targetColumn.cards[0].FE_PlaceholderCard
+      ) {
+        targetColumn.cards = []
+        targetColumn.cardOrderIds = []
+      }
+      targetColumn.cards.push(createdCard)
+      targetColumn.cardOrderIds.push(createdCard._id)
+      toast.success('Created Successfully', {
+        style: {
+          borderRadius: '12px',
+          background: '#16A34A',
+          color: '#fff'
+        },
+        icon: () => (
+          <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
+        )
+      })
+      dispatch(updateCurrentActiveBoard(newBoard))
+      toggleOpenNewCardForm()
+      setNewCardTitle('')
     }
-    await createdNewCard(newCard)
-    toast.success('Created Successfully', {
-      style: {
-        borderRadius: '12px',
-        background: '#16A34A',
-        color: '#fff'
-      },
-      icon: () => (
-        <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
+    catch (error) {
+      toast.error(
+        error.response?.data?.message || 'Create card failed!',
+        {
+          style: {
+            borderRadius: '12px',
+            background: '#DC2626',
+            color: '#fff',
+            fontWeight: 'bold'
+          },
+          icon: () => (
+            <span style={{ color: '#fff', fontSize: '20px' }}>✕</span>
+          )
+        }
       )
-    })
-    toggleOpenNewCardForm()
-    setNewCardTitle('')
+    }
   }
+  const deleteItem = async () => {
+    handleClose()
+    const result = await confirmDelete(
+      'Are you sure you want to delete this column??'
+    )
+
+    if (result.isConfirmed) {
+      const newBoard = { ...board }
+      newBoard.columns = newBoard.columns.filter(tagetColumn =>
+        tagetColumn._id !== column._id
+      )
+      newBoard.columnOrderIds = newBoard.columnOrderIds.filter(id =>
+        id !== column._id
+      )
+      await deleteColumnApi(column._id)
+      dispatch(updateCurrentActiveBoard(newBoard))
+      toast.success('Deleted Successfully', {
+        style: {
+          borderRadius: '12px',
+          background: '#16A34A',
+          color: '#fff'
+        },
+        icon: () => (
+          <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
+        )
+      })
+    }
+
+  }
+
   const open = Boolean(anchorEl)
 
   const handleClick = (event) => {
@@ -74,27 +146,6 @@ function Column({ column, createdNewCard, deleteColumn }) {
     transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : undefined
-  }
-  const deleteItem = async () => {
-    handleClose()
-    const result = await confirmDelete(
-      'Are you sure you want to delete this column??'
-    )
-
-    if (result.isConfirmed) {
-      await deleteColumn(column._id)
-      toast.success('Deleted Successfully', {
-        style: {
-          borderRadius: '12px',
-          background: '#16A34A',
-          color: '#fff'
-        },
-        icon: () => (
-          <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
-        )
-      })
-    }
-
   }
 
   return (

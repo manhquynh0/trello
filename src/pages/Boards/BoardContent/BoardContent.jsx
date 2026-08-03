@@ -27,7 +27,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns, moveCards, moveCardBetweenDifferentColumns, deleteColumn }) {
+function BoardContent({ board, moveColumns, moveCards, moveCardBetweenDifferentColumns }) {
 
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: {
@@ -64,10 +64,6 @@ function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns, mo
   const findColumnByCardId = (cardId) => {
     return orderedColumns.find(column => column?.cards?.map(card => card._id).includes(cardId))
   }
-  //Function chung xử lý việc cập nhật lại state trong trường hợp di chuyển card giữa các column khác nhau
-  // const moveCardBetweenDifferentColumns = () => {
-
-  // }
   const handleDragStart = (event) => {
     // console.log(event)
     setactiveDragItemId(event?.active?.id)
@@ -279,7 +275,7 @@ function BoardContent({ board, createdNewColumn, createdNewCard, moveColumns, mo
         height: (theme) => theme.trello.boardContentHeight,
         p: '10px 0'
       }}>
-        <ListColumns columns={orderedColumns} createdNewColumn={createdNewColumn} createdNewCard={createdNewCard} deleteColumn= {deleteColumn}/>
+        <ListColumns columns={orderedColumns} />
         <DragOverlay dropAnimation={customdropAnimations}>
           {(!activeDragItemType) && null}
           {(activeDragItemId && activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragItemData} />}
