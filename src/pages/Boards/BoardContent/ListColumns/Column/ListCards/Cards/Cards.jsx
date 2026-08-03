@@ -142,8 +142,8 @@ function Cards({ card }) {
           >
             {card?.title}
           </Typography>
-          <Tooltip title="More" placement="top">
-          </Tooltip>
+          {/* <Tooltip title="More" placement="top">
+          </Tooltip> */}
 
         </Box>
 

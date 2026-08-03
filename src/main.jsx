@@ -7,12 +7,17 @@ import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/s
 import theme from './theme'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { store } from './redux/store'
+// Cau hinh redux store
+import { Provider } from 'react-redux'
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <CssVarsProvider theme={theme}>
-      <CssBaseline />
-      <App />
-      <ToastContainer/>
-    </CssVarsProvider>
-  </StrictMode>
+  <Provider store = {store}>
+    <StrictMode>
+      <CssVarsProvider theme={theme}>
+        <CssBaseline />
+        <App />
+        <ToastContainer />
+      </CssVarsProvider>
+    </StrictMode>
+  </Provider>
 )
