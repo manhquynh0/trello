@@ -4,33 +4,33 @@ import Container from '@mui/material/Container'
 import BoardBar from './BoardBar/BoardBar'
 import AppBar from '~/components/AppBar'
 import BoardContent from './BoardContent/BoardContent'
-import { createdNewCardAPI, updateBoardDetaislApi, updateCardDetaislApi, moveCardtoDifferentColumnApi, deleteColumnApi } from '~/apis'
+import { updateBoardDetaislApi, updateCardDetaislApi, moveCardtoDifferentColumnApi } from '~/apis'
 import React from 'react'
-import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import { cloneDeep } from 'lodash'
-
-import Typography from '@mui/material/Typography'
+import Skeleton from '@mui/material/Skeleton'
 import {
   fetchBoardDetailsAPI,
   updateCurrentActiveBoard,
   selectCurrentActiveBoard
 } from '~/redux/activeBoard/activeBoardSlice'
+import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 function Board() {
   const dispatch = useDispatch()
   // const [board, setBoard] = React.useState(null)
   const board = useSelector(selectCurrentActiveBoard)
+  const { boardId } = useParams()
   React.useEffect(() => {
-    const boardId = '6a6db6b04a357c43f9e82a9f'
+    // const boardId = '6a6db6b04a357c43f9e82a9f'
     // Call API
     dispatch(fetchBoardDetailsAPI(boardId))
-  }, [dispatch])
+  }, [dispatch, boardId])
 
-  const createdNewColumn = async (newColumn) => {
-  }
-  const createdNewCard = async (newCard) => {
-  }
+  // const createdNewColumn = async (newColumn) => {
+  // }
+  // const createdNewCard = async (newCard) => {
+  // }
   const moveColumns = async (dndOrderedColumns) => {
     const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
     const newBoard = { ...board }
@@ -74,20 +74,50 @@ function Board() {
         ?.cardOrderIds.filter(id => !id.includes('-placeholder-card'))
     })
   }
-  const deleteColumn = async (columnId) => {
-  }
+  // const deleteColumn = async (columnId) => {
+  // }
 
   if (!board) {
     return (
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100vw',
-        height: '100vh'
-      }}>
-        <CircularProgress />
-        <Typography sx={{ marginLeft: '20px' }}>Chờ một xíu nhé ~</Typography>
+      <Box sx={{ p: 3 }}>
+        <Skeleton
+          variant="rounded"
+          sx={{
+            width: 350,
+            height: 50,
+            borderRadius: 3
+          }}
+        />
+
+        <Skeleton
+          variant="rounded"
+          sx={{
+            mt: 2,
+            width: '100%',
+            height: 80,
+            borderRadius: 3
+          }}
+        />
+
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            mt: 3
+          }}
+        >
+          {[1, 2, 3, 4].map((item) => (
+            <Skeleton
+              key={item}
+              variant="rounded"
+              sx={{
+                width: 320,
+                height: 600,
+                borderRadius: 4 // 32px
+              }}
+            />
+          ))}
+        </Box>
       </Box>
     )
   }
@@ -99,7 +129,6 @@ function Board() {
         moveColumns={moveColumns}
         moveCards={moveCards}
         moveCardBetweenDifferentColumns={moveCardBetweenDifferentColumns}
-        deleteColumn={deleteColumn}
       />
     </Container >
   )

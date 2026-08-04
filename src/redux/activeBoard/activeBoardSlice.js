@@ -3,9 +3,6 @@ import {
   createAsyncThunk
 } from '@reduxjs/toolkit'
 // Khoi tao gia tri State cua 1 Slice trong Redux
-const initialState = {
-  currentActiveBoard: null
-}
 import {
   isEmpty
 } from 'lodash'
@@ -26,6 +23,9 @@ export const fetchBoardDetailsAPI = createAsyncThunk('activeBoard/fetchBoardDeta
     return response.data
   }
 )
+const initialState = {
+  currentActiveBoard: null
+}
 //Khoi tao 1 Silce trong kho luu tru - Redux store
 export const activeBoardSlice = createSlice({
   name: 'activeBoard',

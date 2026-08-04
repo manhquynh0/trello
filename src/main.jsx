@@ -10,14 +10,18 @@ import 'react-toastify/dist/ReactToastify.css'
 import { store } from './redux/store'
 // Cau hinh redux store
 import { Provider } from 'react-redux'
+// Cau hinh react-router-dom
+import { BrowserRouter } from 'react-router-dom'
 createRoot(document.getElementById('root')).render(
-  <Provider store = {store}>
-    <StrictMode>
-      <CssVarsProvider theme={theme}>
-        <CssBaseline />
-        <App />
-        <ToastContainer />
-      </CssVarsProvider>
-    </StrictMode>
-  </Provider>
+  <BrowserRouter basename ='/'>
+    <Provider store={store}>
+      <StrictMode>
+        <CssVarsProvider theme={theme}>
+          <CssBaseline />
+          <App />
+          <ToastContainer />
+        </CssVarsProvider>
+      </StrictMode>
+    </Provider>
+  </BrowserRouter>
 )

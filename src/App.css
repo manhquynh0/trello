@@ -191,3 +191,18 @@
 .my-popup .swal2-icon .swal2-icon-content {
   font-size: 2.2em !important;
 }
+@keyframes fly {
+
+    from {
+
+        transform: translateX(0);
+
+    }
+
+    to {
+
+        transform: translateX(calc(100vw + 350px));
+
+    }
+
+}
