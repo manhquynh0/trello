@@ -12,14 +12,14 @@ import {
 import {
   mapOrder
 } from '~/utils/sort'
-import axios from 'axios'
+import authorizedAxiosInstance from '~/utils/authorizeAxios'
 import {
   API_ROOT
 } from '~/utils/constants'
 //Các hành động gọi Api bất đồng bộ cập nhật dữ liệu vảo redux, dùng middleware createAsync Thunk đi kèm với extraReducers
 export const fetchBoardDetailsAPI = createAsyncThunk('activeBoard/fetchBoardDetailsAPI',
   async (boardId) => {
-    const response = await axios.get(`${API_ROOT}/v1/boards/${boardId}`)
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards/${boardId}`)
     return response.data
   }
 )

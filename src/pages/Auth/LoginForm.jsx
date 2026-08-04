@@ -67,7 +67,7 @@ const LoginForm = () => {
                 type='email'
                 required
                 autoComplete='email'
-                 helperText={errors.confirmPassword?.message}
+                helperText={errors.confirmPassword?.message}
                 {...register('email', {
                   required: FILED_REQUIRED_MESSAGE,
                   pattern: {
@@ -100,7 +100,7 @@ const LoginForm = () => {
                 fullWidth
                 label='Mật khẩu'
                 type={showPassword ? 'text' : 'password'}
-                 helperText={errors.confirmPassword?.message}
+                helperText={errors.confirmPassword?.message}
                 {...register('password', {
                   required: FILED_REQUIRED_MESSAGE,
                   pattern: {
@@ -137,6 +137,7 @@ const LoginForm = () => {
               <FieldErrorAlert errors={errors} fieldName='password' />
 
               <Button
+                className='interceptor-loading'
                 fullWidth
                 variant='contained'
                 color='primary'

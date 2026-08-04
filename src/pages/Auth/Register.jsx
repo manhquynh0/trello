@@ -194,6 +194,7 @@ const RegisterForm = () => {
               />
 
               <Button
+                className='interceptor-loading'
                 fullWidth
                 type="submit"
                 variant="contained"
@@ -213,7 +214,7 @@ const RegisterForm = () => {
             >
               <Typography variant="body2">
                 Đã có tài khoản?{' '}
-                  <Link to='/login' style={{ textDecoration: 'none', color: '#1976d2', fontWeight: 500 }}>
+                <Link to='/login' style={{ textDecoration: 'none', color: '#1976d2', fontWeight: 500 }}>
                   Đăng nhập ngay
                 </Link>
               </Typography>

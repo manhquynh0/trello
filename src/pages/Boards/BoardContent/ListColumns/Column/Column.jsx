@@ -41,63 +41,40 @@ function Column({ column }) {
   }
   const [newCardTitle, setNewCardTitle] = React.useState('')
   const addNewCard = async () => {
-    if (!newCardTitle) {
-      toast.error('Title is Not Empty', {
-        theme: 'colored'
-      })
-      return
+    const newBoard = cloneDeep(board)
+    const newCard = {
+      title: newCardTitle,
+      columnId: column._id
     }
-    try {
-      const newBoard = cloneDeep(board)
-      const newCard = {
-        title: newCardTitle,
-        columnId: column._id
-      }
-      const createdCard = await createdNewCardAPI({
-        ...newCard,
-        boardId: board?._id
-      })
-      const targetColumn = newBoard.columns.find(c => c._id === createdCard.columnId)
-      if (
-        targetColumn.cards.length === 1 &&
-        targetColumn.cards[0].FE_PlaceholderCard
-      ) {
-        targetColumn.cards = []
-        targetColumn.cardOrderIds = []
-      }
-      targetColumn.cards.push(createdCard)
-      targetColumn.cardOrderIds.push(createdCard._id)
-      toast.success('Created Successfully', {
-        style: {
-          borderRadius: '12px',
-          background: '#16A34A',
-          color: '#fff'
-        },
-        icon: () => (
-          <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
-        )
-      })
-      dispatch(updateCurrentActiveBoard(newBoard))
-      toggleOpenNewCardForm()
-      setNewCardTitle('')
+    const createdCard = await createdNewCardAPI({
+      ...newCard,
+      boardId: board?._id
+    })
+    const targetColumn = newBoard.columns.find(c => c._id === createdCard.columnId)
+    if (
+      targetColumn.cards.length === 1 &&
+      targetColumn.cards[0].FE_PlaceholderCard
+    ) {
+      targetColumn.cards = []
+      targetColumn.cardOrderIds = []
     }
-    catch (error) {
-      toast.error(
-        error.response?.data?.message || 'Create card failed!',
-        {
-          style: {
-            borderRadius: '12px',
-            background: '#DC2626',
-            color: '#fff',
-            fontWeight: 'bold'
-          },
-          icon: () => (
-            <span style={{ color: '#fff', fontSize: '20px' }}>✕</span>
-          )
-        }
+    targetColumn.cards.push(createdCard)
+    targetColumn.cardOrderIds.push(createdCard._id)
+    toast.success('Created Successfully', {
+      style: {
+        borderRadius: '12px',
+        background: '#16A34A',
+        color: '#fff'
+      },
+      icon: () => (
+        <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
       )
-    }
+    })
+    dispatch(updateCurrentActiveBoard(newBoard))
+    toggleOpenNewCardForm()
+    setNewCardTitle('')
   }
+
   const deleteItem = async () => {
     handleClose()
     const result = await confirmDelete(
@@ -336,6 +313,7 @@ function Column({ column }) {
                   }}
                 />
                 <Button
+                   className='interceptor-loading'
                   size="small"
                   onClick={addNewCard}
                   startIcon={<QueueIcon sx={{ color: 'inherit' }} />}
