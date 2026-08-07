@@ -28,7 +28,7 @@ const AccountVerification = () => {
     return <Navigate to='/404' />
   }
   if (!verified) {
-    return <LoadingPage caption = 'Verifying...' />
+    return <LoadingPage caption = 'Đang xác thực tài khoản ...' />
   }
   return <Navigate to={
     `/login?verifiedEmail=${email}`

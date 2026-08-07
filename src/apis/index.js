@@ -9,13 +9,13 @@ import { toast } from 'react-toastify'
 
 // }
 export const registerAPI = async (data) => {
-  const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/user/register`, data)
-  toast.success('Success')
+  const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/users/register`, data)
+  toast.success('Đăng kí thành công, vui lòng vào Email để xác thực tài khoản')
   return response.data
 }
 export const verifyAccountApi = async (data) => {
-  const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/user/verify`, data)
-  toast.success('Success')
+  const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/users/verify`, data)
+  toast.success('Xác thực tài khoản thành công, hãy đăng nhập ')
   return response.data
 }
 export const updateBoardDetaislApi = async (boardId, updateBoard) => {

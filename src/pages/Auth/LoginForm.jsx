@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
@@ -17,17 +17,39 @@ import FieldErrorAlert, { } from '~/components/Form/FieldErrorAlert'
 import {
   useSearchParams
 } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import {
+  loginUserApi
+} from '~/redux/user/userSlice'
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE, FILED_REQUIRED_MESSAGE } from '~/utils/validators'
 import Alert from '@mui/material/Alert'
+import { useDispatch } from 'react-redux'
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   let [sreachParams] = useSearchParams()
   const registeredEmail = sreachParams.get('registeredEmail')
   const verifiedEmail = sreachParams.get('verifiedEmail')
-  console.log(registeredEmail)
   const onSubmit = (data) => {
-    console.log('Submit:', data)
-    console.log('Errors:', errors)
+    const { email, password } = data
+    toast.promise(
+      dispatch(loginUserApi({ email, password })),
+      {
+        pending: 'Đang đăng nhập...',
+        success: 'Đăng nhập thành công!',
+        error: 'Đăng nhập thất bại!'
+      },
+      {
+        style: {
+          borderRadius: '12px',
+          background: '#1e293b',
+          color: '#fff'
+        }
+      }
+    ).then((res) => {
+      if (!res.error) navigate('/')
+    })
   }
   const [showPassword, setShowPassword] = React.useState(false)
   const handleClickShowPassword = () => {
@@ -63,45 +85,47 @@ const LoginForm = () => {
               <Typography variant='body2' sx={{ mt: 1 }}>
                 Nhập thông tin để truy cập tài khoản của bạn.
               </Typography>
-              {verifiedEmail && <Alert
-                severity="info"
-                variant="filled"
-                sx={{
-                  borderRadius: 2,
-                  marginTop: 1,
-                  marginBottom: 1,
-                  bgcolor: 'rgba(255,255,255,0.18)',
-                  color: '#fff',
-                  boxShadow: 'none',
-                  '& .MuiAlert-icon': {
-                    color: '#fff'
-                  },
-                  '& .MuiAlert-message': {
-                    fontWeight: 500
-                  }
-                }}
-              >
-                Sau khi đăng ký thành công, hệ thống sẽ gửi email xác thực tài
-                khoản {verifiedEmail}. Vui lòng kiểm tra hộp thư của bạn.
-              </Alert>}
               {registeredEmail && <Alert
                 severity="info"
                 variant="filled"
                 sx={{
+                  mt: 1,
+                  mb: 1,
                   borderRadius: 2,
-                  bgcolor: 'rgba(255,255,255,0.18)',
-                  color: '#fff',
-                  boxShadow: 'none',
+                  bgcolor: 'rgba(33, 150, 243, 0.18)',
+                  color: '#E3F2FD',
+                  border: '1px solid rgba(33,150,243,.4)',
                   '& .MuiAlert-icon': {
-                    color: '#fff'
+                    color: 'yellow'
                   },
                   '& .MuiAlert-message': {
                     fontWeight: 500
                   }
                 }}
               >
-                Sau khi đăng ký thành công, hệ thống sẽ gửi email xác thực tài
-                khoản {registeredEmail}. Vui lòng kiểm tra hộp thư của bạn.
+                Sau khi đăng ký thành công, hệ thống sẽ gửi email xác thực tài khoản{' '}
+                <strong>{registeredEmail}</strong>. Vui lòng kiểm tra hộp thư của bạn.
+              </Alert>}
+              {verifiedEmail && <Alert
+                severity="success"
+                variant="filled"
+                sx={{
+                  mt: 1,
+                  mb: 1,
+                  borderRadius: 2,
+                  bgcolor: 'rgba(76, 175, 80, 0.18)',
+                  color: '#E8F5E9',
+                  border: '1px solid rgba(76,175,80,.4)',
+                  '& .MuiAlert-icon': {
+                    color: '#66BB6A'
+                  },
+                  '& .MuiAlert-message': {
+                    fontWeight: 500
+                  }
+                }}
+              >
+                Xác thực tài khoản <strong>{verifiedEmail}</strong> thành công. Hãy đăng nhập
+                để trải nghiệm ngay nhé!
               </Alert>}
 
             </Box>

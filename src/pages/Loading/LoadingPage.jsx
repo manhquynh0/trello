@@ -3,7 +3,7 @@ import Skeleton from '@mui/material/Skeleton'
 import CircularProgress from '@mui/material/CircularProgress'
 import Typography from '@mui/material/Typography'
 
-const LoadingPage = (caption) => {
+const LoadingPage = ({ caption }) => {
   return (
     <Box sx={{ p: 3 }}>
       <Box
@@ -11,7 +11,8 @@ const LoadingPage = (caption) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          mb: 3
+          mb: 3,
+          gap : 1
         }}
       >
         <CircularProgress size={50} thickness={4} />

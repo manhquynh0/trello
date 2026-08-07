@@ -30,6 +30,7 @@ const RegisterForm = () => {
   const onSubmit = (data) => {
 
     const { email, password } = data
+    console.log('DEBUG - password thực tế gửi đi:', password) 
     toast.promise(
       registerAPI({ email, password }),
       {
@@ -42,14 +43,7 @@ const RegisterForm = () => {
     handleSubmit,
     watch,
     formState: { errors }
-  } = useForm({
-    defaultValues: {
-      displayName: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
-    }
-  })
+  } = useForm()
   const password = watch('password')
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
