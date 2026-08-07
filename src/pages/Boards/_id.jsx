@@ -6,9 +6,8 @@ import AppBar from '~/components/AppBar'
 import BoardContent from './BoardContent/BoardContent'
 import { updateBoardDetaislApi, updateCardDetaislApi, moveCardtoDifferentColumnApi } from '~/apis'
 import React from 'react'
-import Box from '@mui/material/Box'
 import { cloneDeep } from 'lodash'
-import Skeleton from '@mui/material/Skeleton'
+import LoadingPage from '~/pages/Loading/LoadingPage'
 import {
   fetchBoardDetailsAPI,
   updateCurrentActiveBoard,
@@ -78,48 +77,7 @@ function Board() {
   // }
 
   if (!board) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Skeleton
-          variant="rounded"
-          sx={{
-            width: 350,
-            height: 50,
-            borderRadius: 3
-          }}
-        />
-
-        <Skeleton
-          variant="rounded"
-          sx={{
-            mt: 2,
-            width: '100%',
-            height: 80,
-            borderRadius: 3
-          }}
-        />
-
-        <Box
-          sx={{
-            display: 'flex',
-            gap: 2,
-            mt: 3
-          }}
-        >
-          {[1, 2, 3, 4].map((item) => (
-            <Skeleton
-              key={item}
-              variant="rounded"
-              sx={{
-                width: 320,
-                height: 600,
-                borderRadius: 4 // 32px
-              }}
-            />
-          ))}
-        </Box>
-      </Box>
-    )
+    <LoadingPage caption = 'Chờ một xíu nhé ~' />
   }
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh', backgroundColor: 'background.default' }}>

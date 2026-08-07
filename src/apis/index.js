@@ -2,11 +2,22 @@ import {
   API_ROOT
 } from '~/utils/constants'
 import authorizedAxiosInstance from '~/utils/authorizeAxios'
+import { toast } from 'react-toastify'
 // export const fetchBoardDetaislApi = async (boardId) => {
 //   const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards/${boardId}`)
 //   return response.data
 
 // }
+export const registerAPI = async (data) => {
+  const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/user/register`, data)
+  toast.success('Success')
+  return response.data
+}
+export const verifyAccountApi = async (data) => {
+  const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/user/verify`, data)
+  toast.success('Success')
+  return response.data
+}
 export const updateBoardDetaislApi = async (boardId, updateBoard) => {
   const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/boards/${boardId}`, updateBoard)
   return response.data

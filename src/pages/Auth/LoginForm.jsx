@@ -14,9 +14,17 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Zoom from '@mui/material/Zoom'
 import { useForm } from 'react-hook-form'
 import FieldErrorAlert, { } from '~/components/Form/FieldErrorAlert'
+import {
+  useSearchParams
+} from 'react-router-dom'
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE, FILED_REQUIRED_MESSAGE } from '~/utils/validators'
+import Alert from '@mui/material/Alert'
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm()
+  let [sreachParams] = useSearchParams()
+  const registeredEmail = sreachParams.get('registeredEmail')
+  const verifiedEmail = sreachParams.get('verifiedEmail')
+  console.log(registeredEmail)
   const onSubmit = (data) => {
     console.log('Submit:', data)
     console.log('Errors:', errors)
@@ -55,6 +63,47 @@ const LoginForm = () => {
               <Typography variant='body2' sx={{ mt: 1 }}>
                 Nhập thông tin để truy cập tài khoản của bạn.
               </Typography>
+              {verifiedEmail && <Alert
+                severity="info"
+                variant="filled"
+                sx={{
+                  borderRadius: 2,
+                  marginTop: 1,
+                  marginBottom: 1,
+                  bgcolor: 'rgba(255,255,255,0.18)',
+                  color: '#fff',
+                  boxShadow: 'none',
+                  '& .MuiAlert-icon': {
+                    color: '#fff'
+                  },
+                  '& .MuiAlert-message': {
+                    fontWeight: 500
+                  }
+                }}
+              >
+                Sau khi đăng ký thành công, hệ thống sẽ gửi email xác thực tài
+                khoản {verifiedEmail}. Vui lòng kiểm tra hộp thư của bạn.
+              </Alert>}
+              {registeredEmail && <Alert
+                severity="info"
+                variant="filled"
+                sx={{
+                  borderRadius: 2,
+                  bgcolor: 'rgba(255,255,255,0.18)',
+                  color: '#fff',
+                  boxShadow: 'none',
+                  '& .MuiAlert-icon': {
+                    color: '#fff'
+                  },
+                  '& .MuiAlert-message': {
+                    fontWeight: 500
+                  }
+                }}
+              >
+                Sau khi đăng ký thành công, hệ thống sẽ gửi email xác thực tài
+                khoản {registeredEmail}. Vui lòng kiểm tra hộp thư của bạn.
+              </Alert>}
+
             </Box>
 
             <Box sx={{ p: 3 }}>

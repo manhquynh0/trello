@@ -1,5 +1,5 @@
 ﻿import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
@@ -8,13 +8,15 @@ import Typography from '@mui/material/Typography'
 import InputAdornment from '@mui/material/InputAdornment'
 import IconButton from '@mui/material/IconButton'
 import Zoom from '@mui/material/Zoom'
-import PersonIcon from '@mui/icons-material/Person'
 import EmailIcon from '@mui/icons-material/Email'
 import LockIcon from '@mui/icons-material/Lock'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import { useForm } from 'react-hook-form'
-
+import { toast } from 'react-toastify'
+import {
+  registerAPI
+} from '~/apis'
 import {
   EMAIL_RULE,
   EMAIL_RULE_MESSAGE,
@@ -22,8 +24,19 @@ import {
   PASSWORD_RULE_MESSAGE,
   FILED_REQUIRED_MESSAGE
 } from '~/utils/validators'
-
 const RegisterForm = () => {
+  const [showPassword, setShowPassword] = React.useState(false)
+  const navigate = useNavigate()
+  const onSubmit = (data) => {
+
+    const { email, password } = data
+    toast.promise(
+      registerAPI({ email, password }),
+      {
+        pending: 'Registation is in progress...'
+      }
+    ).then(user => navigate(`/login?registeredEmail=${user.email}`))
+  }
   const {
     register,
     handleSubmit,
@@ -37,15 +50,7 @@ const RegisterForm = () => {
       confirmPassword: ''
     }
   })
-
   const password = watch('password')
-
-  const [showPassword, setShowPassword] = React.useState(false)
-
-  const onSubmit = (data) => {
-    console.log(data)
-  }
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Zoom in>
@@ -62,7 +67,7 @@ const RegisterForm = () => {
             elevation={8}
             sx={{
               width: '100%',
-              maxWidth: 460,
+              maxWidth: 500,
               borderRadius: 3,
               overflow: 'hidden'
             }}
@@ -71,7 +76,8 @@ const RegisterForm = () => {
               sx={{
                 p: 3,
                 bgcolor: 'primary.main',
-                color: 'primary.contrastText'
+                color: 'primary.contrastText',
+                textAlign: 'center'
               }}
             >
               <Typography variant="h5">
@@ -81,31 +87,10 @@ const RegisterForm = () => {
               <Typography variant="body2" sx={{ mt: 1 }}>
                 Tạo tài khoản mới để bắt đầu.
               </Typography>
+
             </Box>
 
             <Box sx={{ p: 3 }}>
-
-              <TextField
-                fullWidth
-                margin="normal"
-                label="Tên"
-                error={!!errors.displayName}
-                helperText={errors.displayName?.message}
-                {...register('displayName', {
-                  required: FILED_REQUIRED_MESSAGE,
-                  minLength: {
-                    value: 2,
-                    message: 'Tên phải có ít nhất 2 ký tự'
-                  }
-                })}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PersonIcon />
-                    </InputAdornment>
-                  )
-                }}
-              />
 
               <TextField
                 fullWidth
