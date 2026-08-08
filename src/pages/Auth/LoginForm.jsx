@@ -36,9 +36,7 @@ const LoginForm = () => {
     toast.promise(
       dispatch(loginUserApi({ email, password })),
       {
-        pending: 'Đang đăng nhập...',
-        success: 'Đăng nhập thành công!',
-        error: 'Đăng nhập thất bại!'
+        pending : 'Logging in...'
       },
       {
         style: {

@@ -30,7 +30,6 @@ const RegisterForm = () => {
   const onSubmit = (data) => {
 
     const { email, password } = data
-    console.log('DEBUG - password thực tế gửi đi:', password) 
     toast.promise(
       registerAPI({ email, password }),
       {

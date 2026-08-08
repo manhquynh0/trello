@@ -77,7 +77,7 @@ function Board() {
   // }
 
   if (!board) {
-    <LoadingPage caption = 'Chờ một xíu nhé ~' />
+    return <LoadingPage caption = 'Chờ một xíu nhé ~' />
   }
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh', backgroundColor: 'background.default' }}>
