@@ -149,7 +149,7 @@ const LoginForm = () => {
                 InputLabelProps={{
                   shrink: true,
                   sx: {
-                    color: 'rgba(255,255,255,0.7)',
+                    color: 'black',
                     '&.Mui-focused': {
                       color: '#90caf9'
                     }
@@ -182,7 +182,7 @@ const LoginForm = () => {
                 InputLabelProps={{
                   shrink: true,
                   sx: {
-                    color: 'rgba(255,255,255,0.7)',
+                    color: 'black',
                     '&.Mui-focused': {
                       color: '#90caf9'
                     }

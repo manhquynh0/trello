@@ -42,5 +42,10 @@ export const createdNewColumnAPI = async (newColumnData) => {
 export const createdNewCardAPI = async (newCardData) => {
   const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/cards`, newCardData)
   return response.data
+}
+
+export const refreshTokenApi = async () => {
+  const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/users/refresh_token`)
+  return response.data
 
 }

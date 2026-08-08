@@ -23,7 +23,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 import QueueIcon from '@mui/icons-material/Queue'
 import { toast } from 'react-toastify'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
-import { confirmDelete } from '~/utils/ConfirmDialog'
+import { confirm } from '~/utils/ConfirmDialog'
 import { cloneDeep } from 'lodash'
 import { createdNewCardAPI, deleteColumnApi } from '~/apis'
 import {
@@ -77,8 +77,8 @@ function Column({ column }) {
 
   const deleteItem = async () => {
     handleClose()
-    const result = await confirmDelete(
-      'Are you sure you want to delete this column??'
+    const result = await confirm(
+      'Bạn có chắc muốn xóa cột này?', 'Xóa'
     )
 
     if (result.isConfirmed) {
@@ -313,7 +313,7 @@ function Column({ column }) {
                   }}
                 />
                 <Button
-                   className='interceptor-loading'
+                  className='interceptor-loading'
                   size="small"
                   onClick={addNewCard}
                   startIcon={<QueueIcon sx={{ color: 'inherit' }} />}

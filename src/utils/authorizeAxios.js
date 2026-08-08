@@ -2,6 +2,8 @@ import axios from 'axios'
 let authorizedAxiosInstance = axios.create()
 import { toast } from 'react-toastify'
 import { interceptorLoadingElements } from '~/utils/PlaceHolderCard'
+import { logoutUserApi } from '~/redux/user/userSlice'
+import { refreshTokenApi } from '~/apis'
 // thời gian xử lý tối đa 1 request
 authorizedAxiosInstance.defaults.timeout = 1000 * 60 * 10
 // Cho phép axios tự động gửi cookie trong mỗi request lên BE ( phục vụ lưu accesstoken & refreshtoken vào trong httpOnly trình duyệt)

@@ -1,13 +1,12 @@
 import Swal from 'sweetalert2'
-export const confirmDelete = (title, text) => {
+export const confirm = (title, confirmButtonText) => {
   return Swal.fire({
     title,
-    text,
     icon: 'warning',
     showCancelButton: true,
     width: '400px',
-    confirmButtonText: 'Delete',
-    cancelButtonText: 'Cancel',
+    confirmButtonText,
+    cancelButtonText: 'Hủy',
     confirmButtonColor: '#d33',
     customClass: {
       popup: 'my-popup'
