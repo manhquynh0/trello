@@ -16,6 +16,12 @@ export const loginUserApi = createAsyncThunk('user/loginUserApi',
     return response.data
   }
 )
+export const updateUserApi = createAsyncThunk('user/updateUserApi',
+  async (data) => {
+    const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/users/update`, data)
+    return response.data
+  }
+)
 export const logoutUserApi = createAsyncThunk('user/logoutUserApi',
   async (showSuccessMessage = true) => {
     const response = await authorizedAxiosInstance.delete(`${API_ROOT}/v1/users/logout`)
@@ -42,6 +48,12 @@ export const userSlice = createSlice({
     builder.addCase(logoutUserApi.fulfilled, (state) => {
       // clear thông tin của user
       state.currentUser = null
+
+    })
+    builder.addCase(updateUserApi.fulfilled, (state, action) => {
+
+      const user = action.payload
+      state.currentUser = user
 
     })
 

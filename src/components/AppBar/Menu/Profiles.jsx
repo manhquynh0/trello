@@ -12,7 +12,7 @@ import Logout from '@mui/icons-material/Logout'
 import { useDispatch, useSelector } from 'react-redux'
 import { confirm } from '~/utils/ConfirmDialog'
 import { selectCurrentUser, logoutUserApi } from '~/redux/user/userSlice'
-
+import { Link } from 'react-router-dom'
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const dispatch = useDispatch()
@@ -34,6 +34,7 @@ export default function AccountMenu() {
     <React.Fragment>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
         <Tooltip title="Account settings">
+
           <IconButton
             onClick={handleClick}
             size="small"
@@ -44,6 +45,7 @@ export default function AccountMenu() {
           >
             <Avatar src={currentUser?.avatar} sx={{ width: 30, height: 30 }}>M</Avatar>
           </IconButton>
+
         </Tooltip>
       </Box>
       <Menu
@@ -125,23 +127,24 @@ export default function AccountMenu() {
         </MenuItem>
 
         <Divider />
+        <Link to='/settings/account' style={{ textDecoration: 'none ' }}>
+          <MenuItem
+            onClick={handleClose}
+            sx={{
+              borderRadius: 1,
+              mx: 0.5,
 
-        <MenuItem
-          onClick={handleClose}
-          sx={{
-            borderRadius: 1,
-            mx: 0.5,
-
-            '&:hover': {
-              backgroundColor: '#334155'
-            }
-          }}
-        >
-          <ListItemIcon sx={{ color: '#fff' }}>
-            <Settings fontSize="small" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
+              '&:hover': {
+                backgroundColor: '#334155'
+              }
+            }}
+          >
+            <ListItemIcon sx={{ color: '#fff' }}>
+              <Settings fontSize="small" />
+            </ListItemIcon>
+            Settings
+          </MenuItem>
+        </Link>
 
         <MenuItem
           onClick={handleLogout}
@@ -149,11 +152,9 @@ export default function AccountMenu() {
           sx={{
             borderRadius: 1,
             mx: 0.5,
-
-            '&:hover': {
+            '&.MuiMenuItem-root:hover': {
               backgroundColor: '#7f1d1d',
               color: '#fff',
-
               '& .MuiListItemIcon-root': {
                 color: '#fff'
               }

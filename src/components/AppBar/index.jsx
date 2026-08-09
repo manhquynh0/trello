@@ -18,6 +18,7 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import Tooltip from '@mui/material/Tooltip'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Profiles from './Menu/Profiles'
+import { Link } from 'react-router-dom'
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -77,16 +78,18 @@ function AppBar() {
         gap: 2
       }} >
         <AppsOutlinedIcon sx={{ color: 'text.primary' }} />
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 0.5,
-          color: 'text.primary'
-        }}>
-          <SvgIcon component={trello} sx={{ color: 'text.primary' }} inheritViewBox />
-          <Typography variant='span' sx={{ display: { xs: 'none', sm: 'block' }, fontSize: '1.2rem', fontWeight: 'bold', color: 'text.primary' }}>QLLO</Typography>
-        </Box>
+        <Link to ='/' style={{ textDecoration: 'none ' }}>
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 0.5,
+            color: 'text.primary'
+          }}>
+            <SvgIcon component={trello} sx={{ color: 'text.primary' }} inheritViewBox />
+            <Typography variant='span' sx={{ display: { xs: 'none', sm: 'block' }, fontSize: '1.2rem', fontWeight: 'bold', color: 'text.primary' }}>QLLO</Typography>
+          </Box>
+        </Link>
         <Box sx={{
           display: { xs: 'none', sm: 'flex' },
           justifyContent: 'center',

@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 //   return response.data
 
 // }
+
 export const registerAPI = async (data) => {
   const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/users/register`, data)
   toast.success('Đăng kí thành công, vui lòng vào Email để xác thực tài khoản')

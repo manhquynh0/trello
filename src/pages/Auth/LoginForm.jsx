@@ -13,7 +13,7 @@ import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Zoom from '@mui/material/Zoom'
 import { useForm } from 'react-hook-form'
-import FieldErrorAlert, { } from '~/components/Form/FieldErrorAlert'
+import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import {
   useSearchParams
 } from 'react-router-dom'
@@ -46,7 +46,11 @@ const LoginForm = () => {
         }
       }
     ).then((res) => {
-      if (!res.error) navigate('/')
+      if (!res.error) {
+       
+        navigate('/')
+       toast.success(`Chào mừng ${email} đến với QLLO`) }
+
     })
   }
   const [showPassword, setShowPassword] = React.useState(false)

@@ -33,7 +33,7 @@ authorizedAxiosInstance.interceptors.request.use(
   (error) => {
     // Do something with request error
     return Promise.reject(error)
-  },
+  }
 )
 
 let refreshTokenPromise = null
@@ -91,11 +91,11 @@ authorizedAxiosInstance.interceptors.response.use(
           borderRadius: '12px',
           background: '#DC2626',
           color: '#fff',
-          fontWeight: 'semi-bold',
-        },
+          fontWeight: 'semi-bold'
+        }
       })
     }
     return Promise.reject(error)
-  },
+  }
 )
 export default authorizedAxiosInstance
