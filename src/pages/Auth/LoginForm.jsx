@@ -36,7 +36,7 @@ const LoginForm = () => {
     toast.promise(
       dispatch(loginUserApi({ email, password })),
       {
-        pending : 'Logging in...'
+        pending: 'Logging in...'
       },
       {
         style: {
@@ -47,9 +47,10 @@ const LoginForm = () => {
       }
     ).then((res) => {
       if (!res.error) {
-       
+
         navigate('/')
-       toast.success(`Chào mừng ${email} đến với QLLO`) }
+        toast.success(`Chào mừng ${email} đến với QLLO`)
+      }
 
     })
   }

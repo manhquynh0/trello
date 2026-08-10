@@ -4,7 +4,7 @@ const FieldErrorAlert = ({ errors, fieldName }) => {
   if (!errors?.[fieldName]) return null
 
   return (
-    <Alert severity="error" sx={{ mt: 1 }}>
+    <Alert severity="error" sx={{ mt: 1, backgroundColor: 'transparent' }}>
       {errors[fieldName].message}
     </Alert>
   )
