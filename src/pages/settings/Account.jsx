@@ -21,7 +21,7 @@ import { FILED_REQUIRED_MESSAGE } from '~/utils/validators'
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { updateUserApi } from '~/redux/user/userSlice'
 import { useDispatch } from 'react-redux'
-
+import { singleFileValidator } from '~/utils/validators'
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -45,7 +45,32 @@ const Account = () => {
   })
 
   const [isLoading, setIsLoading] = useState(false)
+  const uploadFileAvatar = async (e) => {
+    const file = e.target?.files[0]
+    const error = singleFileValidator(file)
+    if (error) {
+      toast.error(error)
+      e.target.value = '' // reset input để chọn lại cùng file vẫn trigger onChange
+      return
+    }
 
+    setIsLoading(true)
+    const reqData = new FormData()
+    reqData.append('avatar', file)
+
+    try {
+      const res = await toast.promise(dispatch(updateUserApi(reqData)), {
+        pending: 'Đang cập nhật...'
+      })
+      if (!res.error) toast.success('Cập nhật thành công')
+    } catch (error) {
+      console.error('Error updating profile:', error)
+      toast.error('Cập nhật avatar thất bại')
+    } finally {
+      setIsLoading(false)
+      e.target.value = ''
+    }
+  }
   const onSubmit = async (data) => {
     setIsLoading(true)
     const { displayName } = data
@@ -71,13 +96,6 @@ const Account = () => {
       setIsLoading(false)
     }
   }
-  // const uploadFileAvatar = (e) => {
-  //   const error = singleFileValidator(e.target?.files[0])
-  //   if (error) {
-  //     toast.error(error)
-  //     return
-  //   }
-  // }
 
 
   return (
@@ -97,6 +115,8 @@ const Account = () => {
           {/* Profile Section */}
           <Box sx={{ textAlign: 'center', mb: 4 }}>
             <Avatar
+              src={currentUser?.avatar}
+              alt={currentUser?.displayName}
               sx={{
                 width: 100,
                 height: 100,
@@ -107,9 +127,8 @@ const Account = () => {
                 fontWeight: 'bold',
                 boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
               }}
-
             >
-
+              {currentUser?.displayName?.charAt(0)?.toUpperCase()}
             </Avatar>
 
             <Typography
@@ -120,7 +139,7 @@ const Account = () => {
                 mb: 0.5
               }}
             >
-              {currentUser.displayName}
+              {currentUser?.displayName}
             </Typography>
 
             <Typography
@@ -130,30 +149,32 @@ const Account = () => {
                 mb: 2
               }}
             >
-              {currentUser.userName}
+              {currentUser?.userName}
             </Typography>
 
             {/* Upload Button */}
             <Box sx={{ position: 'relative', display: 'inline-block' }}>
-              <input
-                accept='image/*'
-                style={{ display: 'none' }}
-                id='avatar-upload'
-                type='file'
-              //   onChange={}
-              />
-              <label htmlFor='avatar-upload'>
-                <Button
-                  component="label"
-                  role={undefined}
-                  variant="contained"
-                  tabIndex={-1}
-                  startIcon={<CloudUploadIcon />}
-                >
-                  Upload file
-                  <VisuallyHiddenInput type="file" />
-                </Button>
-              </label>
+              <Button
+                disabled={isLoading}
+                component="label"
+                variant="contained"
+                startIcon={<CloudUploadIcon />}
+              >
+                {isLoading ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CircularProgress size={20} sx={{ color: '#FFFFFF' }} />
+                    Đang cập nhật...
+                  </Box>
+                ) : (
+                  'Cập nhật Avatar'
+                )}
+
+                <VisuallyHiddenInput
+                  type="file"
+                  accept="image/*"
+                  onChange={uploadFileAvatar}
+                />
+              </Button>
             </Box>
           </Box>
 
