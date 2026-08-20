@@ -18,9 +18,7 @@ import Checkbox from '@mui/material/Checkbox'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import Box from '@mui/material/Box'
-import Tooltip from '@mui/material/Tooltip'
 import { useState } from 'react'
-import DriveFileRenameOutlineRoundedIcon from '@mui/icons-material/DriveFileRenameOutlineRounded'
 const ExpandMore = styled((props) => {
   const { expand: _expand, ...other } = props
   return <IconButton {...other} />

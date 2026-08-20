@@ -20,7 +20,7 @@ function App() {
     <Routes>
       <Route path='/' element={
         // replace : xóa ' / ' khỏi lịch sử trình duyệt
-        <Navigate to='/boards/6a6db6b04a357c43f9e82a9f' replace={true} />
+        <Navigate to='/boards' replace={true} />
       } />
       {/* Nhung Route chi duoc truy cap sau khi login */}
       <Route element={<ProtectedRoute user={currentUser} />}>

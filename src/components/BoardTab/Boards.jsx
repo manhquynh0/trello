@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Chip from '@mui/material/Chip'
 import Tooltip from '@mui/material/Tooltip'
 import FavoriteIcon from '@mui/icons-material/Favorite'
-import * as React from 'react'
+import React from 'react'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
@@ -28,6 +28,11 @@ import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import Avatar from '@mui/material/Avatar'
 import AvatarGroup from '@mui/material/AvatarGroup'
+import { useLocation } from 'react-router-dom'
+import { fetchBoardsApi } from '~/apis/index'
+import { useSearchParams, Link } from 'react-router-dom'
+import { DEFAULT_ITEM_PERPAGE, DEFAULT_PAGE } from '~/utils/constants'
+import PaginationItem from '@mui/material/PaginationItem'
 // Sample data for boards
 const BOARDS_DATA = [
   {
@@ -69,8 +74,14 @@ const BOARDS_DATA = [
 ]
 
 const BoardsTab = () => {
+  const [searchParams] = useSearchParams()
+
+  const page = parseInt(searchParams.get('page') || '1', 10)
   const [sortBy, setSortBy] = React.useState('newest')
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [boards, setBoards] = React.useState(null)
+  const [totalBoards, setTotalBoards] = React.useState(null)
+  const location = useLocation()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -82,6 +93,12 @@ const BoardsTab = () => {
 
   const open = Boolean(anchorEl)
 
+  React.useEffect(() => {
+    fetchBoardsApi(location.search).then(res => {
+      setBoards(res.boards || 0),
+        setTotalBoards(res.totalBoards || 0)
+    })
+  }, [location.search])
   return (
     <Box
       sx={{
@@ -248,122 +265,124 @@ const BoardsTab = () => {
       </Box>
 
       {/* Boards Grid */}
-      <Grid container spacing={3} sx={{ marginBottom: 4 }}>
-        {BOARDS_DATA.map((board) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={board.id}>
-            <Card
-              sx={{
-                height: '100%',
-                borderRadius: 3,
-                overflow: 'hidden',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 6
-                }
-              }}
-            >
-              {/* Card Image */}
-              <Box sx={{ position: 'relative', overflow: 'hidden', height: 200 }}>
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={board.image}
-                  alt={board.title}
-                  sx={{
-                    objectFit: 'cover',
-                    transition: 'transform 0.3s ease',
-                    '&:hover': {
-                      transform: 'scale(1.05)'
-                    }
-                  }}
-                />
-                {/* More Menu Button */}
-                <IconButton
-                  size="small"
-                  onClick={handleClick}
-                  sx={{
-                    position: 'absolute',
-                    top: 8,
-                    right: 8,
-                    backgroundColor: 'rgba(0,0,0,0.5)',
-                    color: 'white',
-                    '&:hover': {
-                      backgroundColor: 'rgba(0,0,0,0.7)'
-                    }
-                  }}
-                >
-                  <MoreHorizIcon fontSize="small" />
-                </IconButton>
+      {boards?.length > 0 &&
+        <Grid container spacing={3} sx={{ marginBottom: 4 }}>
+          {boards.map((board) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={board.id}>
+              <Card
+                sx={{
+                  height: '100%',
+                  borderRadius: 3,
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 6
+                  }
+                }}
+              >
+                {/* Card Image */}
+                <Box sx={{ position: 'relative', overflow: 'hidden', height: 200 }}>
+                  <CardMedia
+                    component="img"
+                    height="200"
+                    image={board.image ? board.image : 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=500&h=300&fit=crop'}
+                    alt={board.title}
+                    sx={{
+                      objectFit: 'cover',
+                      transition: 'transform 0.3s ease',
+                      '&:hover': {
+                        transform: 'scale(1.05)'
+                      }
+                    }}
+                  />
+                  {/* More Menu Button */}
+                  <IconButton
+                    size="small"
+                    onClick={handleClick}
+                    sx={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      backgroundColor: 'rgba(0,0,0,0.5)',
+                      color: 'white',
+                      '&:hover': {
+                        backgroundColor: 'rgba(0,0,0,0.7)'
+                      }
+                    }}
+                  >
+                    <MoreHorizIcon fontSize="small" />
+                  </IconButton>
 
-                {/* Menu Dropdown */}
-                <Menu
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                >
-                  <MenuItem>
-                    <ListItemIcon>
-                      <ContentCopy fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Copy</ListItemText>
-                  </MenuItem>
-                  <MenuItem>
-                    <ListItemIcon>
-                      <ContentPaste fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Paste</ListItemText>
-                  </MenuItem>
-                  <Divider />
-                  <MenuItem sx={{
-                    '&:hover': {
-                      color: 'error.main'
-                    }
-                  }}>
-                    <ListItemIcon>
-                      <DeleteRoundedIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Delete</ListItemText>
-                  </MenuItem>
-                </Menu>
-              </Box>
+                  {/* Menu Dropdown */}
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                  >
+                    <MenuItem>
+                      <ListItemIcon>
+                        <ContentCopy fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText>Copy</ListItemText>
+                    </MenuItem>
+                    <MenuItem>
+                      <ListItemIcon>
+                        <ContentPaste fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText>Paste</ListItemText>
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem sx={{
+                      '&:hover': {
+                        color: 'error.main'
+                      }
+                    }}>
+                      <ListItemIcon>
+                        <DeleteRoundedIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText>Delete</ListItemText>
+                    </MenuItem>
+                  </Menu>
+                </Box>
 
-              {/* Card Content */}
-              <CardContent sx={{ paddingBottom: 1 }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, marginBottom: 0.5 }}>
-                  {board.title}
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {board.description}
-                </Typography>
-              </CardContent>
+                {/* Card Content */}
+                <CardContent sx={{ paddingBottom: 1 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, marginBottom: 0.5 }}>
+                    {board.title}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    {board.description}
+                  </Typography>
+                </CardContent>
 
-              {/* Card Actions */}
-              <CardActions sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <AvatarGroup max={3} sx={{ '& .MuiAvatar-root': { width: 32, height: 32, fontSize: '0.75rem' } }}>
-                  <Avatar>A</Avatar>
-                  <Avatar>B</Avatar>
-                  <Avatar>C</Avatar>
-                  {board.moreMembers > 0 && <Avatar>+{board.moreMembers}</Avatar>}
-                </AvatarGroup>
-                <IconButton
-                  size="small"
-                  sx={{
-                    color: board.isFavorite ? '#FFC107' : 'inherit'
-                  }}
-                >
-                  <FavoriteIcon fontSize="small" />
-                </IconButton>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+                {/* Card Actions */}
+                <CardActions sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <AvatarGroup max={3} sx={{ '& .MuiAvatar-root': { width: 32, height: 32, fontSize: '0.75rem' } }}>
+                    <Avatar>A</Avatar>
+                    <Avatar>B</Avatar>
+                    <Avatar>C</Avatar>
+                    {board.moreMembers > 0 && <Avatar>+{board.moreMembers}</Avatar>}
+                  </AvatarGroup>
+                  <IconButton
+                    size="small"
+                    sx={{
+                      color: board.isFavorite ? '#FFC107' : 'inherit'
+                    }}
+                  >
+                    <FavoriteIcon fontSize="small" />
+                  </IconButton>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      }
 
       {/* Pagination */}
       <Box sx={{
@@ -373,16 +392,26 @@ const BoardsTab = () => {
         marginTop: 4
       }}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Hiển thị 1-4 của 28 board
+          Hiển thị {(page - 1) * DEFAULT_ITEM_PERPAGE + 1} tới {Math.min(page * DEFAULT_ITEM_PERPAGE, totalBoards)} của {totalBoards}
         </Typography>
         <Stack spacing={2} direction="row">
-          <Pagination count={12} color="primary" />
+          <Pagination
+
+            count={Math.ceil(totalBoards / DEFAULT_ITEM_PERPAGE)}
+            page={page}
+            color="primary"
+            renderItem={(item) => (
+              <PaginationItem
+                {...item}
+                component={Link}
+                to={`/boards${item.page === DEFAULT_PAGE ? '' : `?page=${item.page}`}`}
+              />
+            )}
+          />
         </Stack>
       </Box>
 
     </Box>
-
-
   )
 }
 

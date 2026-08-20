@@ -48,5 +48,8 @@ export const createdNewCardAPI = async (newCardData) => {
 export const refreshTokenApi = async () => {
   const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/users/refresh_token`)
   return response.data
-
+}
+export const fetchBoardsApi = async (searchBoard) => {
+  const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards${searchBoard}`)
+  return response.data
 }
