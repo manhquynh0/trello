@@ -59,6 +59,9 @@ export const activeBoardSlice = createSlice({
       // action.payload ở đây chính là response.data trả về ở trên
       let board = action.payload
 
+      // Thành viên trong board sẽ là gộp lại của member và owner
+      board.FE_allUser = board.owners.concat(board.members)
+
       // Xử ly du lieu khi can thiet
       board.columns = mapOrder(board.columns, board.columnOrderIds, '_id')
       board.columns.forEach(column => {

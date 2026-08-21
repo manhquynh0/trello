@@ -72,16 +72,20 @@ function ActiveCard() {
     dispatch(clearCurrentActiveCard())
   }
   const callAPI = async (updateData) => {
-    const updatedCard = await updateCardDetaislApi(card._id, updateData )
+    const updatedCard = await updateCardDetaislApi(card._id, updateData)
     dispatch(updateCurrentActiveCard(updatedCard))
     dispatch(updateCardInCurrentActiveBoar(updatedCard))
   }
   const onUpdateCardTitle = async (newTitle) => {
     callAPI({
-      title : newTitle
+      title: newTitle.trim()
     })
   }
-
+  const onUpdateCardDescription = async (newDes) => {
+    callAPI({
+      description: newDes
+    })
+  }
   const onUploadCardCover = (event) => {
     console.log(event.target?.files[0])
     const error = singleFileValidator(event.target?.files[0])
@@ -91,6 +95,12 @@ function ActiveCard() {
     }
     let reqData = new FormData()
     reqData.append('cardCover', event.target?.files[0])
+
+    toast.promise(
+      callAPI(reqData).finally(() => event.target.value = ''), {
+        pending : 'Updating...'
+      }
+    )
 
     // Gọi API...
   }
@@ -127,7 +137,7 @@ function ActiveCard() {
           <Box sx={{ mb: 4 }}>
             <img
               style={{ width: '100%', height: '320px', borderRadius: '6px', objectFit: 'cover' }}
-              src="https://trungquandev.com/wp-content/uploads/2023/08/fit-banner-for-facebook-blog-trungquandev-codetq.png"
+              src={card?.cover}
               alt="card-cover"
             />
           </Box>}
@@ -159,7 +169,11 @@ function ActiveCard() {
               </Box>
 
               {/* Feature 03: Xử lý mô tả của Card */}
-              <CardDescriptionMdEditor />
+              <CardDescriptionMdEditor
+                cardDescriptionProp={card?.description}
+                handleUpdateCardDes={onUpdateCardDescription}
+
+              />
             </Box>
 
             <Box sx={{ mb: 3 }}>

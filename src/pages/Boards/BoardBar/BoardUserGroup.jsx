@@ -21,14 +21,14 @@ function BoardUserGroup({ boardUsers = [], limit = 8 }) {
   return (
     <Box sx={{ display: 'flex', gap: '4px' }}>
       {/* Hiển thị giới hạn số lượng user theo số limit */}
-      {[...Array(16)].map((_, index) => {
+      {boardUsers.map((user, index) => {
         if (index < limit) {
           return (
-            <Tooltip title="manhquynhdev" key={index}>
+            <Tooltip title={user?.displayName} key={index}>
               <Avatar
                 sx={{ width: 34, height: 34, cursor: 'pointer' }}
-                alt="manhquyndev"
-                src="https://trungquandev.com/wp-content/uploads/2019/06/trungquandev-cat-avatar.png"
+                alt={user?.displayName}
+                src={user.avatar ? user.avatar : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR_yi80uKEijqvut7Wq4j66q7Pgva_tQAgzPaBlSTDB0nsMvnfuR0e9g0E34yBoJJxntHaFAFWOUA7yAbaU22tZ3qOwI_BYQl65mHo7tNe&s=10'}
               />
             </Tooltip>
           )
@@ -36,7 +36,7 @@ function BoardUserGroup({ boardUsers = [], limit = 8 }) {
       })}
 
       {/* Nếu số lượng users nhiều hơn limit thì hiện thêm +number */}
-      {[...Array(16)].length > limit &&
+      {boardUsers.length > limit &&
         <Tooltip title="Show more">
           <Box
             aria-describedby={popoverId}
@@ -55,7 +55,7 @@ function BoardUserGroup({ boardUsers = [], limit = 8 }) {
               backgroundColor: '#a4b0be'
             }}
           >
-            +{[...Array(16)].length - limit}
+            +{boardUsers.length - limit}
           </Box>
         </Tooltip>
       }
@@ -69,12 +69,12 @@ function BoardUserGroup({ boardUsers = [], limit = 8 }) {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
         <Box sx={{ p: 2, maxWidth: '235px', display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-          {[...Array(16)].map((_, index) =>
+          {boardUsers.map((user, index) =>
             <Tooltip title="trungquandev" key={index}>
               <Avatar
                 sx={{ width: 34, height: 34, cursor: 'pointer' }}
-                alt="trungquandev"
-                src="https://trungquandev.com/wp-content/uploads/2019/06/trungquandev-cat-avatar.png"
+                alt={user?.displayName}
+                src={user.avatar ? user.avatar : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR_yi80uKEijqvut7Wq4j66q7Pgva_tQAgzPaBlSTDB0nsMvnfuR0e9g0E34yBoJJxntHaFAFWOUA7yAbaU22tZ3qOwI_BYQl65mHo7tNe&s=10'}
               />
             </Tooltip>
           )}
