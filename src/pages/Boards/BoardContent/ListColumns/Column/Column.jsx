@@ -25,7 +25,7 @@ import { toast } from 'react-toastify'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import { confirm } from '~/utils/ConfirmDialog'
 import { cloneDeep } from 'lodash'
-import { createdNewCardAPI, deleteColumnApi, updateCardDetaislApi } from '~/apis'
+import { createdNewCardAPI, deleteColumnApi, updateColumnDetaislApi } from '~/apis'
 import {
   updateCurrentActiveBoard,
   selectCurrentActiveBoard
@@ -126,7 +126,7 @@ function Column({ column }) {
     opacity: isDragging ? 0.5 : undefined
   }
   const onUpdateColumnTitle = (newTitle) => {
-    updateCardDetaislApi(column._id, {
+    updateColumnDetaislApi(column._id, {
       title: newTitle
     }).then(() => {
       const newBoard = cloneDeep(board)

@@ -40,6 +40,17 @@ export const activeBoardSlice = createSlice({
 
       // Update lai du lieu cua currenActiveBoard
       state.currentActiveBoard = board
+    },
+    updateCardInCurrentActiveBoar: (state, action) => {
+      const updateCard = action.payload
+
+      state.currentActiveBoard.columns.forEach(column => {
+        const cardIndex = column.cards.findIndex(card => card._id === updateCard._id)
+
+        if (cardIndex !== -1) {
+          column.cards[cardIndex] = updateCard
+        }
+      })
     }
   },
   // ExtraReducers : Nơi xử lý dữ liệu bất đồng bộ
@@ -72,7 +83,8 @@ export const activeBoardSlice = createSlice({
 // ation la noi dành cho các components bên dưới gọi bằng dispatch() tới nơi cập nhật lại dữ liệu thông qua reducer( chạy đồng bô)
 // actions được tạo tự động
 export const {
-  updateCurrentActiveBoard
+  updateCurrentActiveBoard,
+  updateCardInCurrentActiveBoar
 } = activeBoardSlice.actions
 
 export const selectCurrentActiveBoard = (state) => {

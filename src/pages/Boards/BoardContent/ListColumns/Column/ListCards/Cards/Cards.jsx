@@ -19,6 +19,8 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import Box from '@mui/material/Box'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
 const ExpandMore = styled((props) => {
   const { expand: _expand, ...other } = props
   return <IconButton {...other} />
@@ -31,6 +33,7 @@ const ExpandMore = styled((props) => {
 }))
 
 function Cards({ card }) {
+  const dispatch = useDispatch()
   const [expanded, setExpanded] = React.useState(false)
   const handleExpandClick = () => {
     setExpanded(!expanded)
@@ -53,8 +56,13 @@ function Cards({ card }) {
   const ShouldShowCardActions = () => {
     return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length || !!card?.description?.length
   }
+  const setActiveCard = () => {
+    dispatch(updateCurrentActiveCard(card))
+
+  }
   return (
     <Card
+      onClick={setActiveCard}
       ref={setNodeRef}
       style={dndKitColumnStyles}
       {...attributes}

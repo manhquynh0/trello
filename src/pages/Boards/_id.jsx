@@ -4,7 +4,7 @@ import Container from '@mui/material/Container'
 import BoardBar from './BoardBar/BoardBar'
 import AppBar from '~/components/AppBar'
 import BoardContent from './BoardContent/BoardContent'
-import { updateBoardDetaislApi, updateCardDetaislApi, moveCardtoDifferentColumnApi } from '~/apis'
+import { updateBoardDetaislApi, updateColumnDetaislApi, moveCardtoDifferentColumnApi } from '~/apis'
 import React from 'react'
 import { cloneDeep } from 'lodash'
 import LoadingPage from '~/pages/Loading/LoadingPage'
@@ -15,9 +15,12 @@ import {
 } from '~/redux/activeBoard/activeBoardSlice'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import ActiveCard from '~/components/Modal/ActiveCard/ActiveCard'
+import { selectCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
 function Board() {
   const dispatch = useDispatch()
   // const [board, setBoard] = React.useState(null)
+  const card = useSelector(selectCurrentActiveCard)
   const board = useSelector(selectCurrentActiveBoard)
   const { boardId } = useParams()
   React.useEffect(() => {
@@ -52,7 +55,7 @@ function Board() {
       }
     })
     dispatch(updateCurrentActiveBoard(newBoard))
-    await updateCardDetaislApi(columnId, { cardOrderIds: dndOrderedCardsIds })
+    await updateColumnDetaislApi(columnId, { cardOrderIds: dndOrderedCardsIds })
   }
   const moveCardBetweenDifferentColumns = async (prevColumnId, nextColumnId, currentCardId, dndOrderedColumns) => {
     const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
@@ -73,10 +76,11 @@ function Board() {
   // }
 
   if (!board) {
-    return <LoadingPage caption = 'Chờ một xíu nhé ~' />
+    return <LoadingPage caption='Chờ một xíu nhé ~' />
   }
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh', backgroundColor: 'background.default' }}>
+      {card && < ActiveCard />}
       <AppBar />
       <BoardBar board={board} />
       <BoardContent board={board}
