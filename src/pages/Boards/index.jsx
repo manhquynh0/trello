@@ -1,10 +1,7 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import QueueIcon from '@mui/icons-material/Queue'
-import Typography from '@mui/material/Typography'
 import * as React from 'react'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import Divider from '@mui/material/Divider'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import GroupIcon from '@mui/icons-material/Group'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -30,10 +27,13 @@ const TABS = {
 const Boards = () => {
   const [activeTab, setActiveTab] = React.useState(TABS.BOARDS_TAB)
   const [openCreateBoard, setOpenCreateBoard] = React.useState(false)
+  const [boardsRefreshKey, setBoardsRefreshKey] = React.useState(0)
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue)
   }
-
+  const afterCreate = () => {
+    setBoardsRefreshKey((currentKey) => currentKey + 1)
+  }
 
   return (
     <Box sx={{ flexGrow: 1, width: '100%' }}>
@@ -145,10 +145,11 @@ const Boards = () => {
             >
               <CreatedBoard
                 onClose={() => setOpenCreateBoard(false)}
+                afterCreate={afterCreate}
               />
             </Modal>
             <TabPanel value={TABS.BOARDS_TAB}>
-              <BoardsTab />
+              <BoardsTab refreshKey={boardsRefreshKey} />
             </TabPanel>
 
             <TabPanel value={TABS.MEMBER_TAB}>

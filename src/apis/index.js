@@ -53,3 +53,8 @@ export const fetchBoardsApi = async (searchBoard) => {
   const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards${searchBoard}`)
   return response.data
 }
+export const createdNewBoardsApi = async (data) => {
+  const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/boards`, data)
+  toast.success('Tạo thành công, hãy ấn vào để xem chi tiết')
+  return response.data
+}

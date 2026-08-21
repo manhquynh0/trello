@@ -33,47 +33,9 @@ import { fetchBoardsApi } from '~/apis/index'
 import { useSearchParams, Link } from 'react-router-dom'
 import { DEFAULT_ITEM_PERPAGE, DEFAULT_PAGE } from '~/utils/constants'
 import PaginationItem from '@mui/material/PaginationItem'
-// Sample data for boards
-const BOARDS_DATA = [
-  {
-    id: 1,
-    title: 'Project Management',
-    description: 'Cập nhật 2 phút trước',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop',
-    members: ['user1', 'user2', 'user3'],
-    moreMembers: 3,
-    isFavorite: true
-  },
-  {
-    id: 2,
-    title: 'Website Redesign',
-    description: 'Cập nhật 1 giờ trước',
-    image: 'https://images.unsplash.com/photo-1554224311-beee415c201f?w=500&h=300&fit=crop',
-    members: ['user1', 'user2'],
-    moreMembers: 2,
-    isFavorite: false
-  },
-  {
-    id: 3,
-    title: 'Q3 Marketing Plan',
-    description: 'Cập nhật 3 giờ trước',
-    image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=500&h=300&fit=crop',
-    members: ['user1', 'user2', 'user3'],
-    moreMembers: 4,
-    isFavorite: false
-  },
-  {
-    id: 4,
-    title: 'Personal Tasks',
-    description: 'Cập nhật 5 giờ trước',
-    image: 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=500&h=300&fit=crop',
-    members: ['user1', 'user2'],
-    moreMembers: 5,
-    isFavorite: false
-  }
-]
 
-const BoardsTab = () => {
+
+const BoardsTab = ({ refreshKey }) => {
   const [searchParams] = useSearchParams()
 
   const page = parseInt(searchParams.get('page') || '1', 10)
@@ -96,9 +58,11 @@ const BoardsTab = () => {
   React.useEffect(() => {
     fetchBoardsApi(location.search).then(res => {
       setBoards(res.boards || 0),
-        setTotalBoards(res.totalBoards || 0)
+      setTotalBoards(res.totalBoards || 0)
     })
-  }, [location.search])
+  }, [location.search, refreshKey])
+
+
   return (
     <Box
       sx={{
@@ -268,7 +232,8 @@ const BoardsTab = () => {
       {boards?.length > 0 &&
         <Grid container spacing={3} sx={{ marginBottom: 4 }}>
           {boards.map((board) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={board.id}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={board._id}
+            >
               <Card
                 sx={{
                   height: '100%',
@@ -349,14 +314,46 @@ const BoardsTab = () => {
 
                 {/* Card Content */}
                 <CardContent sx={{ paddingBottom: 1 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 700, marginBottom: 0.5 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      marginBottom: 0.5
+                    }}
+                  >
                     {board.title}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: 'text.secondary'
+                    }}
+                  >
                     {board.description}
                   </Typography>
-                </CardContent>
+                  <Typography
+                    component={Link}
+                    to={`/boards/${board._id}`}
+                    sx={{
+                      display: 'block',
+                      textAlign: 'right',
+                      color: 'primary.main',
+                      fontWeight: 600,
+                      fontSize: '14px',
+                      textDecoration: 'none',
+                      marginBottom: 1,
 
+                      '&:hover': {
+                        color: 'primary.dark',
+                        textDecoration: 'underline'
+                      }
+                    }}
+                  >
+                    Xem chi tiết →
+                  </Typography>
+
+
+                </CardContent>
                 {/* Card Actions */}
                 <CardActions sx={{
                   display: 'flex',

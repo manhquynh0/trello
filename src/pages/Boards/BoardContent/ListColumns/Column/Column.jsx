@@ -25,12 +25,13 @@ import { toast } from 'react-toastify'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import { confirm } from '~/utils/ConfirmDialog'
 import { cloneDeep } from 'lodash'
-import { createdNewCardAPI, deleteColumnApi } from '~/apis'
+import { createdNewCardAPI, deleteColumnApi, updateCardDetaislApi } from '~/apis'
 import {
   updateCurrentActiveBoard,
   selectCurrentActiveBoard
 } from '~/redux/activeBoard/activeBoardSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 function Column({ column }) {
   const board = useSelector(selectCurrentActiveBoard)
   const dispatch = useDispatch()
@@ -124,7 +125,21 @@ function Column({ column }) {
     transition,
     opacity: isDragging ? 0.5 : undefined
   }
-
+  const onUpdateColumnTitle = (newTitle) => {
+    updateCardDetaislApi(column._id, {
+      title: newTitle
+    }).then(() => {
+      const newBoard = cloneDeep(board)
+      newBoard.columns = newBoard.columns.map(c => {
+        if (c._id !== column._id) return c
+        return {
+          ...c,
+          title : newTitle
+        }
+      })
+      dispatch(updateCurrentActiveBoard(newBoard))
+    })
+  }
   return (
     <div ref={setNodeRef}
       style={dndKitColumnStyles}
@@ -163,12 +178,18 @@ function Column({ column }) {
               justifyContent: 'space-between'
             }}
           >
-            <Typography variant='h6' sx={{
+            {/* <Typography variant='h6' sx={{
               fontWeight: 'bold',
               cursor: 'pointer'
             }}>
               {column.title}
-            </Typography>
+            </Typography> */}
+            <ToggleFocusInput
+              value={column.title}
+              onChangedValue={onUpdateColumnTitle}
+              data-no-dnd='true'
+
+            />
             <Box>
               <Tooltip title="More" placement="top">
                 <MoreHorizIcon

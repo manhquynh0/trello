@@ -64,13 +64,9 @@ function Board() {
     await moveCardtoDifferentColumnApi({
       currentCardId,
       prevColumnId,
-      prevCardOrderIds: dndOrderedColumns
-        .find(c => c._id === prevColumnId)
-        ?.cardOrderIds.filter(id => !id.includes('-placeholder-card')),
+      prevCardOrderIds: dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds.filter(id => !id.includes('-placeholder-card')),
       nextColumnId,
-      nextCardOrderIds: dndOrderedColumns
-        .find(c => c._id === nextColumnId)
-        ?.cardOrderIds.filter(id => !id.includes('-placeholder-card'))
+      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds.filter(id => !id.includes('-placeholder-card'))
     })
   }
   // const deleteColumn = async (columnId) => {

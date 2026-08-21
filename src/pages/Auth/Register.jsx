@@ -28,7 +28,6 @@ const RegisterForm = () => {
   const [showPassword, setShowPassword] = React.useState(false)
   const navigate = useNavigate()
   const onSubmit = (data) => {
-
     const { email, password } = data
     toast.promise(
       registerAPI({ email, password }),
