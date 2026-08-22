@@ -98,13 +98,16 @@ function ActiveCard() {
 
     toast.promise(
       callAPI(reqData).finally(() => event.target.value = ''), {
-        pending : 'Updating...'
-      }
+      pending: 'Updating...'
+    }
     )
 
     // Gọi API...
   }
+  const onUpdateComment = (commentToAdd) => {
+    callAPI(commentToAdd)
 
+  }
   return (
     <Modal
       disableScrollLock
@@ -183,7 +186,11 @@ function ActiveCard() {
               </Box>
 
               {/* Feature 04: Xử lý các hành động, ví dụ comment vào Card */}
-              <CardActivitySection />
+              <CardActivitySection
+                comments={card?.comments}
+                onUpdateComment={onUpdateComment}
+
+              />
             </Box>
           </Grid>
 
