@@ -55,7 +55,6 @@ authorizedAxiosInstance.interceptors.response.use(
     //TH2 : mã 410 ( accessToken hết hạn ) thì gọi API refresh để làm mới lại AT
     // Đầu tiên cần lấy các request API đang bị lỗi trước đó
     const originalRequest = error.config
-    console.log(originalRequest)
     if (error?.response?.status === 410 && !originalRequest._retry) {
       // gán 1 biến retry luôn bằng true trong khoảng thời gian chờ để đảm bảo việc refresh chỉ luôn gọi lại 1 lần tại 1 thời điểm
       originalRequest._retry = true
