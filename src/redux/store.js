@@ -14,6 +14,7 @@ import {
 import {
   persistReducer
 } from 'redux-persist'
+import { notificationReducer } from './notifications/notificationsSlice'
 import storage from 'redux-persist/lib/storage'
 
 const rootPersistConfig = {
@@ -26,7 +27,8 @@ const rootPersistConfig = {
 const rootReducers = combineReducers({
   activeBoard: activeBoardReducer,
   activeCard : activeCardReducer,
-  user: userReducer
+  user: userReducer,
+  notifications : notificationReducer
 })
 // thực hiện permist reducer
 const persistedReducer = persistReducer(

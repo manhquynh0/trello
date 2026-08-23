@@ -15,17 +15,17 @@ function CardActivitySection({ comments = [], onUpdateComment }) {
     // Bắt hành động người dùng nhấn phím Enter && không phải hành động Shift + Enter
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault() // Thêm dòng này để khi Enter không bị nhảy dòng
-      if (!event.target?.value) return // Nếu không có giá trị gì thì return không làm gì cả
+      const content = event.target?.value.trim()
+      if (!content) return // Nếu không có giá trị gì thì return không làm gì cả
 
       // Tạo một biến commend data để gửi api
       const commentToAdd = {
         userAvatar: currentUser?.avatar,
         userDisplayName: currentUser?.displayName,
-        content: event.target.value.trim()
+        content
       }
-      console.log(commentToAdd)
-      onUpdateComment({ commentToAdd })
-      event.target.value = ''
+      onUpdateComment(commentToAdd)
+      event.target.value =''
     }
   }
 
@@ -58,7 +58,7 @@ function CardActivitySection({ comments = [], onUpdateComment }) {
             <Avatar
               sx={{ width: 36, height: 36, cursor: 'pointer' }}
               alt ={ user?.userDisplayName}
-              src={user?.avatar}
+              src={user?.userAvatar}
             />
           </Tooltip>
           <Box sx={{ width: 'inherit' }}>

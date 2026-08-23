@@ -14,11 +14,11 @@ import { styled, alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
 import Badge from '@mui/material/Badge'
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import Tooltip from '@mui/material/Tooltip'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Profiles from './Menu/Profiles'
 import { Link } from 'react-router-dom'
+import Notifications from '~/components/AppBar/Notifications/Notifications'
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -78,7 +78,7 @@ function AppBar() {
         gap: 2
       }} >
         <AppsOutlinedIcon sx={{ color: 'text.primary' }} />
-        <Link to ='/' style={{ textDecoration: 'none ' }}>
+        <Link to='/' style={{ textDecoration: 'none ' }}>
           <Box sx={{
             display: 'flex',
             alignItems: 'center',
@@ -143,12 +143,7 @@ function AppBar() {
             alignItems: 'center',
             gap: 1.5
           }}>
-            <Tooltip title="Noti" placement="top">
-              <Badge badgeContent={4} color="primary" sx={{ cursor: 'pointer' }}>
-
-                <NotificationsNoneIcon />
-              </Badge>
-            </Tooltip>
+            <Notifications />
             <Tooltip title="Noti" placement="top">
               <Badge badgeContent={4} color="primary" sx={{ cursor: 'pointer' }}>
                 <HelpOutlineIcon />

@@ -7,10 +7,9 @@ import AddToDriveIcon from '@mui/icons-material/AddToDrive'
 import FlashOnIcon from '@mui/icons-material/FlashOn'
 import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded'
 import Tooltip from '@mui/material/Tooltip'
-import Button from '@mui/material/Button'
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'
 import { UpperCaseFirstLetter } from '~/utils/UpperCaseFirstLetter'
 import BoardUserGroup from './BoardUserGroup'
+import InviteBoardUser from './InviteBoardUser'
 const MENU_STYLES = {
   padding: 1
 }
@@ -108,19 +107,7 @@ function BoardBar({ board }) {
         justifyContent: 'center',
         gap: 2
       }}>
-        <Button
-          startIcon={<PersonAddAlt1Icon sx={{ color: 'inherit' }} />}
-          variant="contained"
-          color="success"
-          sx={{
-            backgroundColor: '#16A34A', // màu mặc định khi chưa hover
-            '&:hover': {
-              backgroundColor: '#22C55E'// sáng hơn khi hover
-            }
-          }}
-        >
-          Invite
-        </Button>
+        <InviteBoardUser boardId= {board._id}/>
         <BoardUserGroup boardUsers={board?.FE_allUser} />
       </Box>
     </Box >

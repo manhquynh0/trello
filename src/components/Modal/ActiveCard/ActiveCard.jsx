@@ -105,7 +105,7 @@ function ActiveCard() {
     // Gọi API...
   }
   const onUpdateComment = (commentToAdd) => {
-    callAPI(commentToAdd)
+    callAPI({ commentToAdd })
 
   }
   return (
