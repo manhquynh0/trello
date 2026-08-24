@@ -39,6 +39,8 @@ const BoardsTab = ({ refreshKey }) => {
   const [searchParams] = useSearchParams()
 
   const page = parseInt(searchParams.get('page') || '1', 10)
+  // Lấy từ khóa tìm kiếm từ URL (nếu có) để hiển thị lên tiêu đề
+  const searchKeyword = searchParams.get('q[title]') || ''
   const [sortBy, setSortBy] = React.useState('newest')
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [boards, setBoards] = React.useState(null)
@@ -57,8 +59,8 @@ const BoardsTab = ({ refreshKey }) => {
 
   React.useEffect(() => {
     fetchBoardsApi(location.search).then(res => {
-      setBoards(res.boards || 0),
-      setTotalBoards(res.totalBoards || 0)
+      setBoards(res.boards || []),
+        setTotalBoards(res.totalBoards || 0)
     })
   }, [location.search, refreshKey])
 
@@ -75,10 +77,13 @@ const BoardsTab = ({ refreshKey }) => {
       {/* Header Section */}
       <Box sx={{ marginBottom: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: 700, marginBottom: 1 }}>
-          Your Boards
+          {searchKeyword ? `Kết quả tìm kiếm: "${searchKeyword}"` : 'Your Boards'}
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Tạo, quản lý và theo dõi tất cả board của bạn
+          {searchKeyword
+            ? `Tìm thấy ${totalBoards} board phù hợp`
+            : 'Tạo, quản lý và theo dõi tất cả board của bạn'
+          }
         </Typography>
       </Box>
 
@@ -229,6 +234,16 @@ const BoardsTab = ({ refreshKey }) => {
       </Box>
 
       {/* Boards Grid */}
+      {boards !== null && boards?.length === 0 && (
+        <Box sx={{ textAlign: 'center', py: 8 }}>
+          <Typography variant="h6" sx={{ color: 'text.secondary', mb: 1 }}>
+            Không tìm thấy board nào{searchKeyword ? ` với từ khóa "${searchKeyword}"` : ''}
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.disabled' }}>
+            Thử tìm kiếm với từ khóa khác hoặc tạo board mới
+          </Typography>
+        </Box>
+      )}
       {boards?.length > 0 &&
         <Grid container spacing={3} sx={{ marginBottom: 4 }}>
           {boards.map((board) => (

@@ -5,7 +5,8 @@ import CircularProgress from '@mui/material/CircularProgress'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
 import { createSearchParams, useNavigate } from 'react-router-dom'
-
+import { fetchBoardsApi } from '~/apis'
+import { useDebounceFn } from '~/customHooks/useDebounceFn'
 /**
  * Hướng dẫn & ví dụ cái Autocomplele của MUI ở đây:
  * https://mui.com/material-ui/react-autocomplete/#asynchronous-requests
@@ -19,6 +20,8 @@ function AutoCompleteSearchBoard() {
   const [boards, setBoards] = useState(null)
   // Sẽ hiện loading khi bắt đầu gọi api fetch boards
   const [loading, setLoading] = useState(false)
+  // Lưu lại giá trị từ khóa đang nhập để dùng khi ấn Enter
+  const [inputValue, setInputValue] = useState('')
 
   useEffect(() => {
     // Khi đóng cái phần list kết quả lại thì đồng thời clear cho boards về null
@@ -28,21 +31,42 @@ function AutoCompleteSearchBoard() {
   // Xử lý việc nhận data nhập vào từ input sau đó gọi API để lấy kết quả về (cần cho vào useDebounceFn như bên dưới)
   const handleInputSearchChange = (event) => {
     const searchValue = event.target?.value
+    setInputValue(searchValue || '')
     if (!searchValue) return
-    console.log(searchValue)
 
     // Dùng createSearchParams của react-router-dom để tạo một cái searchPath chuẩn với q[title] để gọi lên API
     const searchPath = `?${createSearchParams({ 'q[title]': searchValue })}`
-    console.log(searchPath)
 
     // Gọi API...
+    setLoading(true)
+    fetchBoardsApi(searchPath)
+      .then((res) => {
+        setBoards(res.boards)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }
   // Làm useDebounceFn...
+  const debouncedHandleInputSearchChange = useDebounceFn(handleInputSearchChange)
 
   // Khi chúng ta select chọn một cái board cụ thể thì sẽ điều hướng tới board đó luôn
   const handleSelectedBoard = (event, selectedBoard) => {
-    // Phải kiểm tra nếu tồn tại một cái board cụ thể được select thì mới gọi điều hướng - navigate
-    console.log(selectedBoard)
+    if (!selectedBoard) return
+    if (selectedBoard) {
+      navigate(`/boards/${selectedBoard._id}`)
+    }
+  }
+
+  // Khi người dùng ấn Enter mà không select board nào -> navigate sang trang /boards với q[title] để hiển thị kết quả tìm kiếm
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' && inputValue.trim()) {
+      navigate({
+        pathname: '/boards',
+        search: `?${createSearchParams({ 'q[title]': inputValue.trim() })}`
+      })
+      setOpen(false)
+    }
   }
 
   return (
@@ -71,7 +95,7 @@ function AutoCompleteSearchBoard() {
       loading={loading}
 
       // onInputChange sẽ chạy khi gõ nội dung vào thẻ input, cần làm debounce để tránh việc bị spam gọi API
-      onInputChange={handleInputSearchChange}
+      onInputChange={debouncedHandleInputSearchChange}
 
       // onChange của cả cái Autocomplete sẽ chạy khi chúng ta select một cái kết quả (ở đây là board)
       onChange={handleSelectedBoard}
@@ -82,6 +106,7 @@ function AutoCompleteSearchBoard() {
           {...params}
           label="Type to search..."
           size="small"
+          onKeyDown={handleKeyDown}
           InputProps={{
             ...params.InputProps,
             startAdornment: (
