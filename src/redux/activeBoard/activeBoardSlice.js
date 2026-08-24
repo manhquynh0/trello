@@ -41,16 +41,17 @@ export const activeBoardSlice = createSlice({
       // Update lai du lieu cua currenActiveBoard
       state.currentActiveBoard = board
     },
-    updateCardInCurrentActiveBoar: (state, action) => {
+    updateCardInCurrentActiveBoard: (state, action) => {
       const updateCard = action.payload
 
-      state.currentActiveBoard.columns.forEach(column => {
-        const cardIndex = column.cards.findIndex(card => card._id === updateCard._id)
-
+      // Tìm column chứa card và cập nhật card trong column đó
+      const columnToUpdate = state.currentActiveBoard.columns.find(column => column._id === updateCard.columnId)
+      if (columnToUpdate) {
+        const cardIndex = columnToUpdate.cards.findIndex(card => card._id === updateCard._id)
         if (cardIndex !== -1) {
-          column.cards[cardIndex] = updateCard
+          columnToUpdate.cards[cardIndex] = updateCard
         }
-      })
+      }
     }
   },
   // ExtraReducers : Nơi xử lý dữ liệu bất đồng bộ
@@ -87,7 +88,7 @@ export const activeBoardSlice = createSlice({
 // actions được tạo tự động
 export const {
   updateCurrentActiveBoard,
-  updateCardInCurrentActiveBoar
+  updateCardInCurrentActiveBoard
 } = activeBoardSlice.actions
 
 export const selectCurrentActiveBoard = (state) => {

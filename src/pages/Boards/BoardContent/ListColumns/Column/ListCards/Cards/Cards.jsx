@@ -16,7 +16,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import Box from '@mui/material/Box'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
+import { fetchCardDetailsAPI, updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
 
 
 function Cards({ card }) {
@@ -41,8 +41,10 @@ function Cards({ card }) {
     return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length || !!card?.description?.length
   }
   const setActiveCard = () => {
+    // 1. Cập nhật card tạm thời vào redux để mở Modal ngay tức thì cho giao diện mượt
     dispatch(updateCurrentActiveCard(card))
-
+    // 2. Đồng thời gọi API fetchCardDetailsAPI để lấy dữ liệu mới nhất (bao gồm cả mảng members được populate từ backend)
+    dispatch(fetchCardDetailsAPI(card._id))
   }
   return (
     <Card

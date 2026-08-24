@@ -10,7 +10,7 @@ import {
 //Các hành động gọi Api bất đồng bộ cập nhật dữ liệu vảo redux, dùng middleware createAsync Thunk đi kèm với extraReducers
 export const fetchCardDetailsAPI = createAsyncThunk('activeCard/fetchCardDetailsAPI',
   async (cardId) => {
-    const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/Cards/${cardId}`)
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/cards/${cardId}`)
     return response.data
   }
 )
@@ -28,12 +28,12 @@ export const activeCardSlice = createSlice({
     },
     updateCurrentActiveCard: (state, action) => {
       // action.payload la chuan dat ten nhan du lieu vao reducer, o day chung ta gan no ra 1 bien co nghia hon
-      const Card = action.payload
+      const card = action.payload
 
       // Xử ly du lieu khi can thiet
 
       // Update lai du lieu cua currenActiveCard
-      state.currentActiveCard = Card
+      state.currentActiveCard = card
     }
   },
 

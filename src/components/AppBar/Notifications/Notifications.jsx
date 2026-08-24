@@ -13,8 +13,9 @@ import Divider from '@mui/material/Divider'
 import GroupAddIcon from '@mui/icons-material/GroupAdd'
 import DoneIcon from '@mui/icons-material/Done'
 import NotInterestedIcon from '@mui/icons-material/NotInterested'
+import PersonIcon from '@mui/icons-material/Person'
 import { useDispatch, useSelector } from 'react-redux'
-import { socketIoInstance } from '~/main'
+import { socketIoInstance } from '~/socketClient'
 import { selectCurrentUser } from '~/redux/user/userSlice'
 import { useNavigate } from 'react-router-dom'
 import { fetchNotificationsAPI, selectCurrentNotifications, updateBoardInvitationAPI, addCurrentnotifications } from '~/redux/notifications/notificationsSlice'
@@ -54,12 +55,30 @@ function Notifications() {
       }
     }
 
+    const onReceiveUserJoinedCard = (data) => {
+      // Bắn thông báo lên chuông cho các user khác khi có ai đó Join / Leave Card
+      if (data?.user?._id !== currentUser._id) {
+        const cardNotification = {
+          _id: `card-notif-${Date.now()}`,
+          type: 'CARD_NOTIFICATION',
+          user: data.user,
+          action: data.action,
+          cardTitle: data.updatedCard?.title || 'a card',
+          createdAt: new Date().toISOString()
+        }
+        dispatch(addCurrentnotifications(cardNotification))
+        setNewNotification(true)
+      }
+    }
+
     // Lắng nghe một sự kiện realtime có tên là BE_USER_INVITED_TO_BOARD từ server gửi về
     socketIoInstance.on('BE_USER_INVITED_TO_BOARD', onRecevieNewInvation)
+    socketIoInstance.on('BE_USER_JOINED_CARD', onReceiveUserJoinedCard)
 
     //CleanUp sự kiện để ngăn chặn bị lặp lại event
     return () => {
       socketIoInstance.off('BE_USER_INVITED_TO_BOARD', onRecevieNewInvation)
+      socketIoInstance.off('BE_USER_JOINED_CARD', onReceiveUserJoinedCard)
     }
   }, [dispatch, currentUser._id])
   const updateBoardInvitation = (notificationId, status) => {
@@ -102,6 +121,34 @@ function Notifications() {
       >
         {(!notifications || notifications.length === 0) && <MenuItem sx={{ minWidth: 200 }}>You do not have any new notifications.</MenuItem>}
         {notifications?.map((notification, index) => {
+          if (notification?.type === 'CARD_NOTIFICATION') {
+            const inviterName = notification?.user?.displayName || 'Someone'
+            const actionText = notification?.action === 'ADD' ? 'joined card' : 'left card'
+
+            return (
+              <Box key={notification._id || index}>
+                <MenuItem sx={{
+                  minWidth: 200,
+                  maxWidth: 360,
+                  overflowY: 'auto'
+                }}>
+                  <Box sx={{ maxWidth: '100%', wordBreak: 'break-word', whiteSpace: 'pre-wrap', display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box><PersonIcon fontSize="small" color="primary" /></Box>
+                      <Box><strong>{inviterName}</strong> {actionText} <strong>{notification?.cardTitle}</strong></Box>
+                    </Box>
+                    <Box sx={{ textAlign: 'right' }}>
+                      <Typography variant="span" sx={{ fontSize: '13px' }}>
+                        {moment(notification?.createdAt).format('llll')}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </MenuItem>
+                {index !== (notifications?.length - 1) && <Divider />}
+              </Box>
+            )
+          }
+
           const boardInvitation = notification?.boardInvitation || {}
           const inviter = boardInvitation?.inviter || notification?.inviter
           const inviterName = inviter?.displayName || 'Someone'

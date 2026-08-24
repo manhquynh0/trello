@@ -19,6 +19,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Profiles from './Menu/Profiles'
 import { Link } from 'react-router-dom'
 import Notifications from '~/components/AppBar/Notifications/Notifications'
+import AutoCompleteSearchBoard from './SearchBoards/AutoCompleteSearchBoard'
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -119,7 +120,7 @@ function AppBar() {
         alignItems: 'center',
         gap: 1.5
       }}>
-        <Search sx={{ width: { xs: '120px', sm: 'auto' }, ml: 2 }}>
+        {/* <Search sx={{ width: { xs: '120px', sm: 'auto' }, ml: 2 }}>
           <SearchIconWrapper>
             <SearchIcon sx={{ fontSize: { xs: '1.1rem', sm: '1.5rem' } }} />
           </SearchIconWrapper>
@@ -127,7 +128,8 @@ function AppBar() {
             placeholder="Search…"
             inputProps={{ 'aria-label': 'search' }}
           />
-        </Search>
+        </Search> */}
+        <AutoCompleteSearchBoard />
         <Box sx={{
           mx: 2,
           display: 'flex',

@@ -8,15 +8,18 @@ import { updateBoardDetaislApi, updateColumnDetaislApi, moveCardtoDifferentColum
 import React from 'react'
 import { cloneDeep } from 'lodash'
 import LoadingPage from '~/pages/Loading/LoadingPage'
+import { toast } from 'react-toastify'
+import { socketIoInstance } from '~/socketClient'
 import {
   fetchBoardDetailsAPI,
   updateCurrentActiveBoard,
-  selectCurrentActiveBoard
+  selectCurrentActiveBoard,
+  updateCardInCurrentActiveBoard
 } from '~/redux/activeBoard/activeBoardSlice'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import ActiveCard from '~/components/Modal/ActiveCard/ActiveCard'
-import { selectCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
+import { selectCurrentActiveCard, updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
 function Board() {
   const dispatch = useDispatch()
   // const [board, setBoard] = React.useState(null)
@@ -28,6 +31,31 @@ function Board() {
     // Call API
     dispatch(fetchBoardDetailsAPI(boardId))
   }, [dispatch, boardId])
+
+  React.useEffect(() => {
+    // Lắng nghe sự kiện Realtime Socket khi có người join / leave card
+    const onReceiveUserJoinedCard = (data) => {
+      console.log('FE received BE_USER_JOINED_CARD:', data)
+      if (data?.updatedCard) {
+        dispatch(updateCardInCurrentActiveBoard(data.updatedCard))
+        if (card?._id === data.cardId) {
+          dispatch(updateCurrentActiveCard(data.updatedCard))
+        }
+      }
+
+      if (data.action === 'ADD') {
+        toast.info(`${data.user?.displayName || 'Someone'} joined a card!`)
+      } else if (data.action === 'REMOVE') {
+        toast.info(`${data.user?.displayName || 'Someone'} left a card!`)
+      }
+    }
+
+    socketIoInstance.on('BE_USER_JOINED_CARD', onReceiveUserJoinedCard)
+
+    return () => {
+      socketIoInstance.off('BE_USER_JOINED_CARD', onReceiveUserJoinedCard)
+    }
+  }, [dispatch, card?._id])
 
   // const createdNewColumn = async (newColumn) => {
   // }

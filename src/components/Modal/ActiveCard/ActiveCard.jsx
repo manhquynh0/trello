@@ -33,10 +33,13 @@ import CardUserGroup from './CardUserGroup'
 import CardDescriptionMdEditor from './CardDescriptionMdEditor'
 import CardActivitySection from './CardActivitySection'
 import { clearCurrentActiveCard, selectCurrentActiveCard, updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
-import { updateCardInCurrentActiveBoar } from '~/redux/activeBoard/activeBoardSlice'
+import { updateCardInCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { selectCurrentUser } from '~/redux/user/userSlice'
 import { updateCardDetaislApi } from '~/apis'
+import { socketIoInstance } from '~/socketClient'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
+import { useEffect } from 'react'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -65,16 +68,20 @@ const SidebarItem = styled(Box)(({ theme }) => ({
 function ActiveCard() {
   const dispatch = useDispatch()
   const card = useSelector(selectCurrentActiveCard)
-  // const [isOpen, setIsOpen] = useState(true)
-  // const handleOpenModal = () => setIsOpen(true)
+  console.log(card)
+  const currentUser = useSelector(selectCurrentUser)
+
+  // Kiểm tra xem currentUser đã là member của Card hay chưa
+  const isCurrentUserCardMember = card?.memberIds?.includes(currentUser?._id)
+
   const handleCloseModal = () => {
-    // setIsOpen(false)
     dispatch(clearCurrentActiveCard())
   }
   const callAPI = async (updateData) => {
     const updatedCard = await updateCardDetaislApi(card._id, updateData)
     dispatch(updateCurrentActiveCard(updatedCard))
-    dispatch(updateCardInCurrentActiveBoar(updatedCard))
+    dispatch(updateCardInCurrentActiveBoard(updatedCard))
+    return updatedCard
   }
   const onUpdateCardTitle = async (newTitle) => {
     callAPI({
@@ -104,10 +111,49 @@ function ActiveCard() {
 
     // Gọi API...
   }
-  const onUpdateComment = (commentToAdd) => {
-    callAPI({ commentToAdd })
+  const onUpdateComment = async (commentToAdd) => {
+    await callAPI({ commentToAdd })
 
   }
+  const onUpdateCardMember = (incomingMemberInfo) => {
+    callAPI({ incomingMemberInfo }).then((updatedCard) => {
+      console.log('FE emitting FE_USER_JOINED_CARD:', incomingMemberInfo)
+      // Bắn sự kiện Socket Realtime thông báo khi có user Join / Leave Card
+      socketIoInstance.emit('FE_USER_JOINED_CARD', {
+        cardId: card._id,
+        user: currentUser,
+        action: incomingMemberInfo.action,
+        updatedCard
+      })
+    })
+  }
+
+  useEffect(() => {
+    // Lắng nghe sự kiện BE_USER_JOINED_CARD từ Server gửi về cho các client khác
+    const onReceiveUserJoinedCard = (data) => {
+      // Cập nhật giao diện realtime cho người khác đang mở Card hoặc trên Board
+      if (data?.updatedCard) {
+        dispatch(updateCardInCurrentActiveBoard(data.updatedCard))
+        if (data?.cardId === card?._id) {
+          dispatch(updateCurrentActiveCard(data.updatedCard))
+        }
+      }
+
+      if (data?.cardId === card?._id) {
+        if (data.action === 'ADD') {
+          toast.info(`${data.user?.displayName || 'Someone'} joined this card!`)
+        } else if (data.action === 'REMOVE') {
+          toast.info(`${data.user?.displayName || 'Someone'} left this card!`)
+        }
+      }
+    }
+
+    socketIoInstance.on('BE_USER_JOINED_CARD', onReceiveUserJoinedCard)
+
+    return () => {
+      socketIoInstance.off('BE_USER_JOINED_CARD', onReceiveUserJoinedCard)
+    }
+  }, [card?._id, dispatch])
   return (
     <Modal
       disableScrollLock
@@ -162,7 +208,10 @@ function ActiveCard() {
               <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Members</Typography>
 
               {/* Feature 02: Xử lý các thành viên của Card */}
-              <CardUserGroup />
+              <CardUserGroup
+                cardMemberIds={card?.memberIds}
+                onUpdateCardMember={onUpdateCardMember}
+              />
             </Box>
 
             <Box sx={{ mb: 3 }}>
@@ -199,12 +248,19 @@ function ActiveCard() {
             <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Add To Card</Typography>
             <Stack direction="column" spacing={1}>
               {/* Feature 05: Xử lý hành động bản thân user tự join vào card */}
-              <SidebarItem className="active">
+              <SidebarItem
+                className={isCurrentUserCardMember ? 'active' : ''}
+                onClick={() => onUpdateCardMember({
+                  userId: currentUser?._id,
+                  action: isCurrentUserCardMember ? 'REMOVE' : 'ADD'
+                })}
+              >
                 <PersonOutlineOutlinedIcon fontSize="small" />
-                Join
+                {isCurrentUserCardMember ? 'Leave' : 'Join'}
               </SidebarItem>
+
               {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
-              <SidebarItem className="active" component="label">
+              <SidebarItem className="active" component="label" sx={{ cursor: 'pointer' }}>
                 <ImageOutlinedIcon fontSize="small" />
                 Cover
                 <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
