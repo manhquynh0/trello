@@ -11,7 +11,17 @@ import { EMAIL_RULE, FILED_REQUIRED_MESSAGE, EMAIL_RULE_MESSAGE } from '~/utils/
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 import { inviteUserToBoardApi } from '~/apis'
 import { socketIoInstance } from '~/socketClient'
+import { useSelector } from 'react-redux'
+import { selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
+import { usePermission } from '~/customHooks/usePermission'
+import { permission } from '~/config/rabcConfig'
+import { selectCurrentUser } from '~/redux/user/userSlice'
+
+
 function InviteBoardUser({ boardId }) {
+  const board = useSelector(selectCurrentActiveBoard)
+  const user = useSelector(selectCurrentUser)
+  const { hasPermission } = usePermission({ board, user })
   /**
    * Xử lý Popover để ẩn hoặc hiện một popup nhỏ, tương tự docs để tham khảo ở đây:
    * https://mui.com/material-ui/react-popover/
@@ -39,22 +49,24 @@ function InviteBoardUser({ boardId }) {
 
   return (
     <Box>
-      <Tooltip title="Invite user to this board!">
-        <Button
-          aria-describedby={popoverId}
-          onClick={handleTogglePopover}
-          variant="outlined"
-          startIcon={<PersonAddIcon />}
-          sx={{
-            backgroundColor: '#16A34A', // màu mặc định khi chưa hover
-            '&:hover': {
-              backgroundColor: '#22C55E'// sáng hơn khi hover
-            }
-          }}
-        >
-          Invite
-        </Button>
-      </Tooltip>
+      {hasPermission(permission.INVITE_MEMBER_TO_BOARD) && (
+        <Tooltip title="Invite user to this board!">
+          <Button
+            aria-describedby={popoverId}
+            onClick={handleTogglePopover}
+            variant="outlined"
+            startIcon={<PersonAddIcon />}
+            sx={{
+              backgroundColor: '#16A34A', // màu mặc định khi chưa hover
+              '&:hover': {
+                backgroundColor: '#22C55E'// sáng hơn khi hover
+              }
+            }}
+          >
+            Invite
+          </Button>
+        </Tooltip>
+      )}
 
       {/* Khi Click vào butotn Invite ở trên thì sẽ mở popover */}
       <Popover
@@ -85,6 +97,7 @@ function InviteBoardUser({ boardId }) {
             </Box>
 
             <Box sx={{ alignSelf: 'flex-end' }}>
+
               <Button
                 className="interceptor-loading"
                 type="submit"
@@ -98,6 +111,7 @@ function InviteBoardUser({ boardId }) {
               >
                 Invite
               </Button>
+
             </Box>
           </Box>
         </form>

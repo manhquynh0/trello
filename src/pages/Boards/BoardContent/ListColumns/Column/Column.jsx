@@ -32,9 +32,15 @@ import {
 } from '~/redux/activeBoard/activeBoardSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
+import { usePermission } from '~/customHooks/usePermission'
+import { permission } from '~/config/rabcConfig'
+import { selectCurrentUser } from '~/redux/user/userSlice'
 function Column({ column }) {
   const board = useSelector(selectCurrentActiveBoard)
+  const user = useSelector(selectCurrentUser)
   const dispatch = useDispatch()
+  const { hasPermission } = usePermission({ board, user })
+
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [openNewCardForm, setOpenNewCardFormmset] = React.useState(false)
   const toggleOpenNewCardForm = () => {
@@ -134,7 +140,7 @@ function Column({ column }) {
         if (c._id !== column._id) return c
         return {
           ...c,
-          title : newTitle
+          title: newTitle
         }
       })
       dispatch(updateCurrentActiveBoard(newBoard))
@@ -237,28 +243,30 @@ function Column({ column }) {
                 </MenuItem>
                 <Divider />
 
-                <MenuItem onClick={deleteItem} sx={{
-                  transition: 'all 0.2s',
+                {hasPermission(permission.DELETE_COLUMN) && (
+                  <MenuItem onClick={deleteItem} sx={{
+                    transition: 'all 0.2s',
 
-                  '&:hover': {
-                    color: 'error.main',
-                    fontWeight: 700,
-                    bgcolor: 'error.lighter',
+                    '&:hover': {
+                      color: 'error.main',
+                      fontWeight: 700,
+                      bgcolor: 'error.lighter',
 
-                    '& .delete-item-icon': {
-                      color: 'error.main'
-                    },
-                    '& .MuiListItemText-primary': {
-                      fontWeight: 700
+                      '& .delete-item-icon': {
+                        color: 'error.main'
+                      },
+                      '& .MuiListItemText-primary': {
+                        fontWeight: 700
+                      }
                     }
-                  }
-                }}
-                >
-                  <ListItemIcon>
-                    <DeleteRoundedIcon className='delete-item-icon' fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>Delete Column</ListItemText>
-                </MenuItem>
+                  }}
+                  >
+                    <ListItemIcon>
+                      <DeleteRoundedIcon className='delete-item-icon' fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Delete Column</ListItemText>
+                  </MenuItem>
+                )}
               </Menu>
             </Box>
           </Box>
@@ -280,20 +288,21 @@ function Column({ column }) {
         }}>
           {!openNewCardForm
             ?
-            <Button
-              onClick={toggleOpenNewCardForm}
-              startIcon={<QueueIcon sx={{ color: 'inherit' }} />}
-              variant="contained"
-              sx={{
-                backgroundColor: '#16A34A', // màu mặc định khi chưa hover
-                '&:hover': {
-                  backgroundColor: '#22C55E'// sáng hơn khi hover
-                }
-              }}
-            >
-              ADD NEW CARD
-            </Button>
-
+            hasPermission(permission.CREATE_CARD) && (
+              <Button
+                onClick={toggleOpenNewCardForm}
+                startIcon={<QueueIcon sx={{ color: 'inherit' }} />}
+                variant="contained"
+                sx={{
+                  backgroundColor: '#16A34A', // màu mặc định khi chưa hover
+                  '&:hover': {
+                    backgroundColor: '#22C55E'// sáng hơn khi hover
+                  }
+                }}
+              >
+                ADD NEW CARD
+              </Button>
+            )
             :
             <Box sx={{
               overflow: 'unset',

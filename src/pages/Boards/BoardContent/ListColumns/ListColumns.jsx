@@ -18,9 +18,15 @@ import {
   updateCurrentActiveBoard,
   selectCurrentActiveBoard
 } from '~/redux/activeBoard/activeBoardSlice'
+import {
+  selectCurrentUser
+} from '~/redux/user/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { usePermission } from '~/customHooks/usePermission'
+import { permission } from '~/config/rabcConfig'
 function ListColumns({ columns }) {
   const board = useSelector(selectCurrentActiveBoard)
+  const user = useSelector(selectCurrentUser)
   const dispatch = useDispatch()
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
@@ -67,6 +73,8 @@ function ListColumns({ columns }) {
     toggleOpenNewColumnForm()
     setNewColumnTitle('')
   }
+  const { hasPermission } = usePermission({ board, user })
+  console.log(hasPermission(permission.DELETE_COLUMN))
 
 
   return (
@@ -94,20 +102,21 @@ function ListColumns({ columns }) {
             p: '5px',
             flexShrink: 0
           }}>
-            <Button
+            {hasPermission(permission.CREATE_COLUMN) && (
+              <Button
 
-              startIcon={<QueueIcon sx={{ color: 'inherit' }} />}
-              variant="contained"
-              sx={{
-                backgroundColor: '#16A34A', // màu mặc định khi chưa hover
-                '&:hover': {
-                  backgroundColor: '#22C55E'// sáng hơn khi hover
-                }
-              }}
-            >
-              ADD NEW COLUMN
-            </Button>
-
+                startIcon={<QueueIcon sx={{ color: 'inherit' }} />}
+                variant="contained"
+                sx={{
+                  backgroundColor: '#16A34A', // màu mặc định khi chưa hover
+                  '&:hover': {
+                    backgroundColor: '#22C55E'// sáng hơn khi hover
+                  }
+                }}
+              >
+                ADD NEW COLUMN
+              </Button>
+            )}
           </Box> :
           <Box sx={{
             maxWidth: '250px',
