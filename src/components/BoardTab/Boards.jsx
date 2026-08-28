@@ -29,24 +29,24 @@ import Stack from '@mui/material/Stack'
 import Avatar from '@mui/material/Avatar'
 import AvatarGroup from '@mui/material/AvatarGroup'
 import { useLocation } from 'react-router-dom'
-import { fetchBoardsApi } from '~/apis/index'
+import { fetchBoardsApi, updateBoardDetaislApi } from '~/apis/index'
 import { useSearchParams, Link } from 'react-router-dom'
 import { DEFAULT_ITEM_PERPAGE, DEFAULT_PAGE } from '~/utils/constants'
 import PaginationItem from '@mui/material/PaginationItem'
 
-
 const BoardsTab = ({ refreshKey }) => {
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const page = parseInt(searchParams.get('page') || '1', 10)
   // Lấy từ khóa tìm kiếm từ URL (nếu có) để hiển thị lên tiêu đề
   const searchKeyword = searchParams.get('q[title]') || ''
-  const [sortBy, setSortBy] = React.useState('newest')
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [boards, setBoards] = React.useState(null)
   const [totalBoards, setTotalBoards] = React.useState(null)
+  const [totalFavoriteBoards, setTotalFavoriteBoards] = React.useState(null)
+  const [totalPublicBoards, setTotalPublicBoards] = React.useState(null)
+  const [totalPrivateBoards, setTotalPrivateBoards] = React.useState(null)
   const location = useLocation()
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -60,10 +60,48 @@ const BoardsTab = ({ refreshKey }) => {
   React.useEffect(() => {
     fetchBoardsApi(location.search).then(res => {
       setBoards(res.boards || []),
-        setTotalBoards(res.totalBoards || 0)
+        setTotalBoards(res.totalBoards || 0),
+        setTotalFavoriteBoards(res.totalFavoriteBoards || 0),
+        setTotalPublicBoards(res.totalPublicBoards || 0),
+        setTotalPrivateBoards(res.totalPrivateBoards || 0)
     })
   }, [location.search, refreshKey])
+  const handleFavorite = (board) => {
+    updateBoardDetaislApi(board._id, { isFavorite: !board.isFavorite }).then(() => {
+      setBoards(prev => prev.map(b => b._id === board._id ? { ...b, isFavorite: !b.isFavorite } : b))
+    })
+  }
 
+  // const sortBy = searchParams.get('q[sort]')
+  const handleSort = (e) => {
+    const select = e.target.value
+    setSearchParams(prev => {
+      const updated = new URLSearchParams(prev)
+      updated.set('q[sort]', select)
+      return updated
+    })
+  }
+  const filterFavorite = () => {
+    setSearchParams(prev => {
+      const updated = new URLSearchParams(prev)
+      updated.set('q[type]', 'favorite')
+      return updated
+    })
+  }
+  const filterPublic = () => {
+    setSearchParams(prev => {
+      const updated = new URLSearchParams(prev)
+      updated.set('q[type]', 'public')
+      return updated
+    })
+  }
+  const filterPrivate = () => {
+    setSearchParams(prev => {
+      const updated = new URLSearchParams(prev)
+      updated.set('q[type]', 'private')
+      return updated
+    })
+  }
 
   return (
     <Box
@@ -104,9 +142,13 @@ const BoardsTab = ({ refreshKey }) => {
           paddingRight: 2
         }}>
           <Chip
-            label="Tất cả (28)"
+            label={`Tất cả (${totalBoards})`}
             variant="filled"
             clickable
+            onClick={() => {
+              setSearchParams({})
+
+            }}
             sx={{
               height: 38,
               borderRadius: '20px',
@@ -121,8 +163,9 @@ const BoardsTab = ({ refreshKey }) => {
             }}
           />
           <Chip
-            label="Yêu thích"
+            label={`Yêu thích (${totalFavoriteBoards})`}
             clickable
+            onClick={filterFavorite}
             deleteIcon={
               <FavoriteIcon
                 sx={{
@@ -159,8 +202,9 @@ const BoardsTab = ({ refreshKey }) => {
             }}
           />
           <Chip
-            label="Cá nhân (12)"
+            label={`Cá nhân (${totalPrivateBoards})`}
             clickable
+            onClick={filterPrivate}
             variant="outlined"
             sx={{
               height: 38,
@@ -181,7 +225,8 @@ const BoardsTab = ({ refreshKey }) => {
           />
           <Chip
             clickable
-            label="Nhóm (16)"
+            label={`Nhóm (${totalPublicBoards})`}
+            onClick={filterPublic}
             variant="outlined"
             sx={{
               height: 38,
@@ -211,9 +256,9 @@ const BoardsTab = ({ refreshKey }) => {
           <FormControl size="small" sx={{ minWidth: 120 }}>
             <InputLabel>Filter</InputLabel>
             <Select
-              value={sortBy}
+              // value={sortBy}
               label="Filter"
-              onChange={(e) => setSortBy(e.target.value)}
+              onChange={handleSort}
             >
               <MenuItem value="newest">Newest</MenuItem>
               <MenuItem value="oldest">Oldest</MenuItem>
@@ -376,18 +421,33 @@ const BoardsTab = ({ refreshKey }) => {
                   alignItems: 'center'
                 }}>
                   <AvatarGroup max={3} sx={{ '& .MuiAvatar-root': { width: 32, height: 32, fontSize: '0.75rem' } }}>
-                    <Avatar>A</Avatar>
-                    <Avatar>B</Avatar>
-                    <Avatar>C</Avatar>
-                    {board.moreMembers > 0 && <Avatar>+{board.moreMembers}</Avatar>}
+                    {board?.members?.map((member, index) => (
+
+                      <Tooltip
+                        key={index}
+                        title={member?.displayName}
+                        placement="top"
+                        arrow
+                      >
+                        <Avatar
+                          key={index}
+                          src={member?.avatar}
+                          alt={member?.displayName}
+                          sx={{ width: 32, height: 32 }}
+                        />
+                      </Tooltip>
+
+                    ))}
                   </AvatarGroup>
                   <IconButton
                     size="small"
                     sx={{
-                      color: board.isFavorite ? '#FFC107' : 'inherit'
+                      color: board?.isFavorite ? '#FFC107' : 'inherit'
                     }}
                   >
-                    <FavoriteIcon fontSize="small" />
+                    <FavoriteIcon
+                      onClick={() => handleFavorite(board)}
+                      fontSize="small" />
                   </IconButton>
                 </CardActions>
               </Card>
@@ -426,5 +486,6 @@ const BoardsTab = ({ refreshKey }) => {
     </Box>
   )
 }
+
 
 export default BoardsTab

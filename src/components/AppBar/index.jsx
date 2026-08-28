@@ -1,7 +1,6 @@
 
 import Box from '@mui/material/Box'
 import ThemeSwitcher from '~/components/ModeSelect'
-import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined'
 import trello from '~/assets/trello.svg?react'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
@@ -9,10 +8,6 @@ import WorkSpace from './Menu/WorkSpace'
 import Rencent from './Menu/Recent'
 import Template from './Menu/Template'
 import Starred from './Menu/Starred'
-import Button from '@mui/material/Button'
-import { styled, alpha } from '@mui/material/styles'
-import InputBase from '@mui/material/InputBase'
-import SearchIcon from '@mui/icons-material/Search'
 import Badge from '@mui/material/Badge'
 import Tooltip from '@mui/material/Tooltip'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
@@ -20,48 +15,7 @@ import Profiles from './Menu/Profiles'
 import { Link } from 'react-router-dom'
 import Notifications from '~/components/AppBar/Notifications/Notifications'
 import AutoCompleteSearchBoard from './SearchBoards/AutoCompleteSearchBoard'
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25)
-  },
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(1),
-    width: 'auto'
-  }
-}))
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center'
-}))
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  width: '100%',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    paddingRight: theme.spacing(4), // ← thêm dòng này, chừa chỗ cho nút X
-    transition: theme.transitions.create('width'),
-    [theme.breakpoints.up('sm')]: {
-      width: '12ch',
-      '&:focus': {
-        width: '20ch'
-      }
-    }
-  }
-}))
 function AppBar() {
   return (
     <Box sx={{
@@ -76,9 +30,9 @@ function AppBar() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 2
+        gap: 2,
+        ml: 2
       }} >
-        <AppsOutlinedIcon sx={{ color: 'text.primary' }} />
         <Link to='/' style={{ textDecoration: 'none ' }}>
           <Box sx={{
             display: 'flex',
@@ -102,14 +56,6 @@ function AppBar() {
           <Rencent />
           <Starred />
           <Template />
-          <Button variant="contained" color="success" sx={{
-            backgroundColor: '#16A34A', // màu mặc định khi chưa hover
-            '&:hover': {
-              backgroundColor: '#22C55E'// sáng hơn khi hover
-            }
-          }}>
-            Create
-          </Button>
         </Box>
 
       </Box>

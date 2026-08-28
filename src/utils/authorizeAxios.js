@@ -88,8 +88,6 @@ authorizedAxiosInstance.interceptors.response.use(
       toast.error(errorMessage, {
         style: {
           borderRadius: '12px',
-          background: '#DC2626',
-          color: '#fff',
           fontWeight: 'semi-bold'
         }
       })

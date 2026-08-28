@@ -35,7 +35,6 @@ function Board() {
   React.useEffect(() => {
     // Lắng nghe sự kiện Realtime Socket khi có người join / leave card
     const onReceiveUserJoinedCard = (data) => {
-      console.log('FE received BE_USER_JOINED_CARD:', data)
       if (data?.updatedCard) {
         dispatch(updateCardInCurrentActiveBoard(data.updatedCard))
         if (card?._id === data.cardId) {
@@ -70,7 +69,7 @@ function Board() {
     await updateBoardDetaislApi(newBoard._id, { columnOrderIds: dndOrderedColumnsIds })
 
   }
-  // Trường hợp Imuuability ở đây là đụng tới giá trị card đang được coi là readOnly (nested Object)
+  // Trường hợp Imuability ở đây là đụng tới giá trị card đang được coi là readOnly (nested Object)
   const moveCards = async (columnId, dndOrderedCards) => {
     const dndOrderedCardsIds = dndOrderedCards.map(c => c._id)
     const newBoard = cloneDeep(board)
@@ -93,6 +92,7 @@ function Board() {
     dispatch(updateCurrentActiveBoard(newBoard))
 
     await moveCardtoDifferentColumnApi({
+      boardId: board._id,
       currentCardId,
       prevColumnId,
       prevCardOrderIds: dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds.filter(id => !id.includes('-placeholder-card')),

@@ -4,22 +4,27 @@ import QueueIcon from '@mui/icons-material/Queue'
 import * as React from 'react'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import GroupIcon from '@mui/icons-material/Group'
-import SettingsIcon from '@mui/icons-material/Settings'
+import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark'
 import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import BoardsTab from '~/components/BoardTab/Boards'
+import MembersTab from '~/components/BoardTab/MembersTab'
+import RecentlyTab from '~/components/BoardTab/RecentlyTab'
+import TemplatesTab from '~/components/BoardTab/TemplatesTab'
+import TrashTab from '~/components/BoardTab/TrashTab'
 import TabPanel from '@mui/lab/TabPanel'
 import { Link } from 'react-router-dom'
 import Appbar from '~/components/AppBar'
 import CreatedBoard from './created'
 import Modal from '@mui/material/Modal'
+
 const TABS = {
   BOARDS_TAB: 'boards',
   MEMBER_TAB: 'members',
-  SETTINGS_TAB: 'settings',
+  RECENTLY_TAB: 'recently',
   TEMPLATE_TAB: 'templates',
   TRASH_TAB: 'trash'
 }
@@ -114,10 +119,10 @@ const Boards = () => {
               />
 
               <Tab
-                icon={<SettingsIcon />}
+                icon={<AccessTimeIcon />}
                 iconPosition="start"
-                label="Settings"
-                value={TABS.SETTINGS_TAB}
+                label="Recently"
+                value={TABS.RECENTLY_TAB}
               />
 
               <Tab
@@ -153,19 +158,19 @@ const Boards = () => {
             </TabPanel>
 
             <TabPanel value={TABS.MEMBER_TAB}>
-              Members
+              <MembersTab />
             </TabPanel>
 
-            <TabPanel value={TABS.SETTINGS_TAB}>
-              Settings
+            <TabPanel value={TABS.RECENTLY_TAB}>
+              <RecentlyTab />
             </TabPanel>
 
             <TabPanel value={TABS.TEMPLATE_TAB}>
-              Templates
+              <TemplatesTab />
             </TabPanel>
 
             <TabPanel value={TABS.TRASH_TAB}>
-              Trash
+              <TrashTab />
             </TabPanel>
           </Box>
         </Box>
