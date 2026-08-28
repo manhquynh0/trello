@@ -29,10 +29,12 @@ import Stack from '@mui/material/Stack'
 import Avatar from '@mui/material/Avatar'
 import AvatarGroup from '@mui/material/AvatarGroup'
 import { useLocation } from 'react-router-dom'
-import { fetchBoardsApi, updateBoardDetaislApi } from '~/apis/index'
+import { fetchBoardsApi, updateBoardDetaislApi, deleteBoardApi } from '~/apis/index'
 import { useSearchParams, Link } from 'react-router-dom'
 import { DEFAULT_ITEM_PERPAGE, DEFAULT_PAGE } from '~/utils/constants'
 import PaginationItem from '@mui/material/PaginationItem'
+import { confirm } from '~/utils/ConfirmDialog'
+import { toast } from 'react-toastify'
 
 const BoardsTab = ({ refreshKey }) => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -41,21 +43,24 @@ const BoardsTab = ({ refreshKey }) => {
   // Lấy từ khóa tìm kiếm từ URL (nếu có) để hiển thị lên tiêu đề
   const searchKeyword = searchParams.get('q[title]') || ''
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [activeMenuBoardId, setActiveMenuBoardId] = React.useState(null)
   const [boards, setBoards] = React.useState(null)
   const [totalBoards, setTotalBoards] = React.useState(null)
   const [totalFavoriteBoards, setTotalFavoriteBoards] = React.useState(null)
   const [totalPublicBoards, setTotalPublicBoards] = React.useState(null)
   const [totalPrivateBoards, setTotalPrivateBoards] = React.useState(null)
   const location = useLocation()
-  const handleClick = (event) => {
+
+  const handleClick = (event, boardId) => {
     setAnchorEl(event.currentTarget)
+    setActiveMenuBoardId(boardId)
   }
 
   const handleClose = () => {
     setAnchorEl(null)
+    setActiveMenuBoardId(null)
   }
 
-  const open = Boolean(anchorEl)
 
   React.useEffect(() => {
     fetchBoardsApi(location.search).then(res => {
@@ -101,6 +106,32 @@ const BoardsTab = ({ refreshKey }) => {
       updated.set('q[type]', 'private')
       return updated
     })
+  }
+  const onHandleDelete = async (board) => {
+    handleClose()
+    const result = await confirm(
+      `Bạn có chắc muốn xóa board "${board.title}" này?`, 'Xóa board'
+    )
+
+    if (result.isConfirmed) {
+      await deleteBoardApi(board._id).then((res) => {
+        console.log(res)
+        setBoards(prev => prev.filter(b => b._id !== board._id))
+        toast.success('Deleted Successfully', {
+          style: {
+            borderRadius: '12px',
+            background: '#16A34A',
+            color: '#fff'
+          },
+          icon: () => (
+            <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
+          )
+        })
+
+      })
+
+    }
+
   }
 
   return (
@@ -325,7 +356,7 @@ const BoardsTab = ({ refreshKey }) => {
                   {/* More Menu Button */}
                   <IconButton
                     size="small"
-                    onClick={handleClick}
+                    onClick={(e) => handleClick(e, board._id)}
                     sx={{
                       position: 'absolute',
                       top: 8,
@@ -343,7 +374,7 @@ const BoardsTab = ({ refreshKey }) => {
                   {/* Menu Dropdown */}
                   <Menu
                     anchorEl={anchorEl}
-                    open={open}
+                    open={Boolean(anchorEl) && activeMenuBoardId === board._id}
                     onClose={handleClose}
                   >
                     <MenuItem>
@@ -359,11 +390,14 @@ const BoardsTab = ({ refreshKey }) => {
                       <ListItemText>Paste</ListItemText>
                     </MenuItem>
                     <Divider />
-                    <MenuItem sx={{
-                      '&:hover': {
-                        color: 'error.main'
-                      }
-                    }}>
+                    <MenuItem
+                      onClick={() => onHandleDelete(board)}
+                      sx={{
+                        '&:hover': {
+                          color: 'error.main'
+                        }
+                      }}
+                    >
                       <ListItemIcon>
                         <DeleteRoundedIcon fontSize="small" />
                       </ListItemIcon>

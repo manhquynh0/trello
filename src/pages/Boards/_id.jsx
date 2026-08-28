@@ -48,13 +48,41 @@ function Board() {
         toast.info(`${data.user?.displayName || 'Someone'} left a card!`)
       }
     }
-
     socketIoInstance.on('BE_USER_JOINED_CARD', onReceiveUserJoinedCard)
 
     return () => {
       socketIoInstance.off('BE_USER_JOINED_CARD', onReceiveUserJoinedCard)
     }
   }, [dispatch, card?._id])
+
+  React.useEffect(() => {
+    if (!boardId) return
+    // Lắng nghe sự kiện khi có người kéo thả card
+    const onDragCard = (data) => {
+      console.log('Lắng nghe sự kiện khi có người kéo thả card', data)
+      if (data && data.columns) {
+        dispatch(updateCurrentActiveBoard(data))
+      }
+    }
+
+    // Lắng nghe sự kiện khi có người kéo thả column
+    const onDragColumn = (data) => {
+      console.log('Lắng nghe sự kiện khi có người kéo thả column', data)
+      if (data && data.columns) {
+        dispatch(updateCurrentActiveBoard(data))
+      }
+    }
+
+    socketIoInstance.emit('FE_JOIN_BOARD', boardId)
+    socketIoInstance.on('BE_DRAG_CARD', onDragCard)
+    socketIoInstance.on('BE_DRAG_COLUMN', onDragColumn)
+
+    return () => {
+      socketIoInstance.emit('FE_LEAVE_BOARD', boardId)
+      socketIoInstance.off('BE_DRAG_CARD', onDragCard)
+      socketIoInstance.off('BE_DRAG_COLUMN', onDragColumn)
+    }
+  }, [boardId, dispatch])
 
   // const createdNewColumn = async (newColumn) => {
   // }
@@ -66,9 +94,15 @@ function Board() {
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnsIds
     dispatch(updateCurrentActiveBoard(newBoard))
-    await updateBoardDetaislApi(newBoard._id, { columnOrderIds: dndOrderedColumnsIds })
 
+    socketIoInstance.emit('FE_DRAG_COLUMN', {
+      ...newBoard,
+      boardId: newBoard._id
+    })
+
+    await updateBoardDetaislApi(newBoard._id, { columnOrderIds: dndOrderedColumnsIds })
   }
+
   // Trường hợp Imuability ở đây là đụng tới giá trị card đang được coi là readOnly (nested Object)
   const moveCards = async (columnId, dndOrderedCards) => {
     const dndOrderedCardsIds = dndOrderedCards.map(c => c._id)
@@ -82,14 +116,26 @@ function Board() {
       }
     })
     dispatch(updateCurrentActiveBoard(newBoard))
+
+    socketIoInstance.emit('FE_DRAG_CARD', {
+      ...newBoard,
+      boardId: newBoard._id
+    })
+
     await updateColumnDetaislApi(columnId, { cardOrderIds: dndOrderedCardsIds })
   }
+
   const moveCardBetweenDifferentColumns = async (prevColumnId, nextColumnId, currentCardId, dndOrderedColumns) => {
     const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
     const newBoard = { ...board }
     newBoard.columns = dndOrderedColumns
     newBoard.columnOrderIds = dndOrderedColumnsIds
     dispatch(updateCurrentActiveBoard(newBoard))
+
+    socketIoInstance.emit('FE_DRAG_CARD', {
+      ...newBoard,
+      boardId: newBoard._id
+    })
 
     await moveCardtoDifferentColumnApi({
       boardId: board._id,

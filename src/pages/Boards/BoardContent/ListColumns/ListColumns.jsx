@@ -74,7 +74,6 @@ function ListColumns({ columns }) {
     setNewColumnTitle('')
   }
   const { hasPermission } = usePermission({ board, user })
-  console.log(hasPermission(permission.DELETE_COLUMN))
 
 
   return (

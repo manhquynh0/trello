@@ -31,6 +31,10 @@ export const deleteColumnApi = async (columnId) => {
   const response = await authorizedAxiosInstance.patch(`${API_ROOT}/v1/columns/${columnId}`)
   return response.data
 }
+export const deleteBoardApi = async (boardId) => {
+  const response = await authorizedAxiosInstance.delete(`${API_ROOT}/v1/boards/${boardId}`)
+  return response.data
+}
 export const updateCardDetaislApi = async (cardId, updateCard) => {
   const response = await authorizedAxiosInstance.put(`${API_ROOT}/v1/cards/${cardId}`, updateCard)
   return response.data
