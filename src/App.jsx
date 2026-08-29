@@ -25,7 +25,11 @@ function App() {
       {/* Nhung Route chi duoc truy cap sau khi login */}
       <Route element={<ProtectedRoute user={currentUser} />}>
         <Route path='/boards/:boardId' element={<Board />} />
-        <Route path='/boards' element= {<Boards />} />
+        <Route path='/boards' element={<Boards />} />
+        <Route path='/boards/members' element={<Boards />} />
+        <Route path='/boards/recently' element={<Boards />} />
+        <Route path='/boards/templates' element={<Boards />} />
+        <Route path='/boards/trash' element={<Boards />} />
 
         <Route path='/settings/account' element={<Setting />} />
         <Route path='/settings/security' element={<Setting />} />

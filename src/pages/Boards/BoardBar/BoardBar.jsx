@@ -107,7 +107,7 @@ function BoardBar({ board }) {
         justifyContent: 'center',
         gap: 2
       }}>
-        <InviteBoardUser boardId= {board._id}/>
+        <InviteBoardUser boardId={board._id} />
         <BoardUserGroup boardUsers={board?.FE_allUser} />
       </Box>
     </Box >

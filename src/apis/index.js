@@ -31,8 +31,19 @@ export const deleteColumnApi = async (columnId) => {
   const response = await authorizedAxiosInstance.patch(`${API_ROOT}/v1/columns/${columnId}`)
   return response.data
 }
+export const archiveBoardApi = async (boardId) => {
+  const response = await authorizedAxiosInstance.patch(`${API_ROOT}/v1/boards/${boardId}`)
+  toast.success('Đã chuyển sang thùng rác')
+  return response.data
+}
+export const undoBoardApi = async (boardId) => {
+  const response = await authorizedAxiosInstance.patch(`${API_ROOT}/v1/boards/${boardId}/undodelete`)
+  toast.success('Đã khôi phục')
+  return response.data
+}
 export const deleteBoardApi = async (boardId) => {
   const response = await authorizedAxiosInstance.delete(`${API_ROOT}/v1/boards/${boardId}`)
+  toast.success('Đã xóa vĩnh viễn')
   return response.data
 }
 export const updateCardDetaislApi = async (cardId, updateCard) => {

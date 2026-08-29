@@ -21,7 +21,6 @@ import Divider from '@mui/material/Divider'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ContentCopy from '@mui/icons-material/ContentCopy'
-import ContentPaste from '@mui/icons-material/ContentPaste'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import Pagination from '@mui/material/Pagination'
@@ -29,26 +28,32 @@ import Stack from '@mui/material/Stack'
 import Avatar from '@mui/material/Avatar'
 import AvatarGroup from '@mui/material/AvatarGroup'
 import { useLocation } from 'react-router-dom'
-import { fetchBoardsApi, updateBoardDetaislApi, deleteBoardApi } from '~/apis/index'
+import { updateBoardDetaislApi, archiveBoardApi } from '~/apis/index'
 import { useSearchParams, Link } from 'react-router-dom'
 import { DEFAULT_ITEM_PERPAGE, DEFAULT_PAGE } from '~/utils/constants'
 import PaginationItem from '@mui/material/PaginationItem'
 import { confirm } from '~/utils/ConfirmDialog'
 import { toast } from 'react-toastify'
-
-const BoardsTab = ({ refreshKey }) => {
+import { singleFileValidator } from '~/utils/validators'
+import VisuallyHiddenInput from '~/components/Form/VisuallyHiddenInput'
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'
+import { fetchBoardsAPI, selectCurrentBoards, selectBoardsTotalMetadata } from '~/redux/activeBoard/activeBoardSlice'
+import { useSelector, useDispatch } from 'react-redux'
+const BoardsTab = () => {
   const [searchParams, setSearchParams] = useSearchParams()
-
+  const dispatch = useDispatch()
+  const boards = useSelector(selectCurrentBoards)
+  const boardsTotalMetadata = useSelector(selectBoardsTotalMetadata) || {
+    totalBoards: 0,
+    totalFavoriteBoards: 0,
+    totalPublicBoards: 0,
+    totalPrivateBoards: 0
+  }
   const page = parseInt(searchParams.get('page') || '1', 10)
   // Lấy từ khóa tìm kiếm từ URL (nếu có) để hiển thị lên tiêu đề
   const searchKeyword = searchParams.get('q[title]') || ''
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [activeMenuBoardId, setActiveMenuBoardId] = React.useState(null)
-  const [boards, setBoards] = React.useState(null)
-  const [totalBoards, setTotalBoards] = React.useState(null)
-  const [totalFavoriteBoards, setTotalFavoriteBoards] = React.useState(null)
-  const [totalPublicBoards, setTotalPublicBoards] = React.useState(null)
-  const [totalPrivateBoards, setTotalPrivateBoards] = React.useState(null)
   const location = useLocation()
 
   const handleClick = (event, boardId) => {
@@ -60,23 +65,15 @@ const BoardsTab = ({ refreshKey }) => {
     setAnchorEl(null)
     setActiveMenuBoardId(null)
   }
-
-
   React.useEffect(() => {
-    fetchBoardsApi(location.search).then(res => {
-      setBoards(res.boards || []),
-        setTotalBoards(res.totalBoards || 0),
-        setTotalFavoriteBoards(res.totalFavoriteBoards || 0),
-        setTotalPublicBoards(res.totalPublicBoards || 0),
-        setTotalPrivateBoards(res.totalPrivateBoards || 0)
-    })
-  }, [location.search, refreshKey])
+    dispatch(fetchBoardsAPI(location.search))
+  }, [location.search])
   const handleFavorite = (board) => {
     updateBoardDetaislApi(board._id, { isFavorite: !board.isFavorite }).then(() => {
-      setBoards(prev => prev.map(b => b._id === board._id ? { ...b, isFavorite: !b.isFavorite } : b))
+      // setBoards(prev => prev.map(b => b._id === board._id ? { ...b, isFavorite: !b.isFavorite } : b))
+      dispatch(fetchBoardsAPI(location.search))
     })
   }
-
   // const sortBy = searchParams.get('q[sort]')
   const handleSort = (e) => {
     const select = e.target.value
@@ -114,24 +111,33 @@ const BoardsTab = ({ refreshKey }) => {
     )
 
     if (result.isConfirmed) {
-      await deleteBoardApi(board._id).then((res) => {
-        console.log(res)
-        setBoards(prev => prev.filter(b => b._id !== board._id))
-        toast.success('Deleted Successfully', {
-          style: {
-            borderRadius: '12px',
-            background: '#16A34A',
-            color: '#fff'
-          },
-          icon: () => (
-            <span style={{ color: '#fff', fontSize: '20px' }}>✓</span>
-          )
-        })
-
+      await archiveBoardApi(board._id).then((res) => {
+        // setBoards(prev => prev.filter(b => b._id !== board._id))
+        dispatch(fetchBoardsAPI(location.search))
       })
-
     }
 
+  }
+  const onUploadBoardCover = (board, event) => {
+    const error = singleFileValidator(event.target?.files[0])
+    if (error) {
+      toast.error(error)
+      return
+    }
+    let reqData = new FormData()
+    reqData.append('boardCover', event.target?.files[0])
+
+    toast.promise(
+      updateBoardDetaislApi(board._id, reqData).finally(() => event.target.value = ''), {
+      pending: 'Updating...'
+    }
+    ).then(() => {
+      dispatch(fetchBoardsAPI(location.search)).then(() => {
+        toast.success('Updated Successfully')
+      })
+    }).catch(() => {
+      toast.error('Failed to update')
+    })
   }
 
   return (
@@ -150,7 +156,7 @@ const BoardsTab = ({ refreshKey }) => {
         </Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           {searchKeyword
-            ? `Tìm thấy ${totalBoards} board phù hợp`
+            ? `Tìm thấy ${boardsTotalMetadata.totalBoards} board phù hợp`
             : 'Tạo, quản lý và theo dõi tất cả board của bạn'
           }
         </Typography>
@@ -173,7 +179,7 @@ const BoardsTab = ({ refreshKey }) => {
           paddingRight: 2
         }}>
           <Chip
-            label={`Tất cả (${totalBoards})`}
+            label={`Tất cả (${boardsTotalMetadata.totalBoards})`}
             variant="filled"
             clickable
             onClick={() => {
@@ -194,7 +200,7 @@ const BoardsTab = ({ refreshKey }) => {
             }}
           />
           <Chip
-            label={`Yêu thích (${totalFavoriteBoards})`}
+            label={`Yêu thích (${boardsTotalMetadata.totalFavoriteBoards})`}
             clickable
             onClick={filterFavorite}
             deleteIcon={
@@ -233,7 +239,7 @@ const BoardsTab = ({ refreshKey }) => {
             }}
           />
           <Chip
-            label={`Cá nhân (${totalPrivateBoards})`}
+            label={`Cá nhân (${boardsTotalMetadata.totalPrivateBoards})`}
             clickable
             onClick={filterPrivate}
             variant="outlined"
@@ -256,7 +262,7 @@ const BoardsTab = ({ refreshKey }) => {
           />
           <Chip
             clickable
-            label={`Nhóm (${totalPublicBoards})`}
+            label={`Nhóm (${boardsTotalMetadata.totalPublicBoards})`}
             onClick={filterPublic}
             variant="outlined"
             sx={{
@@ -343,7 +349,7 @@ const BoardsTab = ({ refreshKey }) => {
                   <CardMedia
                     component="img"
                     height="200"
-                    image={board.image ? board.image : 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=500&h=300&fit=crop'}
+                    image={board.cover ? board.cover : 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=500&h=300&fit=crop'}
                     alt={board.title}
                     sx={{
                       objectFit: 'cover',
@@ -383,11 +389,12 @@ const BoardsTab = ({ refreshKey }) => {
                       </ListItemIcon>
                       <ListItemText>Copy</ListItemText>
                     </MenuItem>
-                    <MenuItem>
+                    <MenuItem component="label">
                       <ListItemIcon>
-                        <ContentPaste fontSize="small" />
+                        <ImageOutlinedIcon fontSize="small" />
                       </ListItemIcon>
-                      <ListItemText>Paste</ListItemText>
+                      <ListItemText>Image</ListItemText>
+                      <VisuallyHiddenInput type="file" onChange={(e) => onUploadBoardCover(board, e)} />
                     </MenuItem>
                     <Divider />
                     <MenuItem
@@ -498,12 +505,12 @@ const BoardsTab = ({ refreshKey }) => {
         marginTop: 4
       }}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Hiển thị {(page - 1) * DEFAULT_ITEM_PERPAGE + 1} tới {Math.min(page * DEFAULT_ITEM_PERPAGE, totalBoards)} của {totalBoards}
+          Hiển thị {(page - 1) * DEFAULT_ITEM_PERPAGE + 1} tới {Math.min(page * DEFAULT_ITEM_PERPAGE, boardsTotalMetadata.totalBoards)} của {boardsTotalMetadata.totalBoards}
         </Typography>
         <Stack spacing={2} direction="row">
           <Pagination
 
-            count={Math.ceil(totalBoards / DEFAULT_ITEM_PERPAGE)}
+            count={Math.ceil(boardsTotalMetadata.totalBoards / DEFAULT_ITEM_PERPAGE)}
             page={page}
             color="primary"
             renderItem={(item) => (

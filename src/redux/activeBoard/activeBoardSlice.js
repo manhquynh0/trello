@@ -23,8 +23,21 @@ export const fetchBoardDetailsAPI = createAsyncThunk('activeBoard/fetchBoardDeta
     return response.data
   }
 )
+export const fetchBoardsAPI = createAsyncThunk('activeBoard/fetchBoardsApi',
+  async (search) => {
+    const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards/${search}`)
+    return response.data
+  }
+)
 const initialState = {
-  currentActiveBoard: null
+  currentActiveBoard: null,
+  boards: [],
+  boardsTotalMetadata: {
+    totalBoards: 0,
+    totalFavoriteBoards: 0,
+    totalPublicBoards: 0,
+    totalPrivateBoards: 0
+  }
 }
 //Khoi tao 1 Silce trong kho luu tru - Redux store
 export const activeBoardSlice = createSlice({
@@ -52,6 +65,10 @@ export const activeBoardSlice = createSlice({
           columnToUpdate.cards[cardIndex] = updateCard
         }
       }
+    },
+    updateBoards: (state, action) => {
+      const boards = action.payload
+      state.boards = boards
     }
   },
   // ExtraReducers : Nơi xử lý dữ liệu bất đồng bộ
@@ -80,6 +97,20 @@ export const activeBoardSlice = createSlice({
       state.currentActiveBoard = board
 
     })
+    builder.addCase(fetchBoardsAPI.fulfilled, (state, action) => {
+      // API trả về object dạng: { boards: [...], totalBoards: ... }
+      const resData = action.payload
+
+      // Gán mảng boards từ resData.boards thay vì gán nguyên object
+      state.boards = resData?.boards || []
+      state.boardsTotalMetadata = {
+        totalBoards: resData?.totalBoards || 0,
+        totalFavoriteBoards: resData?.totalFavoriteBoards || 0,
+        totalPublicBoards: resData?.totalPublicBoards || 0,
+        totalPrivateBoards: resData?.totalPrivateBoards || 0
+      }
+
+    })
 
   }
 })
@@ -88,10 +119,17 @@ export const activeBoardSlice = createSlice({
 // actions được tạo tự động
 export const {
   updateCurrentActiveBoard,
-  updateCardInCurrentActiveBoard
+  updateCardInCurrentActiveBoard,
+  updateBoards
 } = activeBoardSlice.actions
 
 export const selectCurrentActiveBoard = (state) => {
   return state.activeBoard.currentActiveBoard
+}
+export const selectCurrentBoards = (state) => {
+  return state.activeBoard.boards
+}
+export const selectBoardsTotalMetadata = (state) => {
+  return state.activeBoard.boardsTotalMetadata
 }
 export const activeBoardReducer = activeBoardSlice.reducer

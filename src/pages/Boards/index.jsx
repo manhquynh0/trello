@@ -16,10 +16,12 @@ import RecentlyTab from '~/components/BoardTab/RecentlyTab'
 import TemplatesTab from '~/components/BoardTab/TemplatesTab'
 import TrashTab from '~/components/BoardTab/TrashTab'
 import TabPanel from '@mui/lab/TabPanel'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import Appbar from '~/components/AppBar'
 import CreatedBoard from './created'
 import Modal from '@mui/material/Modal'
+import { fetchBoardsAPI } from '~/redux/activeBoard/activeBoardSlice'
+import { useDispatch } from 'react-redux'
 
 const TABS = {
   BOARDS_TAB: 'boards',
@@ -30,14 +32,23 @@ const TABS = {
 }
 
 const Boards = () => {
-  const [activeTab, setActiveTab] = React.useState(TABS.BOARDS_TAB)
+  const location = useLocation()
+  console.log(location)
+  const dispatch = useDispatch()
+  const getDefaultURL = () => {
+    if (location.pathname.includes(TABS.RECENTLY_TAB)) return TABS.RECENTLY_TAB
+    if (location.pathname.includes(TABS.TEMPLATE_TAB)) return TABS.TEMPLATE_TAB
+    if (location.pathname.includes(TABS.TRASH_TAB)) return TABS.TRASH_TAB
+    return TABS.BOARDS_TAB
+  }
+  const [activeTab, setActiveTab] = React.useState(getDefaultURL)
   const [openCreateBoard, setOpenCreateBoard] = React.useState(false)
-  const [boardsRefreshKey, setBoardsRefreshKey] = React.useState(0)
+  // const [boardsRefreshKey, setBoardsRefreshKey] = React.useState(0)
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue)
   }
   const afterCreate = () => {
-    setBoardsRefreshKey((currentKey) => currentKey + 1)
+    dispatch(fetchBoardsAPI(location.search))
   }
 
   return (
@@ -116,6 +127,7 @@ const Boards = () => {
                 iconPosition="start"
                 label="Members"
                 value={TABS.MEMBER_TAB}
+                component={Link} to='/boards/members'
               />
 
               <Tab
@@ -123,6 +135,7 @@ const Boards = () => {
                 iconPosition="start"
                 label="Recently"
                 value={TABS.RECENTLY_TAB}
+                component={Link} to='/boards/recently'
               />
 
               <Tab
@@ -130,6 +143,7 @@ const Boards = () => {
                 iconPosition="start"
                 label="Templates"
                 value={TABS.TEMPLATE_TAB}
+                component={Link} to='/boards/templates'
               />
 
               <Tab
@@ -137,6 +151,7 @@ const Boards = () => {
                 iconPosition="start"
                 label="Trash"
                 value={TABS.TRASH_TAB}
+                component={Link} to='/boards/trash'
               />
             </TabList>
 
@@ -154,7 +169,9 @@ const Boards = () => {
               />
             </Modal>
             <TabPanel value={TABS.BOARDS_TAB}>
-              <BoardsTab refreshKey={boardsRefreshKey} />
+              <BoardsTab
+              // refreshKey={boardsRefreshKey}
+              />
             </TabPanel>
 
             <TabPanel value={TABS.MEMBER_TAB}>

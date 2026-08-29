@@ -12,7 +12,6 @@ import Paper from '@mui/material/Paper'
 import Avatar from '@mui/material/Avatar'
 import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
-import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Tooltip from '@mui/material/Tooltip'
@@ -21,33 +20,45 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import { toast } from 'react-toastify'
-
-const initialTrashItems = [
-  { id: 'tr_1', name: 'Old Project Plan', type: 'Board', deletedBy: 'Quỳnh Mạnh', avatar: 'https://i.pravatar.cc/150?img=11', deletedAt: 'May 10, 2024', expiresIn: '23 days' },
-  { id: 'tr_2', name: 'Marketing Ideas', type: 'Board', deletedBy: 'Anh Trân', avatar: 'https://i.pravatar.cc/150?img=32', deletedAt: 'May 3, 2024', expiresIn: '21 days' },
-  { id: 'tr_3', name: 'Sprint 1', type: 'Board', deletedBy: 'Minh Lê', avatar: 'https://i.pravatar.cc/150?img=13', deletedAt: 'May 5, 2024', expiresIn: '18 days' },
-  { id: 'tr_4', name: 'Design System v1', type: 'Board', deletedBy: 'Phương Nguyễn', avatar: 'https://i.pravatar.cc/150?img=47', deletedAt: 'May 1, 2024', expiresIn: '14 days' }
-]
+import { undoBoardApi, deleteBoardApi } from '~/apis'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectCurrentBoards, fetchBoardsAPI } from '~/redux/activeBoard/activeBoardSlice'
+import ReplayIcon from '@mui/icons-material/Replay';
+import moment from 'moment'
+import { confirm } from '~/utils/ConfirmDialog'
 
 const TrashTab = () => {
-  const [trashItems, setTrashItems] = useState(initialTrashItems)
+  const dispatch = useDispatch()
+  const boards = useSelector(selectCurrentBoards)
   const [openEmptyConfirm, setOpenEmptyConfirm] = useState(false)
 
-  const handleRestore = (item) => {
-    setTrashItems(prev => prev.filter(i => i.id !== item.id))
-    toast.success(`Đã khôi phục "${item.name}"!`)
+  React.useEffect(() => {
+    dispatch(fetchBoardsAPI('?q[type]=trash'))
+  }, [dispatch])
+
+  const handleRestore = (board) => {
+    undoBoardApi(board._id).then(() => {
+      dispatch(fetchBoardsAPI('?q[type]=trash'))
+    })
   }
 
-  const handleDeletePermanently = (item) => {
-    setTrashItems(prev => prev.filter(i => i.id !== item.id))
-    toast.info(`Đã xóa vĩnh viễn "${item.name}"`)
+  const handleDeletePermanently = async (board) => {
+    const result = await confirm(
+      `Bạn có chắc muốn xóa vĩnh viễn ${board.title} này?`,
+      'Xóa vĩnh viễn board'
+    )
+    if (!result.isConfirmed) return
+
+    await deleteBoardApi(board._id).then(() => {
+      dispatch(fetchBoardsAPI('?q[type]=trash'))
+    })
   }
 
   const handleEmptyTrash = () => {
-    setTrashItems([])
     setOpenEmptyConfirm(false)
     toast.success('Đã dọn sạch thùng rác!')
   }
+
 
   return (
     <Box sx={{ flex: 1, padding: 4, overflowY: 'auto' }}>
@@ -55,13 +66,13 @@ const TrashTab = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 700, marginBottom: 0.5 }}>
-            Trash
+            Thùng rác
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Boards and items in trash will be permanently deleted after 30 days
+            Các board và mục trong thùng rác sẽ bị xóa vĩnh viễn sau 30 ngày
           </Typography>
         </Box>
-        {trashItems.length > 0 && (
+        {boards.length > 0 && (
           <Button
             variant="outlined"
             color="error"
@@ -69,7 +80,7 @@ const TrashTab = () => {
             onClick={() => setOpenEmptyConfirm(true)}
             sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 600 }}
           >
-            Empty Trash
+            Xóa tất cả
           </Button>
         )}
       </Box>
@@ -79,16 +90,16 @@ const TrashTab = () => {
         <Table sx={{ minWidth: 650 }}>
           <TableHead sx={{ backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.02)' }}>
             <TableRow>
-              <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Type</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Deleted By</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Deleted At</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>Expires In</TableCell>
-              <TableCell align="right" sx={{ fontWeight: 600 }}>Actions</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Tên</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Loại</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Xóa bởi</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Xóa lúc</TableCell>
+              <TableCell sx={{ fontWeight: 600 }}>Hết hạn trong</TableCell>
+              <TableCell align="right" sx={{ fontWeight: 600 }}>Hành động</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {trashItems.length === 0 ? (
+            {boards.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
                   <DeleteIcon sx={{ fontSize: 50, color: 'text.secondary', opacity: 0.4, mb: 1 }} />
@@ -101,36 +112,38 @@ const TrashTab = () => {
                 </TableCell>
               </TableRow>
             ) : (
-              trashItems.map((item) => (
-                <TableRow key={item.id} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              boards.filter((board) => board._destroy === true).map((board) => (
+                <TableRow key={board._id} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell>
                     <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                      {item.name}
+                      {board.title}
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Chip label={item.type} size="small" variant="outlined" sx={{ borderRadius: '8px', fontWeight: 500 }} />
+                    <Chip label={board.type === 'public' ? 'Công khai' : 'Riêng tư'} size="small" variant="outlined" sx={{ borderRadius: '8px', fontWeight: 500 }} />
                   </TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                      <Avatar src={item.avatar} alt={item.deletedBy} sx={{ width: 28, height: 28 }} />
-                      <Typography variant="body2">{item.deletedBy}</Typography>
+                      <Avatar src={board.avatar} alt={board.deletedBy} sx={{ width: 28, height: 28 }} />
+                      <Typography variant="body2">{board.deletedBy}</Typography>
                     </Box>
                   </TableCell>
                   <TableCell sx={{ color: 'text.secondary', fontSize: '0.9rem' }}>
-                    {item.deletedAt}
+                    {moment(board.deletedAt).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell>
-                    <Chip label={item.expiresIn} size="small" color="warning" sx={{ borderRadius: '8px', fontWeight: 600 }} />
+                    <Chip label={`Còn ${moment(board.deletedAt)
+                      .add(30, 'days')
+                      .diff(moment(), 'days')} ngày`} size="small" color="warning" sx={{ borderRadius: '8px', fontWeight: 600 }} />
                   </TableCell>
                   <TableCell align="right">
                     <Tooltip title="Khôi phục">
-                      <IconButton color="primary" onClick={() => handleRestore(item)} size="small" sx={{ mr: 1 }}>
-                        <RestoreFromTrashIcon fontSize="small" />
+                      <IconButton color="primary" onClick={() => handleRestore(board)} size="small" sx={{ mr: 1 }}>
+                        <ReplayIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Xóa vĩnh viễn">
-                      <IconButton color="error" onClick={() => handleDeletePermanently(item)} size="small">
+                      <IconButton color="error" onClick={() => handleDeletePermanently(board)} size="small">
                         <DeleteForeverIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>

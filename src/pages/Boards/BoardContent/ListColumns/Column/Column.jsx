@@ -35,6 +35,7 @@ import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 import { usePermission } from '~/customHooks/usePermission'
 import { permission } from '~/config/rabcConfig'
 import { selectCurrentUser } from '~/redux/user/userSlice'
+import moment from 'moment'
 function Column({ column }) {
   const board = useSelector(selectCurrentActiveBoard)
   const user = useSelector(selectCurrentUser)
@@ -175,7 +176,7 @@ function Column({ column }) {
             color="text.secondary"
             sx={{ mb: 1 }}
           >
-            {new Date().toLocaleDateString('vi-VN')}
+            {moment(column.createdAt).format('DD/MM/YYYY')}
           </Typography>
           <Box
             sx={{

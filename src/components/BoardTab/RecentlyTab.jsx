@@ -13,75 +13,28 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import AvatarGroup from '@mui/material/AvatarGroup'
 import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
-import Button from '@mui/material/Button'
-import DeleteSweepIcon from '@mui/icons-material/DeleteSweep'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
-
-const initialRecentBoards = [
-  {
-    _id: 'rec_1',
-    title: 'Project Management',
-    description: 'Track milestones, tasks, and daily sprint progress.',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&h=300&fit=crop',
-    isFavorite: true,
-    lastAccessed: 'Updated 2 minutes ago',
-    members: [
-      { displayName: 'Quỳnh Mạnh', avatar: 'https://i.pravatar.cc/150?img=11' },
-      { displayName: 'Anh Trân', avatar: 'https://i.pravatar.cc/150?img=32' },
-      { displayName: 'Minh Lê', avatar: 'https://i.pravatar.cc/150?img=13' }
-    ]
-  },
-  {
-    _id: 'rec_2',
-    title: 'Website Redesign',
-    description: 'UX/UI revamping, design system & frontend implementation.',
-    image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=500&h=300&fit=crop',
-    isFavorite: true,
-    lastAccessed: 'Updated 1 hour ago',
-    members: [
-      { displayName: 'Phương Nguyễn', avatar: 'https://i.pravatar.cc/150?img=47' },
-      { displayName: 'Khoa Đỗ', avatar: 'https://i.pravatar.cc/150?img=60' }
-    ]
-  },
-  {
-    _id: 'rec_3',
-    title: 'Q3 Marketing Plan',
-    description: 'Social media strategy, SEO content, and ad campaigns.',
-    image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=500&h=300&fit=crop',
-    isFavorite: false,
-    lastAccessed: 'Updated 3 hours ago',
-    members: [
-      { displayName: 'Quỳnh Mạnh', avatar: 'https://i.pravatar.cc/150?img=11' },
-      { displayName: 'Anh Trân', avatar: 'https://i.pravatar.cc/150?img=32' },
-      { displayName: 'Khoa Đỗ', avatar: 'https://i.pravatar.cc/150?img=60' },
-      { displayName: 'Minh Lê', avatar: 'https://i.pravatar.cc/150?img=13' }
-    ]
-  },
-  {
-    _id: 'rec_4',
-    title: 'Personal Tasks',
-    description: 'Personal goals, learning path, and reading list.',
-    image: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=500&h=300&fit=crop',
-    isFavorite: false,
-    lastAccessed: 'Updated 5 hours ago',
-    members: [
-      { displayName: 'Quỳnh Mạnh', avatar: 'https://i.pravatar.cc/150?img=11' }
-    ]
-  }
-]
-
+import { fetchBoardsApi, updateBoardDetaislApi } from '~/apis'
+import moment from 'moment'
+import { selectCurrentBoards, fetchBoardsAPI } from '~/redux/activeBoard/activeBoardSlice'
+import { useSelector, useDispatch } from 'react-redux'
 const RecentlyTab = () => {
-  const [recentBoards, setRecentBoards] = useState(initialRecentBoards)
+  const location = useLocation()
+  const boards = useSelector(selectCurrentBoards)
+  const dispatch = useDispatch()
 
-  const toggleFavorite = (boardId) => {
-    setRecentBoards(prev => prev.map(b => b._id === boardId ? { ...b, isFavorite: !b.isFavorite } : b))
+  React.useEffect(() => {
+    fetchBoardsApi(location.search).then(res => {
+      dispatch(fetchBoardsAPI(location.search))
+    })
+  }, [location.search])
+
+  const toggleFavorite = (board) => {
+    updateBoardDetaislApi(board._id, { isFavorite: !board.isFavorite }).then(() => {
+      dispatch(fetchBoardsAPI(location.search))
+    })
     toast.success('Đã cập nhật bảng yêu thích!')
-  }
-
-  const handleClearHistory = () => {
-    setRecentBoards([])
-    toast.info('Đã xóa lịch sử xem gần đây')
   }
 
   return (
@@ -90,27 +43,16 @@ const RecentlyTab = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 700, marginBottom: 0.5 }}>
-            Recently Viewed
+            Xem gần đây
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Quickly access boards you have opened or edited recently
+            Truy cập nhanh các bảng bạn đã mở hoặc chỉnh sửa gần đây
           </Typography>
         </Box>
-        {recentBoards.length > 0 && (
-          <Button
-            variant="outlined"
-            color="inherit"
-            startIcon={<DeleteSweepIcon />}
-            onClick={handleClearHistory}
-            sx={{ borderRadius: 2, textTransform: 'none' }}
-          >
-            Clear History
-          </Button>
-        )}
       </Box>
 
       {/* Boards Grid */}
-      {recentBoards.length === 0 ? (
+      {boards.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 8 }}>
           <AccessTimeIcon sx={{ fontSize: 60, color: 'text.secondary', mb: 2, opacity: 0.5 }} />
           <Typography variant="h6" sx={{ color: 'text.secondary', mb: 1 }}>
@@ -122,7 +64,7 @@ const RecentlyTab = () => {
         </Box>
       ) : (
         <Grid container spacing={3}>
-          {recentBoards.map((board) => (
+          {boards?.slice(0, 4)?.map((board) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={board._id}>
               <Card
                 sx={{
@@ -142,7 +84,7 @@ const RecentlyTab = () => {
                   <CardMedia
                     component="img"
                     height="160"
-                    image={board.image}
+                    image={board.cover ? board.cover : 'https://images.unsplash.com/photo-1511485977113-f34c92461ad9?w=500&h=300&fit=crop'}
                     alt={board.title}
                     sx={{ objectFit: 'cover' }}
                   />
@@ -164,7 +106,7 @@ const RecentlyTab = () => {
                     }}
                   >
                     <AccessTimeIcon sx={{ fontSize: 14 }} />
-                    {board.lastAccessed}
+                    {moment(board.updatedAt).fromNow()}
                   </Box>
                 </Box>
 
@@ -203,7 +145,7 @@ const RecentlyTab = () => {
                       </Tooltip>
                     ))}
                   </AvatarGroup>
-                  <IconButton size="small" onClick={() => toggleFavorite(board._id)}>
+                  <IconButton size="small" onClick={() => toggleFavorite(board)}>
                     {board.isFavorite ? (
                       <FavoriteIcon fontSize="small" sx={{ color: '#FFC107' }} />
                     ) : (
