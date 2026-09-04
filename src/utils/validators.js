@@ -3,6 +3,7 @@ export const EMAIL_RULE_MESSAGE = 'Email không hợp lệ ( example : manhquynh
 export const PASSWORD_RULE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#_-])[A-Za-z\d@$!%*?&.#_-]{8,}$/
 export const PASSWORD_RULE_MESSAGE = 'Mật khẩu phải chứa ít nhẩt 1 ký tự đặc biệt, 1 chữ cái in hoa và có ít nhất 8 ký tự'
 export const FILED_REQUIRED_MESSAGE = 'Bạn chưa nhập dữ liệu !'
+export const URL_REGEX = /^(https?:\/\/)([\w-]+\.)+[\w-]{2,}(\/[^\s]*)?$/
 
 export const LIMIT_COMMON_FILE_SIZE = 10485760
 export const ALLOW_COMMON_FILE_SIZE = ['image/png', 'image/jpg', 'image/jpeg']

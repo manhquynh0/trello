@@ -33,7 +33,6 @@ const TABS = {
 
 const Boards = () => {
   const location = useLocation()
-  console.log(location)
   const dispatch = useDispatch()
   const getDefaultURL = () => {
     if (location.pathname.includes(TABS.RECENTLY_TAB)) return TABS.RECENTLY_TAB

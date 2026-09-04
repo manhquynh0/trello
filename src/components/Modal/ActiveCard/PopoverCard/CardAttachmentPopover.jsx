@@ -34,7 +34,13 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import { updateCardInCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { deleteAttachmentApi } from '~/apis'
 import { confirm } from '~/utils/ConfirmDialog'
+import { useForm } from 'react-hook-form'
+import { FILED_REQUIRED_MESSAGE, URL_REGEX } from '~/utils/validators'
+import { createdAttachmentApi } from '~/apis'
 const getFileIcon = (filetype, url) => {
+  if (filetype === 'link') {
+    return <a href={url} target="_blank" rel="noopener noreferrer"><LinkIcon sx={{ color: '#EF4444', fontSize: 30 }} /></a>
+  }
   if (filetype === 'application/pdf') {
     return <a href={url} target="_blank" rel="noopener noreferrer"><PictureAsPdfIcon sx={{ color: '#EF4444', fontSize: 30 }} /></a>
   }
@@ -68,11 +74,12 @@ const getFileIcon = (filetype, url) => {
 }
 
 function CardAttachmentPopover({ card, anchorEl, isOpen, onClose }) {
-  moment.locale('vi')
+  const { register, handleSubmit, formState: { errors }, reset } = useForm()
   const [value, setValue] = useState('1')
   const handleChange = (event, newValue) => {
     setValue(newValue)
   }
+
   const dispatch = useDispatch()
   const callAPI = async (data) => {
     const updatedCard = await updateCardDetaislApi(card._id, data)
@@ -115,10 +122,29 @@ function CardAttachmentPopover({ card, anchorEl, isOpen, onClose }) {
         toast.error('Xóa tệp đính kèm thất bại!')
       })
     }
-
   }
-  const onAddLink = () => {
-    console.log('Add link')
+  const onSubmit = (data) => {
+    const { link, name } = data
+    toast.promise(
+      createdAttachmentApi(card._id, {
+        attachments: [{
+          filetype: 'link',
+          url: link,
+          name: name
+        }
+        ]
+      }),
+      {
+        pending: 'Đang thêm liên kết...'
+      }
+    ).then((data) => {
+      reset()
+      toast.success('Thêm liên kết thành công!')
+      dispatch(updateCurrentActiveCard(data))
+      dispatch(updateCardInCurrentActiveBoard(data))
+    }).catch(() => {
+      toast.error('Thêm liên kết thất bại!')
+    })
   }
 
   return (
@@ -151,87 +177,104 @@ function CardAttachmentPopover({ card, anchorEl, isOpen, onClose }) {
             </Typography>
           </Box></TabPanel>
           <TabPanel value="2">
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, alignItems: 'center', justifyContent: 'center' }}>
-              <TextField
-                fullWidth
-                label="Thêm liên kết"
-                placeholder="Ví dụ: https://qllo.com"
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    height: '40px',
-                    borderRadius: '4px',
-                    backgroundColor: '#1F2937',
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, alignItems: 'center', justifyContent: 'center' }}>
+                <TextField
+                  fullWidth
+                  label="Thêm liên kết"
+                  placeholder="Ví dụ: https://qllo.com"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      height: '40px',
+                      borderRadius: '4px',
+                      backgroundColor: '#1F2937',
 
-                    '& fieldset': {
-                      borderColor: '#4B5563',
+                      '& fieldset': {
+                        borderColor: '#4B5563',
+                      },
+
+                      '&:hover fieldset': {
+                        borderColor: '#4B5563',
+                      },
+
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#0EA5E9',
+                      },
                     },
 
-                    '&:hover fieldset': {
-                      borderColor: '#4B5563',
+                    '& .MuiInputBase-input': {
+                      padding: '10px',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#9CA3AF',
                     },
 
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#0EA5E9',
-                    },
-                  },
-
-                  '& .MuiInputBase-input': {
-                    padding: '10px',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#9CA3AF',
-                  },
-
-                  '& .MuiInputLabel-root': {
-                    color: '#9CA3AF',
-                  },
-
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: '#0EA5E9',
-                  },
-                }}
-              />
-              <TextField
-                fullWidth
-                label="Tên thay thế"
-                placeholder="Ví dụ: https://qllo.com"
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    height: '40px',
-                    borderRadius: '4px',
-                    backgroundColor: '#1F2937',
-
-                    '& fieldset': {
-                      borderColor: '#4B5563',
+                    '& .MuiInputLabel-root': {
+                      color: '#9CA3AF'
                     },
 
-                    '&:hover fieldset': {
-                      borderColor: '#4B5563',
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: '#0EA5E9'
+                    }
+                  }}
+                  {...register('link', {
+                    required: FILED_REQUIRED_MESSAGE,
+                    pattern: {
+                      value: URL_REGEX,
+                      message: 'Vui lòng nhập URL hợp lệ'
+                    }
+                  })}
+                  error={!!errors.link}
+                  helperText={errors.link?.message}
+                />
+                <TextField
+                  fullWidth
+                  label="Tên thay thế"
+
+                  placeholder="Ví dụ: https://qllo.com"
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      height: '40px',
+                      borderRadius: '4px',
+                      backgroundColor: '#1F2937',
+
+                      '& fieldset': {
+                        borderColor: '#4B5563'
+                      },
+
+                      '&:hover fieldset': {
+                        borderColor: '#4B5563'
+                      },
+
+                      '&.Mui-focused fieldset': {
+                        borderColor: '#0EA5E9'
+                      },
                     },
 
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#0EA5E9',
+                    '& .MuiInputBase-input': {
+                      padding: '10px',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#9CA3AF'
                     },
-                  },
 
-                  '& .MuiInputBase-input': {
-                    padding: '10px',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#9CA3AF',
-                  },
+                    '& .MuiInputLabel-root': {
+                      color: '#9CA3AF'
+                    },
 
-                  '& .MuiInputLabel-root': {
-                    color: '#9CA3AF',
-                  },
-
-                  '& .MuiInputLabel-root.Mui-focused': {
-                    color: '#0EA5E9',
-                  },
-                }}
-              />
-              <Button variant='contained' onClick={onAddLink} sx={{ backgroundColor: '#0EA5E9', textTransform: 'none', '&:hover': { backgroundColor: '#0284C7' }, width: 'fit-content' }}>Thêm vào thẻ</Button>
-            </Box>
+                    '& .MuiInputLabel-root.Mui-focused': {
+                      color: '#0EA5E9'
+                    }
+                  }}
+                  {...register('name', {
+                    required: FILED_REQUIRED_MESSAGE
+                  })}
+                  error={!!errors.name}
+                  helperText={errors.name?.message}
+                />
+                <Button variant='contained' type='submit' sx={{ backgroundColor: '#0EA5E9', textTransform: 'none', '&:hover': { backgroundColor: '#0284C7' }, width: 'fit-content' }}>Thêm vào thẻ</Button>
+              </Box>
+            </form>
           </TabPanel>
           <Typography sx={{ color: '#9CA3AF', fontSize: '14px', mb: 2 }}>
             Thêm tệp, link hoặc ảnh vào thẻ của bạn.
@@ -245,7 +288,7 @@ function CardAttachmentPopover({ card, anchorEl, isOpen, onClose }) {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
             {card?.attachments?.map((attachment) => (
               <Box key={attachment.publicId} sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, backgroundColor: '#1F2937', p: 1.5, borderRadius: '8px' }}>
-                <Box sx={{ width: '48px', height: '48px', borderRadius: '4px', backgroundColor: '#374151', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Box sx={{ width: '48px', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {attachment?.filetype.startsWith('image/') ?
                     <a href={attachment.url} target="_blank" rel="noopener noreferrer"><img src={attachment.url} alt="thumb" style={{ width: '100%', height: '100%', borderRadius: '4px', objectFit: 'cover' }} /> </a> : getFileIcon(attachment?.filetype, attachment?.url)}
                 </Box>

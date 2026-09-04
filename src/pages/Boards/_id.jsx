@@ -59,7 +59,6 @@ function Board() {
     if (!boardId) return
     // Lắng nghe sự kiện khi có người kéo thả card
     const onDragCard = (data) => {
-      console.log('Lắng nghe sự kiện khi có người kéo thả card', data)
       if (data && data.columns) {
         dispatch(updateCurrentActiveBoard(data))
       }
@@ -67,7 +66,6 @@ function Board() {
 
     // Lắng nghe sự kiện khi có người kéo thả column
     const onDragColumn = (data) => {
-      console.log('Lắng nghe sự kiện khi có người kéo thả column', data)
       if (data && data.columns) {
         dispatch(updateCurrentActiveBoard(data))
       }

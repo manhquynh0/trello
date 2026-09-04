@@ -46,6 +46,8 @@ import CardChecklistPopover from './PopoverCard/CardChecklistPopover'
 import CardAttachmentPopover from './PopoverCard/CardAttachmentPopover'
 import CardDatesPopover from './PopoverCard/CardDatesPopover'
 import CardCustomFieldsPopover from './PopoverCard/CardCustomFieldsPopover'
+import { archiveCardApi } from '~/apis'
+import { confirm } from '~/utils/ConfirmDialog'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -170,6 +172,24 @@ function ActiveCard() {
       socketIoInstance.off('BE_USER_JOINED_CARD', onReceiveUserJoinedCard)
     }
   }, [card?._id, dispatch])
+
+  const handleArchiveCard = async (cardId) => {
+    const result = await confirm(
+      'Bạn có chắc muốn lưu trữ thẻ này?', 'Lưu trữ'
+    )
+    if (result.isConfirmed) {
+      toast.promise(archiveCardApi(cardId), {
+        pending: 'Đang lưu trữ...'
+      }).then((updatedCard) => {
+        toast.success('Lưu trữ thành công!')
+        handleCloseModal()
+        dispatch(updateCurrentActiveCard(updatedCard))
+        dispatch(updateCardInCurrentActiveBoard(updatedCard))
+      }).catch(() => {
+        toast.error('Lưu trữ thất bại!')
+      })
+    }
+  }
   return (
     <Modal
       disableScrollLock
@@ -272,20 +292,20 @@ function ActiveCard() {
                 })}
               >
                 <PersonOutlineOutlinedIcon fontSize="small" />
-                {isCurrentUserCardMember ? 'Leave' : 'Join'}
+                {isCurrentUserCardMember ? 'Rời khỏi' : 'Tham gia'}
               </SidebarItem>
 
               {/* Feature 06: Xử lý hành động cập nhật ảnh Cover của Card */}
               <SidebarItem className="active" component="label" sx={{ cursor: 'pointer' }}>
                 <ImageOutlinedIcon fontSize="small" />
-                Cover
+                Ảnh bìa
                 <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
               </SidebarItem>
 
               <SidebarItem
                 aria-describedby={attachmentPopoverId}
                 onClick={handleToggleAttachment}>
-                <AttachFileOutlinedIcon fontSize="small" />Attachment</SidebarItem>
+                <AttachFileOutlinedIcon fontSize="small" /> File đính kèm</SidebarItem>
               <CardAttachmentPopover
                 card={card}
                 anchorEl={anchorAttachment}
@@ -296,7 +316,7 @@ function ActiveCard() {
                 card={card}
                 aria-describedby={labelPopoverId}
                 onClick={handleToggleLabel}>
-                <LocalOfferOutlinedIcon fontSize="small" />Labels</SidebarItem>
+                <LocalOfferOutlinedIcon fontSize="small" />Nhãn</SidebarItem>
               <CardLabelsPopover
                 card={card}
                 anchorEl={anchorLabel}
@@ -307,7 +327,7 @@ function ActiveCard() {
                 card={card}
                 aria-describedby={checklistPopoverId}
                 onClick={handleToggleChecklist}>
-                <TaskAltOutlinedIcon fontSize="small" />Checklist</SidebarItem>
+                <TaskAltOutlinedIcon fontSize="small" />Danh sách</SidebarItem>
               <CardChecklistPopover
                 card={card}
                 anchorEl={anchorChecklist}
@@ -318,7 +338,7 @@ function ActiveCard() {
                 card={card}
                 aria-describedby={datePopoverId}
                 onClick={handleToggleDate}>
-                <WatchLaterOutlinedIcon fontSize="small" />Dates</SidebarItem>
+                <WatchLaterOutlinedIcon fontSize="small" />Thời gian</SidebarItem>
               <CardDatesPopover
                 card={card}
                 anchorEl={anchorDate}
@@ -329,7 +349,7 @@ function ActiveCard() {
                 card={card}
                 aria-describedby={customFieldPopoverId}
                 onClick={handleToggleCustomField}>
-                <AutoFixHighOutlinedIcon fontSize="small" />Custom Fields</SidebarItem>
+                <AutoFixHighOutlinedIcon fontSize="small" /> Tùy chỉnh</SidebarItem>
               <CardCustomFieldsPopover
                 card={card}
                 anchorEl={anchorCustomField}
@@ -342,20 +362,20 @@ function ActiveCard() {
 
             <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Power-Ups</Typography>
             <Stack direction="column" spacing={1}>
-              <SidebarItem><AspectRatioOutlinedIcon fontSize="small" />Card Size</SidebarItem>
+              <SidebarItem><AspectRatioOutlinedIcon fontSize="small" />Kích thước thẻ</SidebarItem>
               <SidebarItem><AddToDriveOutlinedIcon fontSize="small" />Google Drive</SidebarItem>
-              <SidebarItem><AddOutlinedIcon fontSize="small" />Add Power-Ups</SidebarItem>
+              <SidebarItem><AddOutlinedIcon fontSize="small" /> Thêm Power-Ups</SidebarItem>
             </Stack>
 
             <Divider sx={{ my: 2 }} />
 
             <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Actions</Typography>
             <Stack direction="column" spacing={1}>
-              <SidebarItem><ArrowForwardOutlinedIcon fontSize="small" />Move</SidebarItem>
-              <SidebarItem><ContentCopyOutlinedIcon fontSize="small" />Copy</SidebarItem>
-              <SidebarItem><AutoAwesomeOutlinedIcon fontSize="small" />Make Template</SidebarItem>
-              <SidebarItem><ArchiveOutlinedIcon fontSize="small" />Archive</SidebarItem>
-              <SidebarItem><ShareOutlinedIcon fontSize="small" />Share</SidebarItem>
+              <SidebarItem><ArrowForwardOutlinedIcon fontSize="small" />Di chuyển</SidebarItem>
+              <SidebarItem><ContentCopyOutlinedIcon fontSize="small" />Sao chép</SidebarItem>
+              <SidebarItem><AutoAwesomeOutlinedIcon fontSize="small" /> Tạo mẫu</SidebarItem>
+              <SidebarItem onClick={() => handleArchiveCard(card._id)}><ArchiveOutlinedIcon fontSize="small" />Lưu trữ</SidebarItem>
+              <SidebarItem><ShareOutlinedIcon fontSize="small" /> Chia sẻ</SidebarItem>
             </Stack>
           </Grid>
         </Grid>

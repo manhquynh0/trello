@@ -82,8 +82,17 @@ export const inviteUserToBoardApi = async (data) => {
   toast.success('Gửi lời mời thành công')
   return response.data
 }
+export const createdAttachmentApi = async (cardId, data) => {
+  const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/cards/${cardId}/attachments`, data)
+  return response.data
+}
 export const deleteAttachmentApi = async (cardId, attachmentId) => {
   const response = await authorizedAxiosInstance.delete(`${API_ROOT}/v1/cards/${cardId}/attachments/${attachmentId}`)
   return response.data
 }
+export const archiveCardApi = async (cardId) => {
+  const response = await authorizedAxiosInstance.patch(`${API_ROOT}/v1/cards/${cardId}`)
+  return response.data
+}
+
 

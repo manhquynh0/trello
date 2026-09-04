@@ -67,14 +67,12 @@ const BoardsTab = () => {
   }
   React.useEffect(() => {
     dispatch(fetchBoardsAPI(location.search))
-  }, [location.search])
+  }, [location.search, dispatch])
   const handleFavorite = (board) => {
     updateBoardDetaislApi(board._id, { isFavorite: !board.isFavorite }).then(() => {
-      // setBoards(prev => prev.map(b => b._id === board._id ? { ...b, isFavorite: !b.isFavorite } : b))
       dispatch(fetchBoardsAPI(location.search))
     })
   }
-  // const sortBy = searchParams.get('q[sort]')
   const handleSort = (e) => {
     const select = e.target.value
     setSearchParams(prev => {

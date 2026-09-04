@@ -7,7 +7,7 @@ export const confirm = (title, confirmButtonText) => {
     width: '400px',
     confirmButtonText,
     cancelButtonText: 'Hủy',
-    confirmButtonColor: '#d33',
+    confirmButtonColor: '#11cc7eff',
     customClass: {
       popup: 'my-popup',
       container: 'my-swal-container'
