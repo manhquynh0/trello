@@ -10,10 +10,18 @@ import Tooltip from '@mui/material/Tooltip'
 import { UpperCaseFirstLetter } from '~/utils/UpperCaseFirstLetter'
 import BoardUserGroup from './BoardUserGroup'
 import InviteBoardUser from './InviteBoardUser'
+import { usePopover } from '~/customHooks/usePopover'
+import BoardBarAutomationPopover from './BoardBarAutomationPopover'
+import BoardBarFilterPopover from './BoardBarFilterPopover'
 const MENU_STYLES = {
   padding: 1
 }
 function BoardBar({ board }) {
+  const { anchorPopoverElement: anchorAutomation, isOpenPopover: isOpenAutomation, handleTogglePopover: handleToggleAutomation } = usePopover()
+  const { anchorPopoverElement: anchorFilter, isOpenPopover: isOpenFilter, handleTogglePopover: handleToggleFilter } = usePopover()
+  const automationPopoverId = isOpenAutomation ? 'automation-popover' : undefined
+  const filterPopoverId = isOpenFilter ? 'filter-popover' : undefined
+
   return (
     <Box sx={{
       display: 'flex',
@@ -69,8 +77,11 @@ function BoardBar({ board }) {
               label="Automation"
               clickable
               sx={MENU_STYLES}
+              aria-describedby={automationPopoverId}
+              onClick={handleToggleAutomation}
             />
           </Tooltip>
+          <BoardBarAutomationPopover anchorEl={anchorAutomation} isOpen={isOpenAutomation} onClose={handleToggleAutomation} />
         </Box>
         <Box sx={{
           display: 'flex',
@@ -96,8 +107,11 @@ function BoardBar({ board }) {
               label="Filter"
               clickable
               sx={MENU_STYLES}
+              aria-describedby={filterPopoverId}
+              onClick={handleToggleFilter}
             />
           </Tooltip>
+          <BoardBarFilterPopover anchorEl={anchorFilter} isOpen={isOpenFilter} onClose={handleToggleFilter} />
         </Box>
 
       </Box>

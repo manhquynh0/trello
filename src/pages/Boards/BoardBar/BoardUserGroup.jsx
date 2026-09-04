@@ -1,21 +1,17 @@
-import { useState } from 'react'
+
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import Popover from '@mui/material/Popover'
+import { usePopover } from '~/customHooks/usePopover'
 
 function BoardUserGroup({ boardUsers = [], limit = 8 }) {
   /**
    * Xử lý Popover để ẩn hoặc hiện toàn bộ user trên một cái popup, tương tự docs để tham khảo ở đây:
    * https://mui.com/material-ui/react-popover/
    */
-  const [anchorPopoverElement, setAnchorPopoverElement] = useState(null)
-  const isOpenPopover = Boolean(anchorPopoverElement)
+  const { anchorPopoverElement, isOpenPopover, handleTogglePopover } = usePopover()
   const popoverId = isOpenPopover ? 'board-all-users-popover' : undefined
-  const handleTogglePopover = (event) => {
-    if (!anchorPopoverElement) setAnchorPopoverElement(event.currentTarget)
-    else setAnchorPopoverElement(null)
-  }
 
   // Lưu ý ở đây chúng ta không dùng Component AvatarGroup của MUI bởi nó không hỗ trợ tốt trong việc chúng ta cần custom & trigger xử lý phần tử tính toán cuối, đơn giản là cứ dùng Box và CSS - Style đám Avatar cho chuẩn kết hợp tính toán một chút thôi.
   return (

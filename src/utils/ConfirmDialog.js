@@ -9,7 +9,8 @@ export const confirm = (title, confirmButtonText) => {
     cancelButtonText: 'Hủy',
     confirmButtonColor: '#d33',
     customClass: {
-      popup: 'my-popup'
+      popup: 'my-popup',
+      container: 'my-swal-container'
     }
   })
 }

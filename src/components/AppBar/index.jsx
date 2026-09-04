@@ -44,10 +44,10 @@ function AppBar() {
         gap: 1,
         xs: 'none'
       }}>
-        <WorkSpace />
+        {/* <WorkSpace />
         <Rencent />
         <Starred />
-        <Template />
+        <Template /> */}
       </Box>
 
 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Tooltip from '@mui/material/Tooltip'
@@ -16,6 +16,7 @@ import { selectCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { usePermission } from '~/customHooks/usePermission'
 import { permission } from '~/config/rabcConfig'
 import { selectCurrentUser } from '~/redux/user/userSlice'
+import { usePopover } from '~/customHooks/usePopover'
 
 
 function InviteBoardUser({ boardId }) {
@@ -26,13 +27,8 @@ function InviteBoardUser({ boardId }) {
    * Xử lý Popover để ẩn hoặc hiện một popup nhỏ, tương tự docs để tham khảo ở đây:
    * https://mui.com/material-ui/react-popover/
   */
-  const [anchorPopoverElement, setAnchorPopoverElement] = useState(null)
-  const isOpenPopover = Boolean(anchorPopoverElement)
+  const { anchorPopoverElement, isOpenPopover, handleTogglePopover, setAnchorPopoverElement } = usePopover()
   const popoverId = isOpenPopover ? 'invite-board-user-popover' : undefined
-  const handleTogglePopover = (event) => {
-    if (!anchorPopoverElement) setAnchorPopoverElement(event.currentTarget)
-    else setAnchorPopoverElement(null)
-  }
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm()
   const submitInviteUserToBoard = (data) => {

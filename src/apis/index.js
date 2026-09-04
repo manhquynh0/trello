@@ -82,4 +82,8 @@ export const inviteUserToBoardApi = async (data) => {
   toast.success('Gửi lời mời thành công')
   return response.data
 }
+export const deleteAttachmentApi = async (cardId, attachmentId) => {
+  const response = await authorizedAxiosInstance.delete(`${API_ROOT}/v1/cards/${cardId}/attachments/${attachmentId}`)
+  return response.data
+}
 

@@ -40,6 +40,12 @@ import { socketIoInstance } from '~/socketClient'
 import { styled } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
+import { usePopover } from '~/customHooks/usePopover'
+import CardLabelsPopover from './PopoverCard/CardLabelsPopover'
+import CardChecklistPopover from './PopoverCard/CardChecklistPopover'
+import CardAttachmentPopover from './PopoverCard/CardAttachmentPopover'
+import CardDatesPopover from './PopoverCard/CardDatesPopover'
+import CardCustomFieldsPopover from './PopoverCard/CardCustomFieldsPopover'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -68,8 +74,20 @@ const SidebarItem = styled(Box)(({ theme }) => ({
 function ActiveCard() {
   const dispatch = useDispatch()
   const card = useSelector(selectCurrentActiveCard)
-  console.log(card)
   const currentUser = useSelector(selectCurrentUser)
+
+  // Mở Popover attachment
+  const { anchorPopoverElement: anchorAttachment, isOpenPopover: isOpenAttachment, handleTogglePopover: handleToggleAttachment } = usePopover()
+  const { anchorPopoverElement: anchorLabel, isOpenPopover: isOpenLabel, handleTogglePopover: handleToggleLabel } = usePopover()
+  const { anchorPopoverElement: anchorChecklist, isOpenPopover: isOpenChecklist, handleTogglePopover: handleToggleChecklist } = usePopover()
+  const { anchorPopoverElement: anchorDate, isOpenPopover: isOpenDate, handleTogglePopover: handleToggleDate } = usePopover()
+  const { anchorPopoverElement: anchorCustomField, isOpenPopover: isOpenCustomField, handleTogglePopover: handleToggleCustomField } = usePopover()
+
+  const attachmentPopoverId = isOpenAttachment ? 'attachment-popover' : undefined
+  const labelPopoverId = isOpenLabel ? 'label-popover' : undefined
+  const checklistPopoverId = isOpenChecklist ? 'checklist-popover' : undefined
+  const datePopoverId = isOpenDate ? 'date-popover' : undefined
+  const customFieldPopoverId = isOpenCustomField ? 'custom-field-popover' : undefined
 
   // Kiểm tra xem currentUser đã là member của Card hay chưa
   const isCurrentUserCardMember = card?.memberIds?.includes(currentUser?._id)
@@ -94,7 +112,6 @@ function ActiveCard() {
     })
   }
   const onUploadCardCover = (event) => {
-    console.log(event.target?.files[0])
     const error = singleFileValidator(event.target?.files[0])
     if (error) {
       toast.error(error)
@@ -117,7 +134,6 @@ function ActiveCard() {
   }
   const onUpdateCardMember = (incomingMemberInfo) => {
     callAPI({ incomingMemberInfo }).then((updatedCard) => {
-      console.log('FE emitting FE_USER_JOINED_CARD:', incomingMemberInfo)
       // Bắn sự kiện Socket Realtime thông báo khi có user Join / Leave Card
       socketIoInstance.emit('FE_USER_JOINED_CARD', {
         cardId: card._id,
@@ -266,11 +282,60 @@ function ActiveCard() {
                 <VisuallyHiddenInput type="file" onChange={onUploadCardCover} />
               </SidebarItem>
 
-              <SidebarItem><AttachFileOutlinedIcon fontSize="small" />Attachment</SidebarItem>
-              <SidebarItem><LocalOfferOutlinedIcon fontSize="small" />Labels</SidebarItem>
-              <SidebarItem><TaskAltOutlinedIcon fontSize="small" />Checklist</SidebarItem>
-              <SidebarItem><WatchLaterOutlinedIcon fontSize="small" />Dates</SidebarItem>
-              <SidebarItem><AutoFixHighOutlinedIcon fontSize="small" />Custom Fields</SidebarItem>
+              <SidebarItem
+                aria-describedby={attachmentPopoverId}
+                onClick={handleToggleAttachment}>
+                <AttachFileOutlinedIcon fontSize="small" />Attachment</SidebarItem>
+              <CardAttachmentPopover
+                card={card}
+                anchorEl={anchorAttachment}
+                isOpen={isOpenAttachment}
+                onClose={handleToggleAttachment}
+              />
+              <SidebarItem
+                card={card}
+                aria-describedby={labelPopoverId}
+                onClick={handleToggleLabel}>
+                <LocalOfferOutlinedIcon fontSize="small" />Labels</SidebarItem>
+              <CardLabelsPopover
+                card={card}
+                anchorEl={anchorLabel}
+                isOpen={isOpenLabel}
+                onClose={handleToggleLabel}
+              />
+              <SidebarItem
+                card={card}
+                aria-describedby={checklistPopoverId}
+                onClick={handleToggleChecklist}>
+                <TaskAltOutlinedIcon fontSize="small" />Checklist</SidebarItem>
+              <CardChecklistPopover
+                card={card}
+                anchorEl={anchorChecklist}
+                isOpen={isOpenChecklist}
+                onClose={handleToggleChecklist}
+              />
+              <SidebarItem
+                card={card}
+                aria-describedby={datePopoverId}
+                onClick={handleToggleDate}>
+                <WatchLaterOutlinedIcon fontSize="small" />Dates</SidebarItem>
+              <CardDatesPopover
+                card={card}
+                anchorEl={anchorDate}
+                isOpen={isOpenDate}
+                onClose={handleToggleDate}
+              />
+              <SidebarItem
+                card={card}
+                aria-describedby={customFieldPopoverId}
+                onClick={handleToggleCustomField}>
+                <AutoFixHighOutlinedIcon fontSize="small" />Custom Fields</SidebarItem>
+              <CardCustomFieldsPopover
+                card={card}
+                anchorEl={anchorCustomField}
+                isOpen={isOpenCustomField}
+                onClose={handleToggleCustomField}
+              />
             </Stack>
 
             <Divider sx={{ my: 2 }} />

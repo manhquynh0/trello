@@ -291,15 +291,15 @@ const BoardsTab = () => {
           gap: 1
         }}>
           <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel>Filter</InputLabel>
+            <InputLabel>Sắp xếp</InputLabel>
             <Select
               // value={sortBy}
-              label="Filter"
+              label="Sắp xếp"
               onChange={handleSort}
             >
-              <MenuItem value="newest">Newest</MenuItem>
-              <MenuItem value="oldest">Oldest</MenuItem>
-              <MenuItem value="name">Name A-Z</MenuItem>
+              <MenuItem value="newest">Mới nhất</MenuItem>
+              <MenuItem value="oldest">Cũ nhất</MenuItem>
+              <MenuItem value="name">A-Z</MenuItem>
             </Select>
           </FormControl>
           <Tooltip title="Grid view">
@@ -393,7 +393,7 @@ const BoardsTab = () => {
                       <ListItemIcon>
                         <ImageOutlinedIcon fontSize="small" />
                       </ListItemIcon>
-                      <ListItemText>Image</ListItemText>
+                      <ListItemText>Ảnh</ListItemText>
                       <VisuallyHiddenInput type="file" onChange={(e) => onUploadBoardCover(board, e)} />
                     </MenuItem>
                     <Divider />
@@ -408,7 +408,7 @@ const BoardsTab = () => {
                       <ListItemIcon>
                         <DeleteRoundedIcon fontSize="small" />
                       </ListItemIcon>
-                      <ListItemText>Delete</ListItemText>
+                      <ListItemText>Xóa</ListItemText>
                     </MenuItem>
                   </Menu>
                 </Box>

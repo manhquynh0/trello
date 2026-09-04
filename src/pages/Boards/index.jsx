@@ -117,7 +117,7 @@ const Boards = () => {
               <Tab
                 icon={<DashboardIcon />}
                 iconPosition="start"
-                label="Boards"
+                label="Bảng"
                 value={TABS.BOARDS_TAB}
                 component={Link} to='/boards'
               />
@@ -125,7 +125,7 @@ const Boards = () => {
               <Tab
                 icon={<GroupIcon />}
                 iconPosition="start"
-                label="Members"
+                label="Thành viên"
                 value={TABS.MEMBER_TAB}
                 component={Link} to='/boards/members'
               />
@@ -133,7 +133,7 @@ const Boards = () => {
               <Tab
                 icon={<AccessTimeIcon />}
                 iconPosition="start"
-                label="Recently"
+                label="Gần đây"
                 value={TABS.RECENTLY_TAB}
                 component={Link} to='/boards/recently'
               />
@@ -141,7 +141,7 @@ const Boards = () => {
               <Tab
                 icon={<CollectionsBookmarkIcon />}
                 iconPosition="start"
-                label="Templates"
+                label="Mẫu"
                 value={TABS.TEMPLATE_TAB}
                 component={Link} to='/boards/templates'
               />
@@ -149,7 +149,7 @@ const Boards = () => {
               <Tab
                 icon={<DeleteIcon />}
                 iconPosition="start"
-                label="Trash"
+                label="Thùng rác"
                 value={TABS.TRASH_TAB}
                 component={Link} to='/boards/trash'
               />

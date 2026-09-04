@@ -1,4 +1,4 @@
-import { useState } from 'react'
+
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
@@ -10,18 +10,14 @@ import {
   selectCurrentActiveBoard
 } from '~/redux/activeBoard/activeBoardSlice'
 import { useSelector } from 'react-redux'
+import { usePopover } from '~/customHooks/usePopover'
 function CardUserGroup({ cardMemberIds = [], onUpdateCardMember }) {
   /**
    * Xử lý Popover để ẩn hoặc hiện toàn bộ user trên một cái popup, tương tự docs để tham khảo ở đây:
    * https://mui.com/material-ui/react-popover/
    */
-  const [anchorPopoverElement, setAnchorPopoverElement] = useState(null)
-  const isOpenPopover = Boolean(anchorPopoverElement)
+  const { anchorPopoverElement, isOpenPopover, handleTogglePopover } = usePopover()
   const popoverId = isOpenPopover ? 'card-all-users-popover' : undefined
-  const handleTogglePopover = (event) => {
-    if (!anchorPopoverElement) setAnchorPopoverElement(event.currentTarget)
-    else setAnchorPopoverElement(null)
-  }
   // Lấy board hiện tại để lấy ra toàn bộ thông tin các thành viên trong board
   const board = useSelector(selectCurrentActiveBoard)
   // Thành viên trong card sẽ là con của thànnh viên trong board
@@ -55,7 +51,7 @@ function CardUserGroup({ cardMemberIds = [], onUpdateCardMember }) {
       )}
 
       {/* Nút này để mở popover thêm member */}
-      <Tooltip title="Add new member">
+      <Tooltip title="Thêm thành viên">
         <Box
           aria-describedby={popoverId}
           onClick={handleTogglePopover}

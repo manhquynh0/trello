@@ -6,6 +6,17 @@ export const FILED_REQUIRED_MESSAGE = 'Bạn chưa nhập dữ liệu !'
 
 export const LIMIT_COMMON_FILE_SIZE = 10485760
 export const ALLOW_COMMON_FILE_SIZE = ['image/png', 'image/jpg', 'image/jpeg']
+export const ALLOW_UPLOAD_FILE_TYPE = [
+  'image/png',
+  'image/jpg',
+  'image/jpeg',
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/zip'
+]
 export const singleFileValidator = (file) => {
   if (!file || !file.name || !file.type || !file.size) {
     return 'File cannot be blank'
@@ -15,6 +26,19 @@ export const singleFileValidator = (file) => {
   }
   if (!ALLOW_COMMON_FILE_SIZE.includes(file.type)) {
     return 'File type is invalid, Only accept jpg, png or jpeg'
+  }
+  return null
+}
+
+export const upLoadFile = (file) => {
+  if (!file || !file.name || !file.type || !file.size) {
+    return 'File cannot be blank'
+  }
+  if (file.size > LIMIT_COMMON_FILE_SIZE) {
+    return 'Maximum file size excceded. (10mb) '
+  }
+  if (!ALLOW_UPLOAD_FILE_TYPE.includes(file.type)) {
+    return 'File type is invalid, Only accept jpg, png , jpeg,  pdf, doc, docx, xls, xlsx, zip'
   }
   return null
 }

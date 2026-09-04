@@ -168,7 +168,7 @@ const CreatedBoard = ({ onClose, afterCreate }) => {
                   color: 'text.secondary'
                 }}
               >
-                Board Details
+                Thông tin chi tiết bảng
               </Typography>
 
               <TextField
@@ -314,7 +314,7 @@ const CreatedBoard = ({ onClose, afterCreate }) => {
                   color: 'text.secondary'
                 }}
               >
-                Privacy Settings
+                Cài đặt quyền riêng tư
               </Typography>
 
               <Controller
@@ -420,7 +420,7 @@ const CreatedBoard = ({ onClose, afterCreate }) => {
                   }
                 }}
               >
-                Cancel
+                Hủy
               </Button>
               <Button
                 type="submit"
@@ -440,7 +440,7 @@ const CreatedBoard = ({ onClose, afterCreate }) => {
                   }
                 }}
               >
-                Create Board
+                Tạo bảng
               </Button>
             </Box>
           </Stack>
