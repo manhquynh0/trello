@@ -110,6 +110,12 @@ export const deleteLabelApi = async (cardId, labelId) => {
   const response = await authorizedAxiosInstance.delete(`${API_ROOT}/v1/cards/${cardId}/labels/${labelId}`)
   return response.data
 }
-
-
+export const createChecklist = async (cardId, data) => {
+  const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/cards/${cardId}/checklist`, data)
+  return response.data
+}
+export const createChecklistItem = async (cardId, checklistId, data) => {
+  const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/cards/${cardId}/checklist/${checklistId}`, data)
+  return response.data
+}
 

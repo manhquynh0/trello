@@ -17,8 +17,8 @@ import Box from '@mui/material/Box'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { fetchCardDetailsAPI, updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
-
-
+import Chip from '@mui/material/Chip'
+import Stack from '@mui/material/Stack'
 function Cards({ card }) {
   const dispatch = useDispatch()
 
@@ -36,7 +36,7 @@ function Cards({ card }) {
     opacity: isDragging ? 0.5 : undefined,
     border: isDragging ? '1px solid #0F172A ' : undefined
   }
-
+  const isActiveLabel = card?.labels?.filter(label => label.isActive === true)
   const ShouldShowCardActions = () => {
     return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length || !!card?.description?.length
   }
@@ -46,6 +46,7 @@ function Cards({ card }) {
     // 2. Đồng thời gọi API fetchCardDetailsAPI để lấy dữ liệu mới nhất (bao gồm cả mảng members được populate từ backend)
     dispatch(fetchCardDetailsAPI(card._id))
   }
+
   return (
     <Card
       onClick={setActiveCard}
@@ -85,7 +86,39 @@ function Cards({ card }) {
           }}
         />
       )}
+      {isActiveLabel?.length > 0 && (
+        <Box sx={{ p: 1 }}>
+          <Stack
+            direction="row"
+            spacing={1}
+            flexWrap="wrap"
+            useFlexGap
+          >
+            {isActiveLabel?.map(item => (
+              <Chip
+                key={item._id}
+                label={item.name}
+                size="small"
+                sx={{
+                  backgroundColor: item.color,
+                  color: '#fff',
+                  fontSize: 'small',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
 
+                  '&:hover': {
+                    backgroundColor: item.color,
+                    filter: 'brightness(1.2)',
+                    transform: 'translateY(-1px)',
+                    boxShadow: `0 3px 10px ${item.color}66`
+                  }
+                }}
+              />
+            ))}
+          </Stack>
+        </Box>
+      )}
       <CardContent sx={{ gap: 1, p: 0.5, '&:last-child': { pb: 1.5 } }}>
         <Box
           sx={{

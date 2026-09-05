@@ -272,7 +272,7 @@ function CardAttachmentPopover({ card, anchorEl, isOpen, onClose }) {
                   error={!!errors.name}
                   helperText={errors.name?.message}
                 />
-                <Button variant='contained' type='submit' sx={{ backgroundColor: '#0EA5E9', textTransform: 'none', '&:hover': { backgroundColor: '#0284C7' }, width: 'fit-content' }}>Thêm vào thẻ</Button>
+                <Button className='interceptor-loading' variant='contained' type='submit' sx={{ backgroundColor: '#0EA5E9', textTransform: 'none', '&:hover': { backgroundColor: '#0284C7' }, width: 'fit-content' }}>Thêm vào thẻ</Button>
               </Box>
             </form>
           </TabPanel>
