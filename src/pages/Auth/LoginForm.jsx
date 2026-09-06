@@ -23,6 +23,8 @@ import {
 } from '~/redux/user/userSlice'
 import { EMAIL_RULE, EMAIL_RULE_MESSAGE, PASSWORD_RULE, PASSWORD_RULE_MESSAGE, FILED_REQUIRED_MESSAGE } from '~/utils/validators'
 import Alert from '@mui/material/Alert'
+import Divider from '@mui/material/Divider'
+import GoogleIcon from '@mui/icons-material/Google'
 import { useDispatch } from 'react-redux'
 const LoginForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm()
@@ -63,29 +65,33 @@ const LoginForm = () => {
       <Zoom in={true} style={{ transitionDelay: '300ms' }}>
         <Box
           sx={{
-            minHeight: '70vh',
+            minHeight: 'auto',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
 
-            p: 2
+            p: 0
           }}
         >
           <Paper
             elevation={8}
             sx={{
               width: '100%',
-              maxWidth: 420,
-              p: 0,
-              borderRadius: 3,
-              overflow: 'hidden'
+              maxWidth: 'none',
+              p: { xs: 3, sm: 4.5 },
+              borderRadius: '18px',
+              overflow: 'hidden',
+              bgcolor: '#0B2045',
+              color: '#F4F7FF',
+              border: '1px solid rgba(99, 148, 240, .40)',
+              boxShadow: '0 24px 70px rgba(0, 5, 28, .45)'
             }}
           >
-            <Box sx={{ p: 3, borderBottom: 1, borderColor: 'divider', bgcolor: 'primary.main', color: 'primary.contrastText' }}>
-              <Typography variant='h5' component='h1'>
+            <Box sx={{ pb: 2.5, color: '#F4F7FF' }}>
+              <Typography variant='h4' component='h1' sx={{ fontWeight: 800 }}>
                 Đăng nhập
               </Typography>
-              <Typography variant='body2' sx={{ mt: 1 }}>
+              <Typography variant='body2' sx={{ mt: 1, color: '#B8C9F2' }}>
                 Nhập thông tin để truy cập tài khoản của bạn.
               </Typography>
               {registeredEmail && <Alert
@@ -133,7 +139,7 @@ const LoginForm = () => {
 
             </Box>
 
-            <Box sx={{ p: 3 }}>
+            <Box>
               <TextField
                 id='email'
                 variant='outlined'
@@ -167,6 +173,7 @@ const LoginForm = () => {
                     </InputAdornment>
                   )
                 }}
+                sx={{ '& .MuiInputLabel-root': { color: '#AFC2EA' }, '& .MuiInputBase-input': { color: '#F4F7FF' }, '& .MuiOutlinedInput-root': { borderRadius: '10px', bgcolor: '#0E2A59', '& fieldset': { borderColor: '#315B98' } } }}
 
               />
               <FieldErrorAlert errors={errors} fieldName='email' />
@@ -207,10 +214,15 @@ const LoginForm = () => {
                     </InputAdornment>
                   )
                 }}
+                sx={{ mt: 2, '& .MuiInputLabel-root': { color: '#AFC2EA' }, '& .MuiInputBase-input': { color: '#F4F7FF' }, '& .MuiOutlinedInput-root': { borderRadius: '10px', bgcolor: '#0E2A59', '& fieldset': { borderColor: '#315B98' } } }}
 
               />
 
               <FieldErrorAlert errors={errors} fieldName='password' />
+
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+                <Link to='/forgot-password' style={{ color: '#B9AFFF', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>Quên mật khẩu?</Link>
+              </Box>
 
               <Button
                 className='interceptor-loading'
@@ -218,15 +230,24 @@ const LoginForm = () => {
                 variant='contained'
                 color='primary'
                 size='large'
-                sx={{ mt: 3 }}
+                sx={{ mt: 3, py: 1, borderRadius: '10px', fontWeight: 800, background: 'linear-gradient(90deg, #7259FF, #397BFF)' }}
                 type='submit'
               >
                 Đăng nhập
               </Button>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, my: 2.5 }}>
+                <Divider sx={{ flex: 1, borderColor: '#244879' }} />
+                <Typography sx={{ color: '#91A7D7', fontSize: 12 }}>Hoặc</Typography>
+                <Divider sx={{ flex: 1, borderColor: '#244879' }} />
+              </Box>
+              <Button type="button" fullWidth variant="outlined" startIcon={<GoogleIcon />}
+                sx={{ py: 1.1, borderRadius: '10px', color: '#F4F7FF', borderColor: '#315B98', fontWeight: 700, textTransform: 'none', '&:hover': { borderColor: '#5B8DDB', bgcolor: 'rgba(46, 91, 166, .20)' }, '& .MuiButton-startIcon': { color: '#EA4335' } }}>
+                Đăng nhập với Google
+              </Button>
             </Box>
 
-            <Box sx={{ p: 3, borderTop: 1, borderColor: 'divider', textAlign: 'center' }}>
-              <Typography variant='body2' color='text.secondary'>
+            <Box sx={{ pt: 3, textAlign: 'center' }}>
+              <Typography variant='body2' sx={{ color: '#AFC2EA' }}>
                 Chưa có tài khoản?{' '}
                 <Link to='/register' style={{ textDecoration: 'none', color: '#1976d2', fontWeight: 500 }}>
                   Đăng ký ngay

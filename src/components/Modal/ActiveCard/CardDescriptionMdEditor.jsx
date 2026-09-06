@@ -28,7 +28,7 @@ function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDes }) {
   }
 
   return (
-    <Box sx={{ mt: -4 }}>
+    <Box sx={{ mt: 1.5 }}>
       {markdownEditMode
         ? <Box sx={{ mt: 5, display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Box data-color-mode={mode}>
@@ -52,9 +52,9 @@ function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDes }) {
             Save
           </Button>
         </Box>
-        : <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        : <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Button
-            sx={{ alignSelf: 'flex-end' }}
+            sx={{ alignSelf: 'flex-end', color: '#B9D1FC', border: '1px solid #315B98', backgroundColor: '#173564', '&:hover': { backgroundColor: '#245193' } }}
             onClick={() => setMarkdownEditMode(true)}
             type="button"
             variant="contained"
@@ -68,9 +68,12 @@ function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDes }) {
               source={cardDescription}
               style={{
                 whiteSpace: 'pre-wrap',
-                padding: cardDescription ? '10px' : '0px',
-                border:  cardDescription ? '0.5px solid rgba(0, 0, 0, 0.2)' : 'none',
-                borderRadius: '8px'
+                padding: cardDescription ? '14px 16px' : '0px',
+                color: '#D5E3FF',
+                backgroundColor: cardDescription ? 'rgba(16, 42, 83, 0.45)' : 'transparent',
+                border: cardDescription ? '1px solid #244879' : 'none',
+                borderRadius: '9px',
+                lineHeight: 1.7
               }}
             />
           </Box>

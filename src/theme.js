@@ -14,6 +14,23 @@ const theme = extendTheme({
   colorSchemes: {
     light: {
       palette: {
+        background: {
+          default: '#F4F7FC',
+          paper: '#FFFFFF'
+        },
+        text: {
+          primary: '#172B4D',
+          secondary: '#5E6C84',
+          disabled: '#8993A4'
+        },
+        secondary: { main: '#DB2777', contrastText: '#FFFFFF' },
+        divider: '#D9E2F1',
+        action: {
+          hover: 'rgba(37, 99, 235, 0.07)',
+          selected: 'rgba(37, 99, 235, 0.12)',
+          disabled: 'rgba(71, 85, 105, 0.30)',
+          disabledBackground: 'rgba(71, 85, 105, 0.10)'
+        },
         primary: {
           main: '#90caf9' // đổi từ dark sang light
         }

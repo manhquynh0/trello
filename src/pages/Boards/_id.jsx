@@ -153,7 +153,9 @@ function Board() {
   return (
     <Container disableGutters maxWidth={false} sx={{
       height: '100vh',
-      background: 'radial-gradient(circle at 90% 95%, rgba(139, 92, 246, 0.25) 0%, rgba(99, 102, 241, 0.12) 30%, #080b13 70%)',
+      background: (theme) => theme.palette.mode === 'dark'
+        ? 'radial-gradient(circle at 90% 95%, rgba(139, 92, 246, 0.25) 0%, rgba(99, 102, 241, 0.12) 30%, #080b13 70%)'
+        : 'radial-gradient(circle at 90% 95%, #E0EAFE 0%, #F1F5FF 34%, #F7F9FD 74%)',
       overflow: 'hidden'
     }}>
       {card && < ActiveCard />}

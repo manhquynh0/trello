@@ -85,11 +85,12 @@ function ListColumns({ columns }) {
         overflowX: 'auto',
         overflowY: 'hidden',
         display: 'flex',
-        gap: 2,
+        gap: 1.5,
         '&::-webkit-scrollbar-track': {
           m: 2
         },
-        m: 2
+        p: 1.5,
+        m: 0
       }}>
         {columns?.map(column => <Column key={column._id} column={column} />)}
         {!openNewColumnForm ?

@@ -106,7 +106,7 @@ function Notifications() {
         >
           <NotificationsNoneIcon sx={{
             // color: 'white'
-            color: newNotification ? 'yellow' : 'white'
+            color: (theme) => newNotification ? '#EAB308' : theme.palette.mode === 'dark' ? '#FFFFFF' : '#344B6B'
           }} />
         </Badge>
       </Tooltip>

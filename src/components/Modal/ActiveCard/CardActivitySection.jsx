@@ -32,9 +32,9 @@ function CardActivitySection({ comments = [], onUpdateComment }) {
   return (
     <Box sx={{ mt: 2 }}>
       {/* Xử lý thêm comment vào Card */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 2 }}>
         <Avatar
-          sx={{ width: 36, height: 36, cursor: 'pointer' }}
+          sx={{ width: 36, height: 36, cursor: 'pointer', border: '2px solid #2D568E' }}
           alt="trungquandev"
           src={currentUser?.avatar}
         />
@@ -45,6 +45,7 @@ function CardActivitySection({ comments = [], onUpdateComment }) {
           variant="outlined"
           multiline
           onKeyDown={handleAddCardComment}
+          sx={{ '& .MuiOutlinedInput-root': { color: '#D5E3FF', bgcolor: 'rgba(16, 42, 83, 0.45)', borderRadius: '9px', '& fieldset': { borderColor: '#244879' }, '&:hover fieldset': { borderColor: '#3B68A8' } }, '& textarea::placeholder': { color: '#829BC7', opacity: 1 } }}
         />
       </Box>
 
@@ -56,7 +57,7 @@ function CardActivitySection({ comments = [], onUpdateComment }) {
         <Box sx={{ display: 'flex', gap: 1, width: '100%', mb: 1.5 }} key={index}>
           <Tooltip title={ user?.userDisplayName}>
             <Avatar
-              sx={{ width: 36, height: 36, cursor: 'pointer' }}
+              sx={{ width: 32, height: 32, cursor: 'pointer', border: '1px solid #2D568E' }}
               alt ={ user?.userDisplayName}
               src={user?.userAvatar}
             />
@@ -72,11 +73,12 @@ function CardActivitySection({ comments = [], onUpdateComment }) {
 
             <Box sx={{
               display: 'block',
-              bgcolor: (theme) => theme.palette.mode === 'dark' ? '#33485D' : 'white',
-              p: '8px 12px',
+              bgcolor: (theme) => theme.palette.mode === 'dark' ? 'rgba(16, 42, 83, 0.68)' : 'white',
+              color: (theme) => theme.palette.mode === 'dark' ? '#D5E3FF' : 'inherit',
+              p: '10px 12px',
               mt: '4px',
-              border: '0.5px solid rgba(0, 0, 0, 0.2)',
-              borderRadius: '4px',
+              border: '1px solid #244879',
+              borderRadius: '8px',
               wordBreak: 'break-word',
               boxShadow: '0 0 1px rgba(0, 0, 0, 0.2)'
             }}>

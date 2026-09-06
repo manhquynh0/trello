@@ -48,41 +48,44 @@ const RegisterForm = () => {
       <Zoom in>
         <Box
           sx={{
-            minHeight: '70vh',
+            minHeight: 'auto',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            p: 2
+            p: 0
           }}
         >
           <Paper
             elevation={8}
             sx={{
               width: '100%',
-              maxWidth: 500,
-              borderRadius: 3,
-              overflow: 'hidden'
+              maxWidth: 'none',
+              p: { xs: 3, sm: 4.5 },
+              borderRadius: '18px',
+              overflow: 'hidden',
+              bgcolor: '#0B2045',
+              color: '#F4F7FF',
+              border: '1px solid rgba(99, 148, 240, .40)',
+              boxShadow: '0 24px 70px rgba(0, 5, 28, .45)'
             }}
           >
             <Box
               sx={{
-                p: 3,
-                bgcolor: 'primary.main',
-                color: 'primary.contrastText',
-                textAlign: 'center'
+                pb: 2.5,
+                color: '#F4F7FF'
               }}
             >
-              <Typography variant="h5">
+              <Typography variant="h4" sx={{ fontWeight: 800 }}>
                 Đăng ký
               </Typography>
 
-              <Typography variant="body2" sx={{ mt: 1 }}>
+              <Typography variant="body2" sx={{ mt: 1, color: '#B8C9F2' }}>
                 Tạo tài khoản mới để bắt đầu.
               </Typography>
 
             </Box>
 
-            <Box sx={{ p: 3 }}>
+            <Box sx={{ '& .MuiInputLabel-root': { color: '#AFC2EA' }, '& .MuiInputBase-input': { color: '#F4F7FF' }, '& .MuiOutlinedInput-root': { borderRadius: '10px', bgcolor: '#0E2A59', '& fieldset': { borderColor: '#315B98' } } }}>
 
               <TextField
                 fullWidth
@@ -175,7 +178,7 @@ const RegisterForm = () => {
                 fullWidth
                 type="submit"
                 variant="contained"
-                sx={{ mt: 3 }}
+                sx={{ mt: 3, py: 1, borderRadius: '10px', fontWeight: 800, background: 'linear-gradient(90deg, #7259FF, #397BFF)' }}
               >
                 Đăng ký
               </Button>
@@ -183,9 +186,7 @@ const RegisterForm = () => {
 
             <Box
               sx={{
-                p: 3,
-                borderTop: 1,
-                borderColor: 'divider',
+                pt: 3,
                 textAlign: 'center'
               }}
             >
