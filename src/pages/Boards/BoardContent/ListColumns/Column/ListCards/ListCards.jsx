@@ -9,12 +9,13 @@ function ListCards({ cards }) {
   return (
     <SortableContext items={cards?.map(c => c._id)} strategy={verticalListSortingStrategy}>
       <Box sx={{
-        p: '0 5px',
-        m: '0 5px',
+        px: 1,
+        py: 1,
+        m: 0,
         display: 'flex',
         alignItems: 'stretch',
         flexDirection: 'column',
-        gap: 1,
+        gap: 0.75,
         overflowX: 'hidden',
         overflowY: 'auto',
         flex: 1,

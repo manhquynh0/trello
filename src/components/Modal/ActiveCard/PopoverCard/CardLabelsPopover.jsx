@@ -16,7 +16,7 @@ import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { updateCardInCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
-import { createdLabelApi, deleteLabelApi, activeLabelApi, fetchLabelsApi } from '~/apis'
+import { createdLabelApi, activeLabelApi, fetchLabelsApi } from '~/apis'
 import { toast } from 'react-toastify'
 const presetColors = ['#EF4444', '#F97316', '#EAB308', '#22C55E', '#3B82F6', '#A855F7', '#EC4899', '#6B7280']
 

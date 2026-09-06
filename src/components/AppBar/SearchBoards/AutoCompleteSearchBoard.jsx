@@ -111,26 +111,27 @@ function AutoCompleteSearchBoard() {
             ...params.InputProps,
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: 'white' }} />
+                <SearchIcon sx={{ color: (theme) => theme.palette.mode === 'dark' ? '#FFFFFF' : '#526782' }} />
               </InputAdornment>
             ),
             endAdornment: (
               <>
-                {loading ? <CircularProgress sx={{ color: 'white' }} size={20} /> : null}
+                {loading ? <CircularProgress sx={{ color: (theme) => theme.palette.mode === 'dark' ? '#FFFFFF' : '#2563EB' }} size={20} /> : null}
                 {params.InputProps.endAdornment}
               </>
             )
           }}
           sx={{
-            '& label': { color: 'white' },
-            '& input': { color: 'white' },
-            '& label.Mui-focused': { color: 'white' },
+            '& label': { color: (theme) => theme.palette.mode === 'dark' ? '#FFFFFF' : '#526782' },
+            '& input': { color: (theme) => theme.palette.mode === 'dark' ? '#FFFFFF' : '#172B4D' },
+            '& label.Mui-focused': { color: (theme) => theme.palette.mode === 'dark' ? '#FFFFFF' : '#2563EB' },
             '& .MuiOutlinedInput-root': {
-              '& fieldset': { borderColor: 'white' },
-              '&:hover fieldset': { borderColor: 'white' },
-              '&.Mui-focused fieldset': { borderColor: 'white' }
+              backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'transparent' : '#F8FAFD',
+              '& fieldset': { borderColor: (theme) => theme.palette.mode === 'dark' ? '#FFFFFF' : '#C9D8EC' },
+              '&:hover fieldset': { borderColor: (theme) => theme.palette.mode === 'dark' ? '#FFFFFF' : '#7FA7E5' },
+              '&.Mui-focused fieldset': { borderColor: (theme) => theme.palette.mode === 'dark' ? '#FFFFFF' : '#2563EB' }
             },
-            '.MuiSvgIcon-root': { color: 'white' }
+            '.MuiSvgIcon-root': { color: (theme) => theme.palette.mode === 'dark' ? '#FFFFFF' : '#526782' }
           }}
         />
       )}

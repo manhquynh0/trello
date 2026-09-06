@@ -300,7 +300,7 @@ const BoardsTab = () => {
               <MenuItem value="name">A-Z</MenuItem>
             </Select>
           </FormControl>
-          <Tooltip title="Grid view">
+          {/* <Tooltip title="Grid view">
             <IconButton size="small">
               <WidgetsRoundedIcon />
             </IconButton>
@@ -309,7 +309,7 @@ const BoardsTab = () => {
             <IconButton size="small">
               <ListIcon />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
         </Box>
       </Box>
 
@@ -343,10 +343,9 @@ const BoardsTab = () => {
                 }}
               >
                 {/* Card Image */}
-                <Box sx={{ position: 'relative', overflow: 'hidden', height: 200 }}>
+                <Box sx={{ position: 'relative', overflow: 'hidden', height: 120 }}>
                   <CardMedia
                     component="img"
-                    height="200"
                     image={board.cover ? board.cover : 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=500&h=300&fit=crop'}
                     alt={board.title}
                     sx={{

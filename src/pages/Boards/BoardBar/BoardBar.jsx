@@ -27,7 +27,8 @@ function BoardBar({ board }) {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      bgcolor: '#0F1626',
+      bgcolor: (theme) => theme.palette.mode === 'dark' ? '#0F1626' : '#FFFFFF',
+      borderBottom: (theme) => theme.palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.06)' : '1px solid #D9E2F1',
       padding: '10px',
       overflowX: 'auto',
       gap: 2
@@ -83,19 +84,6 @@ function BoardBar({ board }) {
           </Tooltip>
           <BoardBarAutomationPopover anchorEl={anchorAutomation} isOpen={isOpenAutomation} onClose={handleToggleAutomation} />
         </Box>
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }} >
-          <Chip
-            icon={<AddToDriveIcon />}
-            label="Add To Google Drive"
-            clickable
-            sx={MENU_STYLES}
-          />
-        </Box>
-
         <Box sx={{
           display: 'flex',
           alignItems: 'center',

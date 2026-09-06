@@ -38,12 +38,12 @@ function CardUserGroup({ cardMemberIds = [], onUpdateCardMember }) {
   }
   // Lưu ý ở đây chúng ta không dùng Component AvatarGroup của MUI bởi nó không hỗ trợ tốt trong việc chúng ta cần custom & trigger xử lý phần tử tính toán cuối, đơn giản là cứ dùng Box và CSS - Style đám Avatar cho chuẩn kết hợp tính toán một chút thôi.
   return (
-    <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+    <Box sx={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
       {/* Hiển thị các user là thành viên của card */}
       {FE_CardMembers?.map((user, index) =>
         <Tooltip title={user?.displayName} key={index}>
           <Avatar
-            sx={{ width: 34, height: 34, cursor: 'pointer' }}
+            sx={{ width: 38, height: 38, cursor: 'pointer', border: '2px solid #2D568E', boxShadow: '0 3px 10px rgba(0, 8, 28, 0.35)' }}
             alt={user?.displayName}
             src={user?.avatar}
           />
@@ -56,8 +56,8 @@ function CardUserGroup({ cardMemberIds = [], onUpdateCardMember }) {
           aria-describedby={popoverId}
           onClick={handleTogglePopover}
           sx={{
-            width: 36,
-            height: 36,
+            width: 38,
+            height: 38,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -65,11 +65,12 @@ function CardUserGroup({ cardMemberIds = [], onUpdateCardMember }) {
             fontSize: '14px',
             fontWeight: '600',
             borderRadius: '50%',
-            color: (theme) => theme.palette.mode === 'dark' ? '#90caf9' : '#172b4d',
-            bgcolor: (theme) => theme.palette.mode === 'dark' ? '#2f3542' : theme.palette.grey[200],
+            color: (theme) => theme.palette.mode === 'dark' ? '#B9D0FF' : '#172b4d',
+            border: '1px solid #315B98',
+            bgcolor: (theme) => theme.palette.mode === 'dark' ? '#173564' : theme.palette.grey[200],
             '&:hover': {
               color: (theme) => theme.palette.mode === 'dark' ? '#000000de' : '#0c66e4',
-              bgcolor: (theme) => theme.palette.mode === 'dark' ? '#90caf9' : '#e9f2ff'
+              bgcolor: (theme) => theme.palette.mode === 'dark' ? '#245193' : '#e9f2ff'
             }
           }}
         >

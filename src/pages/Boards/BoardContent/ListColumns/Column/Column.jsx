@@ -12,8 +12,8 @@ import Tooltip from '@mui/material/Tooltip'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import Button from '@mui/material/Button'
 import ListCards from './ListCards/ListCards'
-const COLUMN_HEADER_HEIGHT = '50px'
-const COLUMN_FOOTER_HEIGHT = '60px'
+const COLUMN_HEADER_HEIGHT = '48px'
+const COLUMN_FOOTER_HEIGHT = '48px'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -35,7 +35,6 @@ import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 import { usePermission } from '~/customHooks/usePermission'
 import { permission } from '~/config/rabcConfig'
 import { selectCurrentUser } from '~/redux/user/userSlice'
-import moment from 'moment'
 function Column({ column }) {
   const board = useSelector(selectCurrentActiveBoard)
   const user = useSelector(selectCurrentUser)
@@ -154,11 +153,13 @@ function Column({ column }) {
     >
       <Box
         sx={{
-          minWidth: '250px',
-          maxWidth: '250px',
-          ml: 2,
-          borderRadius: '6px',
-          bgcolor: 'background.paper',
+          minWidth: '282px',
+          maxWidth: '282px',
+          ml: 1,
+          borderRadius: '10px',
+          bgcolor: (theme) => theme.palette.mode === 'dark' ? '#0B1B3B' : '#FFFFFF',
+          border: (theme) => theme.palette.mode === 'dark' ? '1px solid #18376B' : '1px solid #D5E1F2',
+          boxShadow: (theme) => theme.palette.mode === 'dark' ? '0 12px 28px rgba(2, 12, 35, 0.28)' : '0 8px 22px rgba(38, 72, 125, 0.10)',
           display: 'flex',
           flexDirection: 'column',
           height: 'fit-content',
@@ -167,17 +168,12 @@ function Column({ column }) {
         {/* Header */}
         <Box {...listeners}
           sx={{
-            p: 2,
+            px: 1.5,
+            py: 1,
+            maxHeight: COLUMN_HEADER_HEIGHT,
             height: COLUMN_HEADER_HEIGHT + 24 // tăng chiều cao nếu cần
           }}
         >
-          <Typography
-            variant="caption"
-            color="text.secondary"
-            sx={{ mb: 1 }}
-          >
-            {moment(column.createdAt).format('DD/MM/YYYY')}
-          </Typography>
           <Box
             sx={{
               display: 'flex',
@@ -195,8 +191,11 @@ function Column({ column }) {
               value={column.title}
               onChangedValue={onUpdateColumnTitle}
               data-no-dnd='true'
+              inputFontSize="14px"
+              sx={{ '& input': { color: '#F2F6FF', fontWeight: 700 }, '& .MuiOutlinedInput-root': { minHeight: 30 } }}
 
             />
+            <Typography sx={{ color: '#8EA6D8', fontSize: 12, mx: 1 }}>{column.cards?.filter(card => !card.FE_PlaceholderCard).length || 0}</Typography>
             <Box>
               <Tooltip title="More" placement="top">
                 <MoreHorizIcon
@@ -204,6 +203,8 @@ function Column({ column }) {
                   aria-label="show more"
                   sx={{
                     cursor: 'pointer',
+                    color: (theme) => theme.palette.mode === 'dark' ? '#A9BCE5' : '#526782',
+                    fontSize: '20px',
                     borderRadius: '50%',
                     transition: 'all 0.2s ease',
 
@@ -281,27 +282,39 @@ function Column({ column }) {
 
         {/* Footer */}
         <Box sx={{
-          p: 2,
+          px: 1,
+          py: 0.75,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          minHeight: COLUMN_FOOTER_HEIGHT
+          minHeight: COLUMN_FOOTER_HEIGHT,
+          borderTop: '1px solid rgba(87, 133, 219, 0.14)'
         }}>
           {!openNewCardForm
             ?
             hasPermission(permission.CREATE_CARD) && (
               <Button
                 onClick={toggleOpenNewCardForm}
-                startIcon={<QueueIcon sx={{ color: 'inherit' }} />}
-                variant="contained"
+                startIcon={<QueueIcon sx={{ color: 'inherit', fontSize: '16px !important' }} />}
+                variant="text"
                 sx={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  color: '#91B5FF',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  background: 'transparent !important',
+                  '&.MuiButton-root:hover': {
+                    background: 'rgba(72, 122, 232, 0.13) !important',
+                    color: '#C4D7FF'
+                  },
                   backgroundColor: '#16A34A', // màu mặc định khi chưa hover
                   '&:hover': {
                     backgroundColor: '#22C55E'// sáng hơn khi hover
                   }
                 }}
               >
-                ADD NEW CARD
+                Thêm thẻ
               </Button>
             )
             :
