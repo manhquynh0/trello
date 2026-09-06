@@ -36,18 +36,23 @@ function CardChecklistPopover({ card, anchorEl, isOpen, onClose }) {
     const name = checkListName.trim()
 
     if (!name) return
-    await createChecklist(card._id, { name }).then(() => {
+    await createChecklist(card._id, { name }).then((res) => {
+      dispatch(updateCurrentActiveCard(res))
+      dispatch(updateCardInCurrentActiveBoard(res))
       toast.success('Thêm thành công')
-    }).catch(() => toast.error('Lỗi'))
+    })
     setCheckListName('')
     toggleOpen(openNewCheckList, setOpenNewCheckList)
   }
   const handleCreateCheckListItem = async (checkListId) => {
     const name = checkListNameItem.trim()
     if (!name) return
-    await createChecklistItem(card._id, checkListId, { name }).then(() => {
+    await createChecklistItem(card._id, checkListId, { name }).then((res) => {
+      dispatch(updateCurrentActiveCard(res))
+      dispatch(updateCardInCurrentActiveBoard(res))
       toast.success('Thêm thành công')
-    }).catch(() => toast.error('Lỗi'))
+    })
+
 
     setCheckListNameItem('')
     setOpenId(null)
