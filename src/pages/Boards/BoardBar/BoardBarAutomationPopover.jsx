@@ -85,7 +85,7 @@ const RuleCard = ({ switchOn, title, description, conditions, tags, updated, ico
   </Box>
 )
 
-const TemplateCard = ({ icon, title, desc, btnText = 'Use template' }) => (
+const TemplateCard = ({ icon, title, desc, btnText = 'Dùng mẫu' }) => (
   <Box sx={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '8px', p: 2, mb: 1.5 }}>
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
       <Box sx={{ width: 28, height: 28, borderRadius: '6px', backgroundColor: '#1F2937', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -106,18 +106,18 @@ const TemplateCard = ({ icon, title, desc, btnText = 'Use template' }) => (
 
 const RulesContent = () => (
   <>
-    {/* Rules List */}
+    {/* Danh sách quy tắc */}
     <Box sx={{ width: '380px', borderRight: '1px solid #374151', p: 3, display: 'flex', flexDirection: 'column', overflowY: 'auto', '&::-webkit-scrollbar': { width: '6px' }, '&::-webkit-scrollbar-thumb': { backgroundColor: '#4B5563', borderRadius: '4px' } }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-        <Typography sx={{ fontWeight: 600, fontSize: '16px' }}>Rules (3)</Typography>
+        <Typography sx={{ fontWeight: 600, fontSize: '16px' }}>Quy tắc (3)</Typography>
         <Button variant="contained" startIcon={<AddIcon />} sx={{ backgroundColor: '#0EA5E9', textTransform: 'none', px: 2, '&:hover': { backgroundColor: '#0284C7' } }}>
-          Create rule
+          Tạo quy tắc
         </Button>
       </Box>
       <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>
         <TextField
           fullWidth
-          placeholder="Search rules..."
+          placeholder="Tìm quy tắc..."
           variant="outlined"
           size="small"
           sx={{
@@ -127,57 +127,57 @@ const RulesContent = () => (
           InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: '#6B7280', fontSize: '18px' }} /></InputAdornment> }}
         />
         <Select value="all" size="small" sx={{ width: '120px', backgroundColor: '#111827', color: 'white', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-          <MenuItem value="all">All status</MenuItem>
+          <MenuItem value="all">Tất cả trạng thái</MenuItem>
         </Select>
       </Box>
 
       <RuleCard
         switchOn={true}
-        title="Move to Done when checklist completed"
+        title="Chuyển sang Hoàn thành khi checklist hoàn tất"
         conditions={[
-          { icon: <CheckCircleOutlineIcon sx={{ color: '#22C55E', fontSize: '18px' }} />, text: 'When checklist is completed' },
-          { icon: <ArrowForwardIcon sx={{ color: '#22C55E', fontSize: '18px' }} />, text: 'Move card to Done' }
+          { icon: <CheckCircleOutlineIcon sx={{ color: '#22C55E', fontSize: '18px' }} />, text: 'Khi checklist hoàn tất' },
+          { icon: <ArrowForwardIcon sx={{ color: '#22C55E', fontSize: '18px' }} />, text: 'Chuyển thẻ sang Hoàn thành' }
         ]}
-        tags={['Checklist', 'Move']}
-        updated="Updated 2 hours ago"
+        tags={['Checklist', 'Di chuyển']}
+        updated="Cập nhật 2 giờ trước"
       />
       <RuleCard
         switchOn={true}
         iconColor="#3B82F6"
-        title="Add member when card is created"
+        title="Thêm thành viên khi tạo thẻ"
         conditions={[
-          { icon: <CheckCircleOutlineIcon sx={{ color: '#22C55E', fontSize: '18px' }} />, text: 'When a card is created' },
-          { icon: <PersonOutlineIcon sx={{ color: '#3B82F6', fontSize: '18px' }} />, text: 'Add member: Me' }
+          { icon: <CheckCircleOutlineIcon sx={{ color: '#22C55E', fontSize: '18px' }} />, text: 'Khi một thẻ được tạo' },
+          { icon: <PersonOutlineIcon sx={{ color: '#3B82F6', fontSize: '18px' }} />, text: 'Thêm thành viên: Tôi' }
         ]}
-        tags={['Card', 'Member']}
-        updated="Updated 1 day ago"
+        tags={['Thẻ', 'Thành viên']}
+        updated="Cập nhật 1 ngày trước"
       />
       <RuleCard
         switchOn={false}
         iconColor="#9CA3AF"
-        title="Notify 1 day before due date"
+        title="Thông báo trước ngày hết hạn 1 ngày"
         conditions={[
-          { icon: <CalendarMonthIcon sx={{ color: '#22C55E', fontSize: '18px' }} />, text: 'When due date is 1 day before' },
-          { icon: <NotificationsNoneIcon sx={{ color: '#3B82F6', fontSize: '18px' }} />, text: 'Send notification to card members' }
+          { icon: <CalendarMonthIcon sx={{ color: '#22C55E', fontSize: '18px' }} />, text: 'Khi còn 1 ngày đến hạn' },
+          { icon: <NotificationsNoneIcon sx={{ color: '#3B82F6', fontSize: '18px' }} />, text: 'Gửi thông báo cho thành viên của thẻ' }
         ]}
-        tags={['Due date', 'Notification']}
-        updated="Updated 3 days ago"
+        tags={['Ngày hết hạn', 'Thông báo']}
+        updated="Cập nhật 3 ngày trước"
       />
     </Box>
 
-    {/* Create Form */}
+    {/* Biểu mẫu tạo quy tắc */}
     <Box sx={{ width: '420px', borderRight: '1px solid #374151', p: 3, display: 'flex', flexDirection: 'column', backgroundColor: '#1F2937', overflowY: 'auto' }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
         <FlashOnIcon sx={{ color: '#9CA3AF' }} />
-        <Typography sx={{ fontWeight: 600, fontSize: '16px', flex: 1 }}>Create automation rule</Typography>
+        <Typography sx={{ fontWeight: 600, fontSize: '16px', flex: 1 }}>Tạo quy tắc tự động</Typography>
         <IconButton size="small" sx={{ color: '#9CA3AF' }}><CloseIcon fontSize="small" /></IconButton>
       </Box>
 
       <Box sx={{ backgroundColor: '#111827', p: 2, borderRadius: '8px', border: '1px solid #374151', mb: 2 }}>
-        <Typography sx={{ fontSize: '13px', color: '#D1D5DB', mb: 1 }}>Rule name</Typography>
+        <Typography sx={{ fontSize: '13px', color: '#D1D5DB', mb: 1 }}>Tên quy tắc</Typography>
         <TextField
           fullWidth
-          value="Move to Done when checklist completed"
+          value="Chuyển sang Hoàn thành khi checklist hoàn tất"
           variant="outlined"
           size="small"
           sx={{ '& .MuiOutlinedInput-root': { backgroundColor: '#1F2937', color: 'white', '& fieldset': { borderColor: '#374151' } } }}
@@ -189,12 +189,12 @@ const RulesContent = () => (
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5, mb: 2 }}>
           <FlashOnIcon sx={{ color: '#22C55E' }} />
           <Box>
-            <Typography sx={{ fontWeight: 600, fontSize: '14px' }}>When</Typography>
-            <Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>Choose the trigger that starts the automation.</Typography>
+            <Typography sx={{ fontWeight: 600, fontSize: '14px' }}>Khi</Typography>
+            <Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>Chọn sự kiện kích hoạt tự động hóa.</Typography>
           </Box>
         </Box>
         <Select value="check" size="small" fullWidth sx={{ backgroundColor: '#1F2937', color: 'white', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-          <MenuItem value="check"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><TaskAltIcon fontSize="small" /> Checklist is completed</Box></MenuItem>
+          <MenuItem value="check"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><TaskAltIcon fontSize="small" /> Checklist hoàn tất</Box></MenuItem>
         </Select>
       </Box>
 
@@ -202,73 +202,73 @@ const RulesContent = () => (
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5, mb: 2 }}>
           <ArrowForwardIcon sx={{ color: '#3B82F6' }} />
           <Box>
-            <Typography sx={{ fontWeight: 600, fontSize: '14px' }}>Then</Typography>
-            <Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>Choose the action to perform.</Typography>
+            <Typography sx={{ fontWeight: 600, fontSize: '14px' }}>Thì</Typography>
+            <Typography sx={{ fontSize: '12px', color: '#9CA3AF' }}>Chọn hành động sẽ thực hiện.</Typography>
           </Box>
         </Box>
         <Select value="move" size="small" fullWidth sx={{ mb: 2, backgroundColor: '#1F2937', color: 'white', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-          <MenuItem value="move"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><DashboardIcon fontSize="small" /> Move card to column</Box></MenuItem>
+          <MenuItem value="move"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><DashboardIcon fontSize="small" /> Chuyển thẻ sang cột</Box></MenuItem>
         </Select>
-        <Typography sx={{ fontSize: '12px', color: '#9CA3AF', mb: 0.5 }}>Select column</Typography>
+        <Typography sx={{ fontSize: '12px', color: '#9CA3AF', mb: 0.5 }}>Chọn cột</Typography>
         <Select value="done" size="small" fullWidth sx={{ mb: 3, backgroundColor: '#1F2937', color: 'white', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
           <MenuItem value="done"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><Box sx={{ width: 14, height: 14, borderRadius: '2px', backgroundColor: '#22C55E' }} /> Done</Box></MenuItem>
         </Select>
         <Button startIcon={<AddIcon />} sx={{ color: '#60A5FA', textTransform: 'none', backgroundColor: '#1E3A8A40', '&:hover': { backgroundColor: '#1E3A8A60' } }}>
-          Add another action
+          Thêm hành động
         </Button>
       </Box>
 
       <Box sx={{ mb: 4 }}>
         <Typography sx={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          <SettingsOutlinedIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Options <span style={{ color: '#9CA3AF', fontWeight: 400 }}>(optional)</span>
+          <SettingsOutlinedIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Tùy chọn <span style={{ color: '#9CA3AF', fontWeight: 400 }}>(không bắt buộc)</span>
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1 }}>
           <Checkbox size="small" sx={{ color: '#4B5563', p: 0.5 }} />
           <Box sx={{ flex: 1, pt: 0.5 }}>
-            <Typography sx={{ fontSize: '13px', color: '#D1D5DB', mb: 1 }}>Only apply to cards with specific labels</Typography>
+            <Typography sx={{ fontSize: '13px', color: '#D1D5DB', mb: 1 }}>Chỉ áp dụng cho thẻ có nhãn cụ thể</Typography>
             <Select value="none" size="small" fullWidth sx={{ backgroundColor: '#111827', color: '#9CA3AF', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-              <MenuItem value="none"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><LocalOfferOutlinedIcon fontSize="small" /> Select labels...</Box></MenuItem>
+              <MenuItem value="none"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><LocalOfferOutlinedIcon fontSize="small" /> Chọn nhãn...</Box></MenuItem>
             </Select>
           </Box>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
           <Checkbox size="small" sx={{ color: '#4B5563', p: 0.5 }} />
           <Box sx={{ flex: 1, pt: 0.5 }}>
-            <Typography sx={{ fontSize: '13px', color: '#D1D5DB', mb: 1 }}>Only apply to cards with specific members</Typography>
+            <Typography sx={{ fontSize: '13px', color: '#D1D5DB', mb: 1 }}>Chỉ áp dụng cho thẻ có thành viên cụ thể</Typography>
             <Select value="none" size="small" fullWidth sx={{ backgroundColor: '#111827', color: '#9CA3AF', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-              <MenuItem value="none"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><PersonOutlineIcon fontSize="small" /> Select members...</Box></MenuItem>
+              <MenuItem value="none"><Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}><PersonOutlineIcon fontSize="small" /> Chọn thành viên...</Box></MenuItem>
             </Select>
           </Box>
         </Box>
       </Box>
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 'auto', pt: 2, borderTop: '1px solid #374151' }}>
-        <Button variant="outlined" sx={{ color: 'white', borderColor: '#4B5563', textTransform: 'none' }}>Cancel</Button>
-        <Button variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Create rule</Button>
+        <Button variant="outlined" sx={{ color: 'white', borderColor: '#4B5563', textTransform: 'none' }}>Hủy</Button>
+        <Button variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Tạo quy tắc</Button>
       </Box>
     </Box>
 
-    {/* Templates */}
+    {/* Mẫu quy tắc */}
     <Box sx={{ width: '320px', p: 3, overflowY: 'auto', '&::-webkit-scrollbar': { width: '6px' }, '&::-webkit-scrollbar-thumb': { backgroundColor: '#4B5563', borderRadius: '4px' } }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography sx={{ fontWeight: 600, fontSize: '15px' }}>Templates</Typography>
-        <Typography sx={{ color: '#60A5FA', fontSize: '13px', cursor: 'pointer' }}>View all</Typography>
+        <Typography sx={{ fontWeight: 600, fontSize: '15px' }}>Mẫu</Typography>
+        <Typography sx={{ color: '#60A5FA', fontSize: '13px', cursor: 'pointer' }}>Xem tất cả</Typography>
       </Box>
 
-      <TemplateCard icon={<CheckCircleOutlineIcon sx={{ color: '#22C55E' }} />} title="Move card when checklist completed" desc="When checklist is completed → Move card to another column" />
-      <TemplateCard icon={<CalendarMonthIcon sx={{ color: '#EC4899' }} />} title="Set due date when moved" desc="When card is moved to a column → Set due date" />
-      <TemplateCard icon={<PersonOutlineIcon sx={{ color: '#60A5FA' }} />} title="Add member when card is created" desc="When a card is created → Add member" />
-      <TemplateCard icon={<LocalOfferOutlinedIcon sx={{ color: '#F43F5E' }} />} title="Add label when moved" desc="When card is moved → Add label" />
-      <TemplateCard icon={<NotificationsNoneIcon sx={{ color: '#FACC15' }} />} title="Notify before due date" desc="When due date is X days away → Send notification" />
+      <TemplateCard icon={<CheckCircleOutlineIcon sx={{ color: '#22C55E' }} />} title="Chuyển thẻ khi checklist hoàn tất" desc="Khi checklist hoàn tất → Chuyển thẻ sang cột khác" />
+      <TemplateCard icon={<CalendarMonthIcon sx={{ color: '#EC4899' }} />} title="Đặt ngày hết hạn khi di chuyển" desc="Khi thẻ được chuyển sang cột → Đặt ngày hết hạn" />
+      <TemplateCard icon={<PersonOutlineIcon sx={{ color: '#60A5FA' }} />} title="Thêm thành viên khi tạo thẻ" desc="Khi một thẻ được tạo → Thêm thành viên" />
+      <TemplateCard icon={<LocalOfferOutlinedIcon sx={{ color: '#F43F5E' }} />} title="Thêm nhãn khi di chuyển" desc="Khi thẻ được chuyển → Thêm nhãn" />
+      <TemplateCard icon={<NotificationsNoneIcon sx={{ color: '#FACC15' }} />} title="Thông báo trước ngày hết hạn" desc="Khi còn X ngày đến hạn → Gửi thông báo" />
 
       <Box sx={{ mt: 4, p: 2, border: '1px solid #374151', borderRadius: '8px', backgroundColor: '#111827' }}>
-        <Typography sx={{ fontWeight: 600, fontSize: '14px', mb: 2 }}>Need inspiration?</Typography>
+        <Typography sx={{ fontWeight: 600, fontSize: '14px', mb: 2 }}>Cần ý tưởng?</Typography>
         <Box sx={{ display: 'flex', gap: 2 }}>
           <LightbulbOutlinedIcon sx={{ color: '#FACC15', fontSize: '32px' }} />
           <Box>
-            <Typography sx={{ fontWeight: 600, fontSize: '13px', mb: 0.5 }}>Save time with automation</Typography>
-            <Typography sx={{ color: '#9CA3AF', fontSize: '12px', mb: 1, lineHeight: 1.4 }}>Automate repetitive tasks and focus on what matters.</Typography>
-            <Typography sx={{ color: '#60A5FA', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>Learn more <ArrowForwardIcon sx={{ fontSize: '14px', ml: 0.5 }} /></Typography>
+            <Typography sx={{ fontWeight: 600, fontSize: '13px', mb: 0.5 }}>Tiết kiệm thời gian với tự động hóa</Typography>
+            <Typography sx={{ color: '#9CA3AF', fontSize: '12px', mb: 1, lineHeight: 1.4 }}>Tự động hóa các tác vụ lặp lại để tập trung vào điều quan trọng.</Typography>
+            <Typography sx={{ color: '#60A5FA', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>Tìm hiểu thêm <ArrowForwardIcon sx={{ fontSize: '14px', ml: 0.5 }} /></Typography>
           </Box>
         </Box>
       </Box>
@@ -279,33 +279,33 @@ const RulesContent = () => (
 const ButtonContent = () => (
   <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3, flexDirection: 'column' }}>
     <PlayArrowIcon sx={{ fontSize: 60, color: '#4B5563', mb: 2 }} />
-    <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 1 }}>Button Rules</Typography>
+    <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 1 }}>Quy tắc bằng nút bấm</Typography>
     <Typography sx={{ color: '#9CA3AF', mb: 3, textAlign: 'center', maxWidth: 400 }}>
-      Create buttons that perform multiple actions at once when clicked. Add buttons to cards or the board top bar.
+      Tạo nút thực hiện nhiều hành động cùng lúc khi được bấm. Bạn có thể thêm nút vào thẻ hoặc thanh đầu bảng.
     </Typography>
-    <Button variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Create button</Button>
+    <Button variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Tạo nút</Button>
   </Box>
 )
 
 const ScheduledContent = () => (
   <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3, flexDirection: 'column' }}>
     <WatchLaterOutlinedIcon sx={{ fontSize: 60, color: '#4B5563', mb: 2 }} />
-    <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 1 }}>Scheduled Rules</Typography>
+    <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 1 }}>Quy tắc theo lịch</Typography>
     <Typography sx={{ color: '#9CA3AF', mb: 3, textAlign: 'center', maxWidth: 400 }}>
-      Set up rules to run automatically at specific times, like every Monday at 9AM or on the 1st of every month.
+      Thiết lập quy tắc tự động chạy vào thời điểm cụ thể, như 9 giờ sáng thứ Hai hằng tuần hoặc ngày đầu mỗi tháng.
     </Typography>
-    <Button variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Create scheduled rule</Button>
+    <Button variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Tạo quy tắc theo lịch</Button>
   </Box>
 )
 
 const WebhooksContent = () => (
   <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3, flexDirection: 'column' }}>
     <WebhookIcon sx={{ fontSize: 60, color: '#4B5563', mb: 2 }} />
-    <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 1 }}>Webhooks</Typography>
+    <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 1 }}>Webhook</Typography>
     <Typography sx={{ color: '#9CA3AF', mb: 3, textAlign: 'center', maxWidth: 400 }}>
-      Send HTTP requests to other services when specific events happen in your Trello boards.
+      Gửi yêu cầu HTTP đến các dịch vụ khác khi có sự kiện cụ thể xảy ra trên bảng.
     </Typography>
-    <Button variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Create webhook</Button>
+    <Button variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Tạo webhook</Button>
   </Box>
 )
 
@@ -338,9 +338,9 @@ function BoardBarAutomationPopover({ isOpen, onClose }) {
         <Box sx={{ display: 'flex', gap: 1.5 }}>
           <FlashOnIcon sx={{ color: '#60A5FA', fontSize: '32px', mt: 0.5 }} />
           <Box>
-            <Typography sx={{ fontWeight: 600, fontSize: '22px' }}>Automation</Typography>
+            <Typography sx={{ fontWeight: 600, fontSize: '22px' }}>Tự động hóa</Typography>
             <Typography sx={{ color: '#9CA3AF', fontSize: '14px', mt: 0.5 }}>
-              Let Qllo do the work for you. Create rules to automatically manage your cards.
+              Để Qllo hỗ trợ bạn. Tạo quy tắc để tự động quản lý các thẻ.
             </Typography>
           </Box>
         </Box>
@@ -353,25 +353,25 @@ function BoardBarAutomationPopover({ isOpen, onClose }) {
       <Box sx={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
         {/* Left Sidebar */}
         <Box sx={{ width: '220px', borderRight: '1px solid #374151', p: 2, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
-          <SidebarItem icon={<FormatListBulletedIcon fontSize="small" />} label="Rules" badge="3" active={activeTab === 'rules'} onClick={() => setActiveTab('rules')} />
-          <SidebarItem icon={<PlayArrowIcon fontSize="small" />} label="Button" badge="2" active={activeTab === 'button'} onClick={() => setActiveTab('button')} />
-          <SidebarItem icon={<WatchLaterOutlinedIcon fontSize="small" />} label="Scheduled" badge="1" active={activeTab === 'scheduled'} onClick={() => setActiveTab('scheduled')} />
-          <SidebarItem icon={<WebhookIcon fontSize="small" />} label="Webhooks" badge="0" active={activeTab === 'webhooks'} onClick={() => setActiveTab('webhooks')} />
+          <SidebarItem icon={<FormatListBulletedIcon fontSize="small" />} label="Quy tắc" badge="3" active={activeTab === 'rules'} onClick={() => setActiveTab('rules')} />
+          <SidebarItem icon={<PlayArrowIcon fontSize="small" />} label="Nút bấm" badge="2" active={activeTab === 'button'} onClick={() => setActiveTab('button')} />
+          <SidebarItem icon={<WatchLaterOutlinedIcon fontSize="small" />} label="Theo lịch" badge="1" active={activeTab === 'scheduled'} onClick={() => setActiveTab('scheduled')} />
+          <SidebarItem icon={<WebhookIcon fontSize="small" />} label="Webhook" badge="0" active={activeTab === 'webhooks'} onClick={() => setActiveTab('webhooks')} />
 
           <Box sx={{ my: 2, borderBottom: '1px solid #374151' }} />
 
-          <SidebarItem icon={<AutoAwesomeOutlinedIcon fontSize="small" />} label="Templates" active={false} onClick={() => { }} />
-          <SidebarItem icon={<FormatListBulletedIcon fontSize="small" />} label="Activity log" active={false} onClick={() => { }} />
+          <SidebarItem icon={<AutoAwesomeOutlinedIcon fontSize="small" />} label="Mẫu" active={false} onClick={() => { }} />
+          <SidebarItem icon={<FormatListBulletedIcon fontSize="small" />} label="Nhật ký hoạt động" active={false} onClick={() => { }} />
 
           <Box sx={{ mt: 'auto', p: 2, backgroundColor: '#1F2937', borderRadius: '8px', border: '1px solid #374151' }}>
             <Typography sx={{ fontWeight: 600, fontSize: '13px', display: 'flex', alignItems: 'center', gap: 1, mb: 1, color: '#FACC15' }}>
-              👑 Upgrade to Pro
+              👑 Nâng cấp lên Pro
             </Typography>
             <Typography sx={{ color: '#9CA3AF', fontSize: '11px', mb: 2, lineHeight: 1.4 }}>
-              Get advanced automation, multiple conditions and more.
+              Sử dụng tính năng tự động hóa nâng cao, nhiều điều kiện và hơn thế nữa.
             </Typography>
             <Button fullWidth variant="contained" sx={{ backgroundColor: '#6366F1', textTransform: 'none', fontSize: '13px', py: 0.5, '&:hover': { backgroundColor: '#4F46E5' } }}>
-              Upgrade now
+              Nâng cấp ngay
             </Button>
           </Box>
         </Box>

@@ -27,7 +27,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, moveColumns, moveCards, moveCardBetweenDifferentColumns }) {
+function BoardContent({ board, isFiltering, moveColumns, moveCards, moveCardBetweenDifferentColumns }) {
 
   // const pointerSensor = useSensor(PointerSensor, {
   //   activationConstraint: {
@@ -263,7 +263,7 @@ function BoardContent({ board, moveColumns, moveCards, moveCardBetweenDifferentC
   }
   return (
     <DndContext
-      sensors={mySensors}
+      sensors={isFiltering ? [] : mySensors}
       collisionDetection={collisionDetectionStrategy}
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
