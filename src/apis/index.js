@@ -72,6 +72,15 @@ export const fetchBoardsApi = async (searchBoard) => {
   const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards${searchBoard}`)
   return response.data
 }
+export const fetchFilteredBoardApi = async (boardId, filters) => {
+  const params = new URLSearchParams()
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value && value !== 'all' && value !== 'any') params.set(key, value)
+  })
+  const query = params.toString()
+  const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/boards/${boardId}/cards${query ? `?${query}` : ''}`)
+  return response.data
+}
 export const fetchLabelsApi = async (cardId, search) => {
   const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/cards/${cardId}/labels${search}`)
   return response.data

@@ -16,7 +16,7 @@ import BoardBarFilterPopover from './BoardBarFilterPopover'
 const MENU_STYLES = {
   padding: 1
 }
-function BoardBar({ board }) {
+function BoardBar({ board, filters, onApplyFilters }) {
   const { anchorPopoverElement: anchorAutomation, isOpenPopover: isOpenAutomation, handleTogglePopover: handleToggleAutomation } = usePopover()
   const { anchorPopoverElement: anchorFilter, isOpenPopover: isOpenFilter, handleTogglePopover: handleToggleFilter } = usePopover()
   const automationPopoverId = isOpenAutomation ? 'automation-popover' : undefined
@@ -75,7 +75,7 @@ function BoardBar({ board }) {
           <Tooltip title={board?.title} placement="top">
             <Chip
               icon={<FlashOnIcon />}
-              label="Automation"
+              label="Tự động hóa"
               clickable
               sx={MENU_STYLES}
               aria-describedby={automationPopoverId}
@@ -99,7 +99,14 @@ function BoardBar({ board }) {
               onClick={handleToggleFilter}
             />
           </Tooltip>
-          <BoardBarFilterPopover anchorEl={anchorFilter} isOpen={isOpenFilter} onClose={handleToggleFilter} />
+          <BoardBarFilterPopover
+            board={board}
+            filters={filters}
+            anchorEl={anchorFilter}
+            isOpen={isOpenFilter}
+            onClose={handleToggleFilter}
+            onApply={onApplyFilters}
+          />
         </Box>
 
       </Box>

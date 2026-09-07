@@ -4,7 +4,7 @@ import Container from '@mui/material/Container'
 import BoardBar from './BoardBar/BoardBar'
 import AppBar from '~/components/AppBar'
 import BoardContent from './BoardContent/BoardContent'
-import { updateBoardDetaislApi, updateColumnDetaislApi, moveCardtoDifferentColumnApi } from '~/apis'
+import { updateBoardDetaislApi, updateColumnDetaislApi, moveCardtoDifferentColumnApi, fetchFilteredBoardApi } from '~/apis'
 import React from 'react'
 import { cloneDeep } from 'lodash'
 import LoadingPage from '~/pages/Loading/LoadingPage'
@@ -20,17 +20,41 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import ActiveCard from '~/components/Modal/ActiveCard/ActiveCard'
 import { selectCurrentActiveCard, updateCurrentActiveCard } from '~/redux/activeCard/activeCardSlice'
+
+const EMPTY_FILTERS = {
+  search: '',
+  memberId: 'all',
+  labelId: 'all',
+  dueDate: 'any',
+  checklist: 'any',
+  attachments: 'any'
+}
+
 function Board() {
   const dispatch = useDispatch()
   // const [board, setBoard] = React.useState(null)
   const card = useSelector(selectCurrentActiveCard)
   const board = useSelector(selectCurrentActiveBoard)
   const { boardId } = useParams()
+  const [filters, setFilters] = React.useState(EMPTY_FILTERS)
+  const [filteredBoard, setFilteredBoard] = React.useState(null)
   React.useEffect(() => {
     // const boardId = '6a6db6b04a357c43f9e82a9f'
     // Call API
     dispatch(fetchBoardDetailsAPI(boardId))
+    setFilters(EMPTY_FILTERS)
+    setFilteredBoard(null)
   }, [dispatch, boardId])
+
+  const hasActiveFilters = Object.entries(filters).some(([key, value]) => key === 'search' ? value.trim() : value !== 'all' && value !== 'any')
+
+  React.useEffect(() => {
+    if (!boardId || !hasActiveFilters) {
+      setFilteredBoard(null)
+      return
+    }
+    fetchFilteredBoardApi(boardId, filters).then(setFilteredBoard)
+  }, [boardId, filters, hasActiveFilters])
 
   React.useEffect(() => {
     // Lắng nghe sự kiện Realtime Socket khi có người join / leave card
@@ -160,8 +184,9 @@ function Board() {
     }}>
       {card && < ActiveCard />}
       <AppBar />
-      <BoardBar board={board} />
-      <BoardContent board={board}
+      <BoardBar board={board} filters={filters} onApplyFilters={setFilters} />
+      <BoardContent board={filteredBoard || board}
+        isFiltering={hasActiveFilters}
         moveColumns={moveColumns}
         moveCards={moveCards}
         moveCardBetweenDifferentColumns={moveCardBetweenDifferentColumns}

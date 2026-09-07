@@ -17,11 +17,31 @@ import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined'
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import Avatar from '@mui/material/Avatar'
-import Checkbox from '@mui/material/Checkbox'
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined'
+import { useEffect, useState } from 'react'
 
-function BoardBarFilterPopover({ anchorEl, isOpen, onClose }) {
+function BoardBarFilterPopover({ board, filters, anchorEl, isOpen, onClose, onApply }) {
+  const [draftFilters, setDraftFilters] = useState(filters)
+
+  useEffect(() => {
+    setDraftFilters(filters)
+  }, [filters, isOpen])
+
+  const members = board?.FE_allUser || []
+  const labels = (board?.columns || [])
+    .flatMap(column => column.cards || [])
+    .flatMap(card => card.labels || [])
+    .filter(label => label.isActive !== false)
+    .filter((label, index, allLabels) => allLabels.findIndex(item => item._id === label._id) === index)
+
+  const updateFilter = (key, value) => {
+    setDraftFilters(previous => ({ ...previous, [key]: value }))
+  }
+
+  const clearFilters = () => {
+    onApply({ search: '', memberId: 'all', labelId: 'all', dueDate: 'any', checklist: 'any', attachments: 'any' })
+  }
+
   return (
     <Popover
       open={isOpen}
@@ -33,15 +53,15 @@ function BoardBarFilterPopover({ anchorEl, isOpen, onClose }) {
       <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
         <Box>
           <Typography sx={{ fontWeight: 600, fontSize: '20px', display: 'flex', alignItems: 'center', gap: 1 }}>
-            <FilterAltOutlinedIcon /> Filter Cards
+            <FilterAltOutlinedIcon /> Lọc thẻ
           </Typography>
           <Typography sx={{ color: '#9CA3AF', fontSize: '14px', mt: 0.5 }}>
-            Find cards that match your criteria.
+            Tìm các thẻ phù hợp với điều kiện bạn chọn.
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Button variant="outlined" sx={{ color: 'white', borderColor: '#4B5563', textTransform: 'none', '&:hover': { backgroundColor: '#374151', borderColor: '#4B5563' } }}>
-            Clear all
+          <Button variant="outlined" onClick={clearFilters} sx={{ color: 'white', borderColor: '#4B5563', textTransform: 'none', '&:hover': { backgroundColor: '#374151', borderColor: '#4B5563' } }}>
+            Xóa tất cả
           </Button>
           <IconButton size="small" onClick={onClose} sx={{ color: '#9CA3AF' }}>
             <CloseIcon fontSize="small" />
@@ -51,10 +71,12 @@ function BoardBarFilterPopover({ anchorEl, isOpen, onClose }) {
 
       {/* Search */}
       <Box sx={{ mb: 3 }}>
-        <Typography sx={{ fontWeight: 600, fontSize: '14px', mb: 1 }}>Search</Typography>
+        <Typography sx={{ fontWeight: 600, fontSize: '14px', mb: 1 }}>Tìm kiếm</Typography>
         <TextField
           fullWidth
-          placeholder="Search cards..."
+          placeholder="Tìm thẻ..."
+          value={draftFilters.search}
+          onChange={event => updateFilter('search', event.target.value)}
           variant="outlined"
           size="small"
           sx={{
@@ -75,7 +97,7 @@ function BoardBarFilterPopover({ anchorEl, isOpen, onClose }) {
             )
           }}
         />
-        <Typography sx={{ color: '#9CA3AF', fontSize: '12px' }}>Search by title, description, or content...</Typography>
+        <Typography sx={{ color: '#9CA3AF', fontSize: '12px' }}>Tìm theo tiêu đề hoặc mô tả.</Typography>
       </Box>
 
       {/* Grid of filters */}
@@ -85,40 +107,38 @@ function BoardBarFilterPopover({ anchorEl, isOpen, onClose }) {
           {/* Members */}
           <Box sx={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px', p: 2 }}>
             <Typography sx={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-              <PersonOutlineIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Members
+              <PersonOutlineIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Thành viên
             </Typography>
-            <Select value="all" size="small" fullWidth sx={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', mb: 1.5, '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-              <MenuItem value="all">All members</MenuItem>
+            <Select value={draftFilters.memberId} onChange={event => updateFilter('memberId', event.target.value)} size="small" fullWidth sx={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', mb: 1.5, '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
+              <MenuItem value="all">Tất cả thành viên</MenuItem>
+              {members.map(member => <MenuItem key={member._id} value={member._id}>{member.displayName || member.username || member.email}</MenuItem>)}
             </Select>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <Avatar src="https://i.pravatar.cc/150?img=11" sx={{ width: 24, height: 24 }} />
-              <Avatar src="https://i.pravatar.cc/150?img=12" sx={{ width: 24, height: 24 }} />
-              <Avatar src="https://i.pravatar.cc/150?img=13" sx={{ width: 24, height: 24 }} />
-              <Box sx={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: '#374151', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#9CA3AF' }}>+3</Box>
-            </Box>
           </Box>
 
           {/* Due date */}
           <Box sx={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px', p: 2 }}>
             <Typography sx={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-              <CalendarMonthIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Due date
+              <CalendarMonthIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Ngày hết hạn
             </Typography>
-            <Select value="any" size="small" fullWidth sx={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-              <MenuItem value="any">Any time</MenuItem>
+            <Select value={draftFilters.dueDate} onChange={event => updateFilter('dueDate', event.target.value)} size="small" fullWidth sx={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
+              <MenuItem value="any">Bất kỳ thời điểm nào</MenuItem>
+              <MenuItem value="none">Chưa có ngày hạn</MenuItem>
+              <MenuItem value="overdue">Đã quá hạn</MenuItem>
+              <MenuItem value="today">Hết hạn hôm nay</MenuItem>
+              <MenuItem value="next7">Trong 7 ngày tới</MenuItem>
             </Select>
           </Box>
 
           {/* Card content */}
           <Box sx={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px', p: 2 }}>
             <Typography sx={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-              <DescriptionOutlinedIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Card content
+              <DescriptionOutlinedIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Nội dung thẻ
             </Typography>
-            <Select value="any" size="small" fullWidth sx={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', mb: 1, '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-              <MenuItem value="any">Any content</MenuItem>
-            </Select>
             <TextField
               fullWidth
-              placeholder="Enter keyword..."
+              placeholder="Nhập từ khóa..."
+              value={draftFilters.search}
+              onChange={event => updateFilter('search', event.target.value)}
               variant="outlined"
               size="small"
               sx={{
@@ -137,18 +157,12 @@ function BoardBarFilterPopover({ anchorEl, isOpen, onClose }) {
           {/* Labels */}
           <Box sx={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px', p: 2 }}>
             <Typography sx={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-              <LocalOfferOutlinedIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Labels
+              <LocalOfferOutlinedIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Nhãn
             </Typography>
-            <Select value="all" size="small" fullWidth sx={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', mb: 1.5, '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-              <MenuItem value="all">All labels</MenuItem>
+            <Select value={draftFilters.labelId} onChange={event => updateFilter('labelId', event.target.value)} size="small" fullWidth sx={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', mb: 1.5, '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
+              <MenuItem value="all">Tất cả nhãn</MenuItem>
+              {labels.map(label => <MenuItem key={label._id} value={label._id}>{label.name}</MenuItem>)}
             </Select>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-              <Box sx={{ backgroundColor: '#EF4444', px: 1, py: 0.5, borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>Bug</Box>
-              <Box sx={{ backgroundColor: '#EAB308', px: 1, py: 0.5, borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>In Progress</Box>
-              <Box sx={{ backgroundColor: '#22C55E', px: 1, py: 0.5, borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>Done</Box>
-              <Box sx={{ backgroundColor: '#A855F7', px: 1, py: 0.5, borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>Feature</Box>
-              <Box sx={{ backgroundColor: '#EC4899', px: 1, py: 0.5, borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>Design</Box>
-            </Box>
           </Box>
 
           {/* Checklist */}
@@ -156,29 +170,25 @@ function BoardBarFilterPopover({ anchorEl, isOpen, onClose }) {
             <Typography sx={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
               <TaskAltOutlinedIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Checklist
             </Typography>
-            <Select value="any" size="small" fullWidth sx={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-              <MenuItem value="any">Any status</MenuItem>
+            <Select value={draftFilters.checklist} onChange={event => updateFilter('checklist', event.target.value)} size="small" fullWidth sx={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
+              <MenuItem value="any">Bất kỳ trạng thái nào</MenuItem>
+              <MenuItem value="with">Có checklist</MenuItem>
+              <MenuItem value="without">Không có checklist</MenuItem>
+              <MenuItem value="completed">Checklist đã hoàn tất</MenuItem>
+              <MenuItem value="incomplete">Checklist chưa hoàn tất</MenuItem>
             </Select>
           </Box>
 
           {/* Attachments */}
           <Box sx={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px', p: 2 }}>
             <Typography sx={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-              <AttachFileOutlinedIcon fontSize="small" sx={{ color: '#9CA3AF', transform: 'rotate(45deg)' }} /> Attachments
+              <AttachFileOutlinedIcon fontSize="small" sx={{ color: '#9CA3AF', transform: 'rotate(45deg)' }} /> Tệp đính kèm
             </Typography>
-            <Select value="any" size="small" fullWidth sx={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', mb: 1, '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-              <MenuItem value="any">Any</MenuItem>
+            <Select value={draftFilters.attachments} onChange={event => updateFilter('attachments', event.target.value)} size="small" fullWidth sx={{ backgroundColor: '#111827', color: 'white', borderRadius: '6px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
+              <MenuItem value="any">Bất kỳ</MenuItem>
+              <MenuItem value="with">Có tệp đính kèm</MenuItem>
+              <MenuItem value="without">Không có tệp đính kèm</MenuItem>
             </Select>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Checkbox size="small" sx={{ color: '#4B5563', p: 0.5, '&.Mui-checked': { color: '#0EA5E9' } }} />
-                <Typography sx={{ fontSize: '13px', color: '#9CA3AF' }}>Has attachments</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Checkbox size="small" sx={{ color: '#4B5563', p: 0.5, '&.Mui-checked': { color: '#0EA5E9' } }} />
-                <Typography sx={{ fontSize: '13px', color: '#9CA3AF' }}>No attachments</Typography>
-              </Box>
-            </Box>
           </Box>
         </Box>
       </Box>
@@ -186,17 +196,17 @@ function BoardBarFilterPopover({ anchorEl, isOpen, onClose }) {
       {/* Custom fields */}
       <Box sx={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '8px', p: 2, mb: 3 }}>
         <Typography sx={{ fontWeight: 600, fontSize: '14px', display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          <TuneOutlinedIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Custom fields
+          <TuneOutlinedIcon fontSize="small" sx={{ color: '#9CA3AF' }} /> Trường tùy chỉnh
         </Typography>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Select value="any" size="small" sx={{ flex: 1, backgroundColor: '#111827', color: 'white', borderRadius: '6px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-            <MenuItem value="any">Any field</MenuItem>
+            <MenuItem value="any">Bất kỳ trường nào</MenuItem>
           </Select>
           <Select value="any" size="small" sx={{ flex: 1, backgroundColor: '#111827', color: 'white', borderRadius: '6px', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#374151' }, '& .MuiSvgIcon-root': { color: '#9CA3AF' } }}>
-            <MenuItem value="any">Any value</MenuItem>
+            <MenuItem value="any">Bất kỳ giá trị nào</MenuItem>
           </Select>
           <TextField
-            placeholder="Enter value..."
+            placeholder="Nhập giá trị..."
             variant="outlined"
             size="small"
             sx={{
@@ -214,14 +224,14 @@ function BoardBarFilterPopover({ anchorEl, isOpen, onClose }) {
       {/* Footer */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pt: 1, borderTop: '1px solid #374151' }}>
         <Button variant="outlined" startIcon={<BookmarkBorderOutlinedIcon />} sx={{ color: 'white', borderColor: '#4B5563', textTransform: 'none', '&:hover': { backgroundColor: '#374151', borderColor: '#4B5563' } }}>
-          Save as view
+          Lưu bộ lọc
         </Button>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button variant="outlined" onClick={onClose} sx={{ color: 'white', borderColor: '#4B5563', textTransform: 'none', '&:hover': { backgroundColor: '#374151', borderColor: '#4B5563' } }}>
-            Cancel
+            Hủy
           </Button>
-          <Button variant="contained" startIcon={<FilterAltOutlinedIcon />} sx={{ backgroundColor: '#0EA5E9', textTransform: 'none', '&:hover': { backgroundColor: '#0284C7' } }}>
-            Apply filter
+          <Button variant="contained" onClick={() => { onApply(draftFilters); onClose() }} startIcon={<FilterAltOutlinedIcon />} sx={{ backgroundColor: '#0EA5E9', textTransform: 'none', '&:hover': { backgroundColor: '#0284C7' } }}>
+            Áp dụng
           </Button>
         </Box>
       </Box>
