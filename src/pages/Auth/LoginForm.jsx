@@ -221,7 +221,7 @@ const LoginForm = () => {
               <FieldErrorAlert errors={errors} fieldName='password' />
 
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-                <Link to='/forgot-password' style={{ color: '#B9AFFF', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>Quên mật khẩu?</Link>
+                <Link to='/forgotPassword' style={{ color: '#B9AFFF', fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>Quên mật khẩu?</Link>
               </Box>
 
               <Button

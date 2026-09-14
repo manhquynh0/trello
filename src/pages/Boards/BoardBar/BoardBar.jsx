@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded'
 import VpnLockIcon from '@mui/icons-material/VpnLock'
-import AddToDriveIcon from '@mui/icons-material/AddToDrive'
+// import AddToDriveIcon from '@mui/icons-material/AddToDrive'
 import FlashOnIcon from '@mui/icons-material/FlashOn'
 import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded'
 import Tooltip from '@mui/material/Tooltip'
@@ -21,6 +21,7 @@ function BoardBar({ board, filters, onApplyFilters }) {
   const { anchorPopoverElement: anchorFilter, isOpenPopover: isOpenFilter, handleTogglePopover: handleToggleFilter } = usePopover()
   const automationPopoverId = isOpenAutomation ? 'automation-popover' : undefined
   const filterPopoverId = isOpenFilter ? 'filter-popover' : undefined
+ 
 
   return (
     <Box sx={{

@@ -31,7 +31,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Checkbox from '@mui/material/Checkbox'
 import WebhookIcon from '@mui/icons-material/Webhook'
 import TaskAltIcon from '@mui/icons-material/TaskAlt'
-
+import { toast } from 'react-toastify'
 // --- Helper Components for UI parts ---
 
 const SidebarItem = ({ icon, label, badge, active, onClick }) => (
@@ -85,7 +85,7 @@ const RuleCard = ({ switchOn, title, description, conditions, tags, updated, ico
   </Box>
 )
 
-const TemplateCard = ({ icon, title, desc, btnText = 'Dùng mẫu' }) => (
+const TemplateCard = ({ icon, title, desc, btnText = 'Dùng mẫu', onClick }) => (
   <Box sx={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '8px', p: 2, mb: 1.5 }}>
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
       <Box sx={{ width: 28, height: 28, borderRadius: '6px', backgroundColor: '#1F2937', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -95,7 +95,7 @@ const TemplateCard = ({ icon, title, desc, btnText = 'Dùng mẫu' }) => (
     </Box>
     <Typography sx={{ color: '#9CA3AF', fontSize: '12px', mb: 2, ml: '40px' }}>{desc}</Typography>
     <Box sx={{ ml: '40px' }}>
-      <Button variant="outlined" size="small" sx={{ color: '#D1D5DB', borderColor: '#4B5563', textTransform: 'none', py: 0.5, '&:hover': { backgroundColor: '#1F2937', borderColor: '#6B7280' } }}>
+      <Button onClick={onClick} variant="outlined" size="small" sx={{ color: '#D1D5DB', borderColor: '#4B5563', textTransform: 'none', py: 0.5, '&:hover': { backgroundColor: '#1F2937', borderColor: '#6B7280' } }}>
         {btnText}
       </Button>
     </Box>
@@ -104,13 +104,13 @@ const TemplateCard = ({ icon, title, desc, btnText = 'Dùng mẫu' }) => (
 
 // --- Tab Content Components ---
 
-const RulesContent = () => (
+const RulesContent = ({ onCreate }) => (
   <>
     {/* Danh sách quy tắc */}
     <Box sx={{ width: '380px', borderRight: '1px solid #374151', p: 3, display: 'flex', flexDirection: 'column', overflowY: 'auto', '&::-webkit-scrollbar': { width: '6px' }, '&::-webkit-scrollbar-thumb': { backgroundColor: '#4B5563', borderRadius: '4px' } }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
         <Typography sx={{ fontWeight: 600, fontSize: '16px' }}>Quy tắc (3)</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} sx={{ backgroundColor: '#0EA5E9', textTransform: 'none', px: 2, '&:hover': { backgroundColor: '#0284C7' } }}>
+        <Button onClick={onCreate} variant="contained" startIcon={<AddIcon />} sx={{ backgroundColor: '#0EA5E9', textTransform: 'none', px: 2, '&:hover': { backgroundColor: '#0284C7' } }}>
           Tạo quy tắc
         </Button>
       </Box>
@@ -255,11 +255,11 @@ const RulesContent = () => (
         <Typography sx={{ color: '#60A5FA', fontSize: '13px', cursor: 'pointer' }}>Xem tất cả</Typography>
       </Box>
 
-      <TemplateCard icon={<CheckCircleOutlineIcon sx={{ color: '#22C55E' }} />} title="Chuyển thẻ khi checklist hoàn tất" desc="Khi checklist hoàn tất → Chuyển thẻ sang cột khác" />
-      <TemplateCard icon={<CalendarMonthIcon sx={{ color: '#EC4899' }} />} title="Đặt ngày hết hạn khi di chuyển" desc="Khi thẻ được chuyển sang cột → Đặt ngày hết hạn" />
-      <TemplateCard icon={<PersonOutlineIcon sx={{ color: '#60A5FA' }} />} title="Thêm thành viên khi tạo thẻ" desc="Khi một thẻ được tạo → Thêm thành viên" />
-      <TemplateCard icon={<LocalOfferOutlinedIcon sx={{ color: '#F43F5E' }} />} title="Thêm nhãn khi di chuyển" desc="Khi thẻ được chuyển → Thêm nhãn" />
-      <TemplateCard icon={<NotificationsNoneIcon sx={{ color: '#FACC15' }} />} title="Thông báo trước ngày hết hạn" desc="Khi còn X ngày đến hạn → Gửi thông báo" />
+      <TemplateCard onClick={onCreate} icon={<CheckCircleOutlineIcon sx={{ color: '#22C55E' }} />} title="Chuyển thẻ khi checklist hoàn tất" desc="Khi checklist hoàn tất → Chuyển thẻ sang cột khác" />
+      <TemplateCard onClick={onCreate} icon={<CalendarMonthIcon sx={{ color: '#EC4899' }} />} title="Đặt ngày hết hạn khi di chuyển" desc="Khi thẻ được chuyển sang cột → Đặt ngày hết hạn" />
+      <TemplateCard onClick={onCreate} icon={<PersonOutlineIcon sx={{ color: '#60A5FA' }} />} title="Thêm thành viên khi tạo thẻ" desc="Khi một thẻ được tạo → Thêm thành viên" />
+      <TemplateCard onClick={onCreate} icon={<LocalOfferOutlinedIcon sx={{ color: '#F43F5E' }} />} title="Thêm nhãn khi di chuyển" desc="Khi thẻ được chuyển → Thêm nhãn" />
+      <TemplateCard onClick={onCreate} icon={<NotificationsNoneIcon sx={{ color: '#FACC15' }} />} title="Thông báo trước ngày hết hạn" desc="Khi còn X ngày đến hạn → Gửi thông báo" />
 
       <Box sx={{ mt: 4, p: 2, border: '1px solid #374151', borderRadius: '8px', backgroundColor: '#111827' }}>
         <Typography sx={{ fontWeight: 600, fontSize: '14px', mb: 2 }}>Cần ý tưởng?</Typography>
@@ -276,41 +276,44 @@ const RulesContent = () => (
   </>
 )
 
-const ButtonContent = () => (
+const ButtonContent = ({ onCreate }) => (
   <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3, flexDirection: 'column' }}>
     <PlayArrowIcon sx={{ fontSize: 60, color: '#4B5563', mb: 2 }} />
     <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 1 }}>Quy tắc bằng nút bấm</Typography>
     <Typography sx={{ color: '#9CA3AF', mb: 3, textAlign: 'center', maxWidth: 400 }}>
       Tạo nút thực hiện nhiều hành động cùng lúc khi được bấm. Bạn có thể thêm nút vào thẻ hoặc thanh đầu bảng.
     </Typography>
-    <Button variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Tạo nút</Button>
+    <Button onClick={onCreate} variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Tạo nút</Button>
   </Box>
 )
 
-const ScheduledContent = () => (
+const ScheduledContent = ({ onCreate }) => (
   <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3, flexDirection: 'column' }}>
     <WatchLaterOutlinedIcon sx={{ fontSize: 60, color: '#4B5563', mb: 2 }} />
     <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 1 }}>Quy tắc theo lịch</Typography>
     <Typography sx={{ color: '#9CA3AF', mb: 3, textAlign: 'center', maxWidth: 400 }}>
       Thiết lập quy tắc tự động chạy vào thời điểm cụ thể, như 9 giờ sáng thứ Hai hằng tuần hoặc ngày đầu mỗi tháng.
     </Typography>
-    <Button variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Tạo quy tắc theo lịch</Button>
+    <Button onClick={onCreate} variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Tạo quy tắc theo lịch</Button>
   </Box>
 )
 
-const WebhooksContent = () => (
+const WebhooksContent = ({ onCreate }) => (
   <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 3, flexDirection: 'column' }}>
     <WebhookIcon sx={{ fontSize: 60, color: '#4B5563', mb: 2 }} />
     <Typography sx={{ fontSize: '20px', fontWeight: 600, mb: 1 }}>Webhook</Typography>
     <Typography sx={{ color: '#9CA3AF', mb: 3, textAlign: 'center', maxWidth: 400 }}>
       Gửi yêu cầu HTTP đến các dịch vụ khác khi có sự kiện cụ thể xảy ra trên bảng.
     </Typography>
-    <Button variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Tạo webhook</Button>
+    <Button onClick={onCreate} variant="contained" sx={{ backgroundColor: '#0EA5E9', textTransform: 'none' }}>Tạo webhook</Button>
   </Box>
 )
 
 
 function BoardBarAutomationPopover({ isOpen, onClose }) {
+   const handleAutomationClick = () => {
+    toast.info('Vui lòng nâng cấp lên Pro để sử dụng tính năng Tự động hóa.')
+  }
   const [activeTab, setActiveTab] = useState('rules')
 
   return (
@@ -377,10 +380,10 @@ function BoardBarAutomationPopover({ isOpen, onClose }) {
         </Box>
 
         {/* Main Content Area */}
-        {activeTab === 'rules' && <RulesContent />}
-        {activeTab === 'button' && <ButtonContent />}
-        {activeTab === 'scheduled' && <ScheduledContent />}
-        {activeTab === 'webhooks' && <WebhooksContent />}
+        {activeTab === 'rules' && <RulesContent onCreate={handleAutomationClick} />}
+        {activeTab === 'button' && <ButtonContent onCreate={handleAutomationClick} />}
+        {activeTab === 'scheduled' && <ScheduledContent onCreate={handleAutomationClick} />}
+        {activeTab === 'webhooks' && <WebhooksContent onCreate={handleAutomationClick} />}
       </Box>
     </Dialog>
   )

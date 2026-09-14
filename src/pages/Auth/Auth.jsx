@@ -12,7 +12,7 @@ const Auth = () => {
   const location = useLocation()
   const isLogin = location.pathname === '/login'
   const isRegister = location.pathname === '/register'
-  const isForgotPassword = location.pathname === '/forgot-password'
+  const isForgotPassword = location.pathname === '/forgotPassword'
 
   const currentUser = useSelector(selectCurrentUser)
   if (currentUser) {

@@ -109,7 +109,7 @@ const TemplatesTab = () => {
   const filteredTemplates = initialTemplates.filter(template => {
     const matchesCategory = selectedCategory === 'All' || template.category === selectedCategory
     const matchesSearch = template.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          template.description.toLowerCase().includes(searchQuery.toLowerCase())
+      template.description.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesCategory && matchesSearch
   })
 
@@ -118,7 +118,7 @@ const TemplatesTab = () => {
       toast.error('Vui lòng nhập tên Board!')
       return
     }
-    toast.success(`Đã tạo board "${newBoardName}" từ mẫu ${selectedTemplate.title}!`)
+    toast.warning('Chức năng này đang được phát triển!')
     setSelectedTemplate(null)
     setNewBoardName('')
   }
