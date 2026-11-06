@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
@@ -34,7 +34,8 @@ const RegisterForm = () => {
       {
         pending: 'Registation is in progress...'
       }
-    ).then(user => navigate(`/login?registeredEmail=${user.email}`))
+    ).then(user => navigate(`/login?registeredEmail=${user?.email || email}`))
+     .catch(() => {})
   }
   const {
     register,
